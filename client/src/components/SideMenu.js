@@ -1,5 +1,6 @@
 import React from 'react';
 import AppMode from './../AppMode.js'
+import App from './App.js';
 
 class SideMenu extends React.Component {
 
@@ -29,12 +30,16 @@ renderModeMenuItems = () => {
       );
     break;
     case AppMode.COURSES:
+    case AppMode.COURSES_NEARBY:
+    case AppMode.COURSES_ALL:
       return(
         <div>
-        <a className="sidemenu-item">
-            <span className="fa fa-plus"></span>&nbsp;Add a Course</a>
-        <a className="sidemenu-item">
-            <span className="fa fa-search"></span>&nbsp;Search Courses</a>
+        <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES)}>
+            <span className="fa fa-search"></span>&nbsp;Specific Course</a>
+        <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES_NEARBY)}>
+            <span className="fa fa-map-marker"></span>&nbsp;Nearby Courses</a>
+        <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES_ALL)}>
+            <span className="fa fa-th-list"></span>&nbsp;All Speedgolf-Friendly Courses</a>
         </div>
       );
     default:
