@@ -13,7 +13,7 @@ class BookingPage extends React.Component {
         return (
         <div className="padded-page">
             <center>
-        <h1 >Request Tee Time at {this.state.courseName}</h1>
+                <h1>Request Tee Time at {this.state.courseName}</h1>
             </center>
         </div>
         );
