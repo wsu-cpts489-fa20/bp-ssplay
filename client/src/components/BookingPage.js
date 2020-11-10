@@ -3,6 +3,8 @@ import React from 'react';
 class BookingPage extends React.Component {
 
     constructor () {
+        super();
+        
         this.state = {
             courseName: 'Defualt Course'
         }
