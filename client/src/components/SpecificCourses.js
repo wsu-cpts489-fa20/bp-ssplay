@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactTooltip from "react-tooltip";
+import { Navbar, Container, Row, Col, Card, Button } from "react-bootstrap";
 
 class SpecificCourses extends React.Component {
 
@@ -8,6 +9,7 @@ class SpecificCourses extends React.Component {
 
         this.state={
             addCourseClicked: false,
+            getCourseClicked: false,
             id: "",
             rating: "",
             review: "",
@@ -23,6 +25,10 @@ class SpecificCourses extends React.Component {
 
     toggleAddCourseClicked = () => {
         this.setState(state => ({addCourseClicked: !state.addCourseClicked}));
+    }
+
+    toggleGetCourseClicked = () => {
+        this.setState(state => ({getCourseClicked: !state.getCourseClicked}));
     }
 
     addCourse = async (newData) => {
@@ -48,6 +54,7 @@ class SpecificCourses extends React.Component {
             // this.props.refreshOnUpdate(AppMode.COURSE);
         }
     }
+
 
     handleSubmit = (event) => {
         event.preventDefault();
@@ -107,6 +114,37 @@ class SpecificCourses extends React.Component {
                     <button>Submit</button>
                 </form>
                 : null}
+
+                {/* <Button onClick={this.toggleGetCourseClicked}>GET</Button> */}
+                {/* <table>
+                    <tbody>
+                    {this.state.getCourseClicked ? this.getCourse() : null}
+                    </tbody>
+                </table> */}
+                {/* <Container fluid={true}>
+                    <Row noGutters>
+                        <Col>
+                            <tbody>
+                            {this.state.getCourseClicked ? this.getCourse() : null}
+                            </tbody>
+                        </Col>
+                    </Row>
+                </Container> */}
+                {/* <Container fluid={true}>
+                    <Row noGutters>
+                        <Col>
+                            <Card style={{ width: "30rem", display: "flex" }}>
+                                <Card.Img className="apartment-image" variant="top" src="http://brydencanyongolf.com/wp-content/uploads/2017/03/9th-Hole.jpg"></Card.Img>
+                                <Card.Body>
+                                    <Card.Title>Title</Card.Title>
+                                    <Card.Text>Text</Card.Text>
+                                </Card.Body>
+                                <Card.Footer>Footer</Card.Footer>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Container> */}
+                
             </div>
         );
     }   

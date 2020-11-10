@@ -384,3 +384,10 @@ text-align: center;
     color: black;
     background-color: lightgray;
   }
+
+.apartment-image {
+  float: left;
+  /* width: 100px;
+  height: 300px; */
+  object-fit: cover;
+}

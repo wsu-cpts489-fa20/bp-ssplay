@@ -485,6 +485,27 @@ app.delete('/rounds/:userId/:roundId', async (req, res, next) => {
   } 
 });
 
+//READ course route: Retrieves the course with the specified courseId from courses collection (GET)
+app.get('/courses/:courseId', async(req, res, next) => {
+  console.log("in /courses route (GET) with courseId = " + 
+    JSON.stringify(req.params.courseId));
+  try {
+    // let thisUser = await Course.findOne({id: req.params.courseId});
+    let thisUser = await Course.find({});
+
+    if (!thisUser) {
+      return res.status(404).send("No user account with id " +
+        req.params.courseId + " was found in database.");
+    } else {
+      return res.status(200).json(JSON.stringify(thisUser));
+    }
+  } catch (err) {
+    console.log()
+    return res.status(400).send("Unexpected error occurred when looking up user with id " +
+      req.params.courseId + " in database: " + err);
+  }
+});
+
 //CREATE course route: Adds a new course as a subdocument to 
 //a document in the courses collection (POST)
 app.post('/courses/:courseId', async (req, res, next) => {

@@ -922,47 +922,95 @@ app["delete"]('/rounds/:userId/:roundId', /*#__PURE__*/function () {
   return function (_x31, _x32, _x33) {
     return _ref11.apply(this, arguments);
   };
-}()); //CREATE course route: Adds a new course as a subdocument to 
-//a document in the courses collection (POST)
+}()); //READ course route: Retrieves the course with the specified courseId from courses collection (GET)
 
-app.post('/courses/:courseId', /*#__PURE__*/function () {
+app.get('/courses/:courseId', /*#__PURE__*/function () {
   var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee12(req, res, next) {
-    var thisCourse;
+    var thisUser;
     return _regeneratorRuntime["default"].wrap(function _callee12$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
           case 0:
-            console.log("in /courses (POST) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
+            console.log("in /courses route (GET) with courseId = " + JSON.stringify(req.params.courseId));
+            _context12.prev = 1;
+            _context12.next = 4;
+            return Course.find({});
 
-            if (!(!req.body.hasOwnProperty("rating") || !req.body.hasOwnProperty("review") || !req.body.hasOwnProperty("picture") || !req.body.hasOwnProperty("location") || !req.body.hasOwnProperty("yardage") || !req.body.hasOwnProperty("runningDistance") || !req.body.hasOwnProperty("timePar") || !req.body.hasOwnProperty("bestScore") || !req.body.hasOwnProperty("recordHolder"))) {
-              _context12.next = 3;
+          case 4:
+            thisUser = _context12.sent;
+
+            if (thisUser) {
+              _context12.next = 9;
               break;
             }
 
-            return _context12.abrupt("return", res.status(400).send("POST request on /course formulated incorrectly." + "Body must contain all 8 required fields: rating, review, picture, location, yardage, runningDistance, timePar, bestScore, recordHolder."));
+            return _context12.abrupt("return", res.status(404).send("No user account with id " + req.params.courseId + " was found in database."));
+
+          case 9:
+            return _context12.abrupt("return", res.status(200).json(JSON.stringify(thisUser)));
+
+          case 10:
+            _context12.next = 16;
+            break;
+
+          case 12:
+            _context12.prev = 12;
+            _context12.t0 = _context12["catch"](1);
+            console.log();
+            return _context12.abrupt("return", res.status(400).send("Unexpected error occurred when looking up user with id " + req.params.courseId + " in database: " + _context12.t0));
+
+          case 16:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee12, null, [[1, 12]]);
+  }));
+
+  return function (_x34, _x35, _x36) {
+    return _ref12.apply(this, arguments);
+  };
+}()); //CREATE course route: Adds a new course as a subdocument to 
+//a document in the courses collection (POST)
+
+app.post('/courses/:courseId', /*#__PURE__*/function () {
+  var _ref13 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee13(req, res, next) {
+    var thisCourse;
+    return _regeneratorRuntime["default"].wrap(function _callee13$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            console.log("in /courses (POST) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
+
+            if (!(!req.body.hasOwnProperty("rating") || !req.body.hasOwnProperty("review") || !req.body.hasOwnProperty("picture") || !req.body.hasOwnProperty("location") || !req.body.hasOwnProperty("yardage") || !req.body.hasOwnProperty("runningDistance") || !req.body.hasOwnProperty("timePar") || !req.body.hasOwnProperty("bestScore") || !req.body.hasOwnProperty("recordHolder"))) {
+              _context13.next = 3;
+              break;
+            }
+
+            return _context13.abrupt("return", res.status(400).send("POST request on /course formulated incorrectly." + "Body must contain all 8 required fields: rating, review, picture, location, yardage, runningDistance, timePar, bestScore, recordHolder."));
 
           case 3:
-            _context12.prev = 3;
-            _context12.next = 6;
+            _context13.prev = 3;
+            _context13.next = 6;
             return Course.findOne({
               id: req.params.courseId
             });
 
           case 6:
-            thisCourse = _context12.sent;
+            thisCourse = _context13.sent;
 
             if (!thisCourse) {
-              _context12.next = 11;
+              _context13.next = 11;
               break;
             }
 
             //course already exists
             res.status(400).send("There is already an course with this name '" + req.params.courseId + "'.");
-            _context12.next = 15;
+            _context13.next = 15;
             break;
 
           case 11:
-            _context12.next = 13;
+            _context13.next = 13;
             return new Course({
               id: req.params.courseId,
               rating: req.body.rating,
@@ -977,27 +1025,27 @@ app.post('/courses/:courseId', /*#__PURE__*/function () {
             }).save();
 
           case 13:
-            thisCourse = _context12.sent;
-            return _context12.abrupt("return", res.status(200).send("New course for '" + req.params.courseId + "' successfully created."));
+            thisCourse = _context13.sent;
+            return _context13.abrupt("return", res.status(200).send("New course for '" + req.params.courseId + "' successfully created."));
 
           case 15:
-            _context12.next = 20;
+            _context13.next = 20;
             break;
 
           case 17:
-            _context12.prev = 17;
-            _context12.t0 = _context12["catch"](3);
-            return _context12.abrupt("return", res.status(400).send("Unexpected error occurred when adding or looking up course in database. " + _context12.t0));
+            _context13.prev = 17;
+            _context13.t0 = _context13["catch"](3);
+            return _context13.abrupt("return", res.status(400).send("Unexpected error occurred when adding or looking up course in database. " + _context13.t0));
 
           case 20:
           case "end":
-            return _context12.stop();
+            return _context13.stop();
         }
       }
-    }, _callee12, null, [[3, 17]]);
+    }, _callee13, null, [[3, 17]]);
   }));
 
-  return function (_x34, _x35, _x36) {
-    return _ref12.apply(this, arguments);
+  return function (_x37, _x38, _x39) {
+    return _ref13.apply(this, arguments);
   };
 }());
