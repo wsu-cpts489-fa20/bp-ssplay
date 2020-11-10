@@ -77,7 +77,7 @@ const User = mongoose.model("User",userSchema);
 //The following code sets up the app with OAuth authentication using
 //the 'github' strategy in passport.js.
 //////////////////////////////////////////////////////////////////////////
-passport.use(new GithubStrategy({
+/*passport.use(new GithubStrategy({
     clientID: process.env.GH_CLIENT_ID,
     clientSecret: process.env.GH_CLIENT_SECRET,
     callbackURL: DEPLOY_URL + "/auth/github/callback"
@@ -99,7 +99,7 @@ passport.use(new GithubStrategy({
       }).save();
   }
   return done(null,currentUser);
-}));
+}));*/
 
 passport.use(new LocalStrategy({passReqToCallback: true},
   //Called when user is attempting to log in with local username and password. 
