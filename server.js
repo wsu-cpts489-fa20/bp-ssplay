@@ -57,6 +57,27 @@ roundSchema.virtual('SGS').get(function() {
   return (this.strokes * 60) + (this.minutes * 60) + this.seconds;
 });
 
+const courseSchema = new Schema({
+  id: String,
+  rating: String,
+  review: String,
+  picture: String, //link to course image
+  location: String,
+  yardage: String,
+  runningDistance: String,
+  timePar: String,
+  bestScore: String,
+  recordHolder: String
+},
+{
+  toObject: {
+  virtuals: true
+  },
+  toJSON: {
+  virtuals: true 
+  }
+});
+
 //Define schema that maps to a document in the Users collection in the appdb
 //database.
 const userSchema = new Schema({
@@ -71,6 +92,7 @@ const userSchema = new Schema({
   rounds: [roundSchema]
 });
 const User = mongoose.model("User",userSchema); 
+const Course = mongoose.model("Course",courseSchema); 
 
 //////////////////////////////////////////////////////////////////////////
 //PASSPORT SET-UP
@@ -463,3 +485,47 @@ app.delete('/rounds/:userId/:roundId', async (req, res, next) => {
   } 
 });
 
+//CREATE course route: Adds a new course as a subdocument to 
+//a document in the courses collection (POST)
+app.post('/courses/:courseId', async (req, res, next) => {
+  console.log("in /courses (POST) route with params = " + 
+              JSON.stringify(req.params) + " and body = " + 
+              JSON.stringify(req.body));
+  if (!req.body.hasOwnProperty("rating") || 
+      !req.body.hasOwnProperty("review") || 
+      !req.body.hasOwnProperty("picture") ||
+      !req.body.hasOwnProperty("location") || 
+      !req.body.hasOwnProperty("yardage") ||
+      !req.body.hasOwnProperty("runningDistance") ||
+      !req.body.hasOwnProperty("timePar") || 
+      !req.body.hasOwnProperty("bestScore") || 
+      !req.body.hasOwnProperty("recordHolder")) {
+    //Body does not contain correct properties
+    return res.status(400).send("POST request on /course formulated incorrectly." +
+      "Body must contain all 8 required fields: rating, review, picture, location, yardage, runningDistance, timePar, bestScore, recordHolder.");
+  }
+  try {
+    let thisCourse = await Course.findOne({id: req.params.courseId});
+    if (thisCourse) { //course already exists
+      res.status(400).send("There is already an course with this name '" + 
+        req.params.courseId + "'.");
+    } else { //account available -- add to database
+      thisCourse = await new Course({
+        id: req.params.courseId,
+        rating: req.body.rating,
+        review: req.body.review,
+        picture: req.body.picture,
+        location: req.body.location,
+        yardage: req.body.yardage,
+        runningDistance: req.body.runningDistance,
+        timePar: req.body.timePar,
+        bestScore: req.body.bestScore,
+        recordHolder: req.body.recordHolder
+      }).save();
+      return res.status(200).send("New course for '" + 
+        req.params.courseId + "' successfully created.");
+    }
+  } catch (err) {
+    return res.status(400).send("Unexpected error occurred when adding or looking up course in database. " + err);
+  }
+});

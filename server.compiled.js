@@ -105,6 +105,26 @@ var roundSchema = new Schema({
 });
 roundSchema.virtual('SGS').get(function () {
   return this.strokes * 60 + this.minutes * 60 + this.seconds;
+});
+var courseSchema = new Schema({
+  id: String,
+  rating: String,
+  review: String,
+  picture: String,
+  //link to course image
+  location: String,
+  yardage: String,
+  runningDistance: String,
+  timePar: String,
+  bestScore: String,
+  recordHolder: String
+}, {
+  toObject: {
+    virtuals: true
+  },
+  toJSON: {
+    virtuals: true
+  }
 }); //Define schema that maps to a document in the Users collection in the appdb
 //database.
 
@@ -128,7 +148,9 @@ var userSchema = new Schema({
   rounds: [roundSchema]
 });
 
-var User = _mongoose["default"].model("User", userSchema); //////////////////////////////////////////////////////////////////////////
+var User = _mongoose["default"].model("User", userSchema);
+
+var Course = _mongoose["default"].model("Course", courseSchema); //////////////////////////////////////////////////////////////////////////
 //PASSPORT SET-UP
 //The following code sets up the app with OAuth authentication using
 //the 'github' strategy in passport.js.
@@ -899,5 +921,83 @@ app["delete"]('/rounds/:userId/:roundId', /*#__PURE__*/function () {
 
   return function (_x31, _x32, _x33) {
     return _ref11.apply(this, arguments);
+  };
+}()); //CREATE course route: Adds a new course as a subdocument to 
+//a document in the courses collection (POST)
+
+app.post('/courses/:courseId', /*#__PURE__*/function () {
+  var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee12(req, res, next) {
+    var thisCourse;
+    return _regeneratorRuntime["default"].wrap(function _callee12$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            console.log("in /courses (POST) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
+
+            if (!(!req.body.hasOwnProperty("rating") || !req.body.hasOwnProperty("review") || !req.body.hasOwnProperty("picture") || !req.body.hasOwnProperty("location") || !req.body.hasOwnProperty("yardage") || !req.body.hasOwnProperty("runningDistance") || !req.body.hasOwnProperty("timePar") || !req.body.hasOwnProperty("bestScore") || !req.body.hasOwnProperty("recordHolder"))) {
+              _context12.next = 3;
+              break;
+            }
+
+            return _context12.abrupt("return", res.status(400).send("POST request on /course formulated incorrectly." + "Body must contain all 8 required fields: rating, review, picture, location, yardage, runningDistance, timePar, bestScore, recordHolder."));
+
+          case 3:
+            _context12.prev = 3;
+            _context12.next = 6;
+            return Course.findOne({
+              id: req.params.courseId
+            });
+
+          case 6:
+            thisCourse = _context12.sent;
+
+            if (!thisCourse) {
+              _context12.next = 11;
+              break;
+            }
+
+            //course already exists
+            res.status(400).send("There is already an course with this name '" + req.params.courseId + "'.");
+            _context12.next = 15;
+            break;
+
+          case 11:
+            _context12.next = 13;
+            return new Course({
+              id: req.params.courseId,
+              rating: req.body.rating,
+              review: req.body.review,
+              picture: req.body.picture,
+              location: req.body.location,
+              yardage: req.body.yardage,
+              runningDistance: req.body.runningDistance,
+              timePar: req.body.timePar,
+              bestScore: req.body.bestScore,
+              recordHolder: req.body.recordHolder
+            }).save();
+
+          case 13:
+            thisCourse = _context12.sent;
+            return _context12.abrupt("return", res.status(200).send("New course for '" + req.params.courseId + "' successfully created."));
+
+          case 15:
+            _context12.next = 20;
+            break;
+
+          case 17:
+            _context12.prev = 17;
+            _context12.t0 = _context12["catch"](3);
+            return _context12.abrupt("return", res.status(400).send("Unexpected error occurred when adding or looking up course in database. " + _context12.t0));
+
+          case 20:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee12, null, [[3, 17]]);
+  }));
+
+  return function (_x34, _x35, _x36) {
+    return _ref12.apply(this, arguments);
   };
 }());
