@@ -10,8 +10,8 @@ class BookingPage extends React.Component {
         }
     }
 
-    componentDidMount() {
-        console.log(this.props);
+    handleBookTeeTime() {
+        console.log("Booking tee time");
     }
 
 
@@ -26,7 +26,7 @@ class BookingPage extends React.Component {
                 <label for="bookingTime">Time: </label>
                 <select type="date" id="bookingTime" name="bookingTime"></select>
                 <br/>
-                <button className="btn btn-primary btn-color-theme modal-submit-btn">Request Tee Time</button>
+                <button onClick={() => this.handleBookTeeTime} className="btn btn-primary btn-color-theme modal-submit-btn">Request Tee Time</button>
                 <button onClick={() => this.props.changeMode('CoursesMode')} className="btn btn-primary btn-color-theme modal-submit-btn">Cancel</button>
             </center>
         </div>
