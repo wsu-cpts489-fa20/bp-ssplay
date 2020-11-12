@@ -12,8 +12,14 @@ class BookingPage extends React.Component {
         }
     }
 
-    handleBookTeeTime() {
+    handleBookTeeTime = () => {
         console.log("Booking tee time");
+        console.log(this.state);
+    }
+
+
+    handleChange = (event) => {
+        this.setState({[event.target.name]: event.target.value});
     }
 
 
@@ -26,8 +32,8 @@ class BookingPage extends React.Component {
                 <input type="date" id="bookingDate" name="bookingDate"></input>
                 <br/>
                 <label for="bookingTime">Time: </label>
-                <select type="date" id="bookingTime" name="bookingTime">
-                    <option value="9:00 AM" selected>9:00 AM</option>
+                <select type="date" id="bookingTime" name="bookingTime" value={this.state.bookingTime} onChange={this.handleChange}>
+                    <option value="9:00 AM">9:00 AM</option>
                     <option value="10:00 AM">10:00 AM</option>
                     <option value="11:00 AM">11:00 AM</option>
                     <option value="12:00 AM">12:00 PM</option> 
@@ -38,7 +44,7 @@ class BookingPage extends React.Component {
                     <option value="5:00 PM">5:00 PM</option>    
                 </select>
                 <br/>
-                <button onClick={() => this.handleBookTeeTime} className="btn btn-primary btn-color-theme modal-submit-btn">Request Tee Time</button>
+                <button onClick={this.handleBookTeeTime} className="btn btn-primary btn-color-theme modal-submit-btn">Request Tee Time</button>
                 <button onClick={() => this.props.changeMode('CoursesMode')} className="btn btn-primary btn-color-theme modal-submit-btn">Cancel</button>
             </center>
         </div>
