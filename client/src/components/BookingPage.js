@@ -29,7 +29,7 @@ class BookingPage extends React.Component {
             <center>
                 <h1>Request Tee Time at {this.state.courseName}</h1>
                 <label for="bookingDate">Date: </label>
-                <input type="date" id="bookingDate" name="bookingDate"></input>
+                <input type="date" id="bookingDate" name="bookingDate" value={this.state.bookingDate} onChange={this.handleChange}></input>
                 <br/>
                 <label for="bookingTime">Time: </label>
                 <select type="date" id="bookingTime" name="bookingTime" value={this.state.bookingTime} onChange={this.handleChange}>
