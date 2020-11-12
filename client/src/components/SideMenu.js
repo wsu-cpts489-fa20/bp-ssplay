@@ -1,5 +1,6 @@
 import React from 'react';
 import AppMode from './../AppMode.js'
+import CourseRates from './CourseRates';
 
 class SideMenu extends React.Component {
 
@@ -29,12 +30,16 @@ renderModeMenuItems = () => {
       );
     break;
     case AppMode.COURSES:
+    case AppMode.COURSES_HOME:
+    case AppMode.COURSE_RATES:
       return(
         <div>
-        <a className="sidemenu-item">
-            <span className="fa fa-plus"></span>&nbsp;Add a Course</a>
-        <a className="sidemenu-item">
-            <span className="fa fa-search"></span>&nbsp;Search Courses</a>
+        <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES)}>
+            <span className="fa fa-search"></span>&nbsp;Courses</a>
+        <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES_HOME)}>
+            <span className="fa fa-map-marker"></span>&nbsp;Courses Home</a>
+        <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSE_RATES)} >
+            <span className="fa fa-th-list"></span>&nbsp;Course Rates</a>
         </div>
       );
     default:
@@ -61,7 +66,9 @@ renderModeMenuItems = () => {
             <span className="fa fa-info-circle"></span>&nbsp;About</a>
           <a id="logOutBtn" className="sidemenu-item" onClick={this.props.logOut}>
             <span className="fa fa-sign-out-alt"></span>&nbsp;Log Out</a>
+            
         </div>
+        
        );
     }
 }

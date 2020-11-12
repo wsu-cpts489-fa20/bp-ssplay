@@ -17,6 +17,8 @@ modeTitle[AppMode.ROUNDS] = "My Rounds";
 modeTitle[AppMode.ROUNDS_LOGROUND] = "Log New Round";
 modeTitle[AppMode.ROUNDS_EDITROUND] = "Edit Round";
 modeTitle[AppMode.COURSES] = "Courses";
+modeTitle[AppMode.COURSES_HOME] = "Courses Home";
+modeTitle[AppMode.COURSE_RATES] = "Course Rate";
 
 const modeToPage = {};
 modeToPage[AppMode.LOGIN] = LoginPage;
@@ -25,6 +27,8 @@ modeToPage[AppMode.ROUNDS] = Rounds;
 modeToPage[AppMode.ROUNDS_LOGROUND] = Rounds;
 modeToPage[AppMode.ROUNDS_EDITROUND] = Rounds;
 modeToPage[AppMode.COURSES] = CoursesPage;
+modeToPage[AppMode.COURSES_HOME] = CoursesPage;
+modeToPage[AppMode.COURSE_RATES] = CoursesPage;
 
 
 class App extends React.Component {
@@ -150,6 +154,7 @@ class App extends React.Component {
           menuOpen={this.state.menuOpen}
           toggleMenuOpen={this.toggleMenuOpen}/>
           <SideMenu 
+            changeMode={this.handleChangeMode}
             menuOpen = {this.state.menuOpen}
             mode={this.state.mode}
             toggleMenuOpen={this.toggleMenuOpen}
