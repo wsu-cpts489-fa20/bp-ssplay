@@ -3,6 +3,7 @@ import ReactTooltip from "react-tooltip";
 import { Navbar, Container, Row, Col, Card, Button, Modal } from "react-bootstrap";
 import FloatingButton from "./FloatingButton.js";
 import RatesModal from "./RatesModal.js";
+import MoreModal from "./MoreModal.js";
 
 class SpecificCourses extends React.Component {
 
@@ -15,10 +16,13 @@ class SpecificCourses extends React.Component {
             searchCourseClicked: false,
             searchStart: false,
             getRatesButtonClicked: false,
+            more: false,
             selectButtonValue: "Select Course",
             query: "",
             data: [],
             filteredData: [],
+            item: "",
+
             id: "",
             rating: "",
             review: "",
@@ -30,10 +34,6 @@ class SpecificCourses extends React.Component {
             bestScore: "",
             recordHolder: ""
         };
-    }
-
-    setGetRatesTrue = () => {
-        this.setState({getRatesButtonClicked : true});
     }
 
     setSelectButtonValue = (newVal) => {
@@ -144,6 +144,7 @@ class SpecificCourses extends React.Component {
                         <Card.Body>
                             <Card.Title>Location: {thisCourse.location}</Card.Title>
                             <Card.Text>Review: {thisCourse.review}</Card.Text>
+                            <Button type="button" onClick={() => this.toggleMoreClicked(thisCourse.id)}>More</Button>
                             <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
                         </Card.Body>
                         <Card.Footer>Rating: {thisCourse.rating}</Card.Footer>
@@ -158,6 +159,11 @@ class SpecificCourses extends React.Component {
 
     toggleAddCourseClicked = () => {
         this.setState(state => ({addCourseClicked: !state.addCourseClicked}));
+    }
+
+    toggleMoreClicked = (key) => {
+        this.setState({item: key});
+        this.setState(state => ({more: !state.more}));
     }
 
     toggleGetCourseClicked = () => {
@@ -235,6 +241,7 @@ f
                         <Card.Body>
                             <Card.Title>Location: {c.location}</Card.Title>
                             <Card.Text>Review: {c.review}</Card.Text>
+                            <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>
                             <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
                         </Card.Body>
                         <Card.Footer>Rating: {c.rating}</Card.Footer>
@@ -303,6 +310,11 @@ f
                 {/* <FloatingButton handleClick={this.toggleGetRatesClicked}/> */}
                 {this.state.getRatesButtonClicked ? 
                 <RatesModal handleClose={this.toggleGetRatesClicked} />
+                : null}
+                {this.state.more ? 
+                <MoreModal handleClose={this.toggleMoreClicked} 
+                    course={this.state.item}
+                />
                 : null}
             </div>
         );
