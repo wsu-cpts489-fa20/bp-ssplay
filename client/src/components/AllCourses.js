@@ -19,15 +19,14 @@ class AllCourses extends React.Component {
         this.setState(state => ({getCourseClicked: !state.getCourseClicked}));
     }
     getCourse = async () => {
-        let course = "a";
-        const url = '/courses/' + course;
+        const url = '/allcourses/';
         fetch(url)
         .then((response) => {
             if (response.status == 200)
                 return response.json();
             else
             {
-                this.setErrorMsg("ERROR: " + course + " " + response.statusText);
+                this.setErrorMsg("ERROR: " + response.statusText);
                 throw Error(response.statusText);
             }
         })
@@ -38,26 +37,16 @@ class AllCourses extends React.Component {
 
             this.setState({
                 course: thisCourse.map((c) =>(
-                // <tr key={c.id}>
-                //     <td>{c.location}</td>
-                //     <td>{c.picture}</td>
-                //     <td>{c.review}</td>
-                //     <td>{c.rating}</td>
-                // </tr> 
-                <Container fluid={true}>
-                <Row noGutters>
-                    <Col>
-                    <Card key={c.id} style={{ width: "30rem", display: "flex" }}>
-                    <Card.Img className="apartment-image" variant="top" src={c.picture}></Card.Img>
-                    <Card.Body>
-                        <Card.Title>{c.location}</Card.Title>
-                        <Card.Text>{c.review}</Card.Text>
-                    </Card.Body>
-                    <Card.Footer>{c.rating}</Card.Footer>
-                    </Card>
+                    <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
+                        <Card key={c.id} style={{ width: "30rem", display: "flex" }}>
+                        <Card.Img className="course-image" variant="top" src={c.picture}></Card.Img>
+                        <Card.Body>
+                            <Card.Title>Location: {c.location}</Card.Title>
+                            <Card.Text>Review: {c.review}</Card.Text>
+                        </Card.Body>
+                        <Card.Footer>Rating: {c.rating}</Card.Footer>
+                        </Card>
                     </Col>
-                </Row>
-            </Container> 
                 ))
             });
 
@@ -67,47 +56,18 @@ class AllCourses extends React.Component {
             console.log("GET ERROR!");
         });
     }
-    
-    renderCourses = (courses) =>{
-        console.log("Course length = ", courses.length);
-        let table = [];
-        for (let r = 0; r < courses.length; ++r) {
-            table.push(
-            <tr key={courses[r].id}>
-                <td>{courses[r].location}</td>
-                <td>{courses[r].picture}</td>
-                <td>{courses[r].review}</td>
-                <td>{courses[r].rating}</td>
-            </tr> 
-            // <Container fluid={true}>
-            //     <Row noGutters>
-            //         <Col>
-            //         <Card key={courses[r].id} style={{ width: "30rem", display: "flex" }}>
-            //         <Card.Img className="apartment-image" variant="top" src={courses[r].picture}></Card.Img>
-            //         <Card.Body>
-            //             <Card.Title>{courses[r].location}</Card.Title>
-            //             <Card.Text>{courses[r].review}</Card.Text>
-            //         </Card.Body>
-            //         <Card.Footer>{courses[r].rating}</Card.Footer>
-            //         </Card>
-            //         </Col>
-            //     </Row>
-            // </Container> 
-            );
-        }
-        return table;
-    }
 
     render() {
         return(
-            <div className="padded-page">
-            {/* <Button onClick={this.toggleGetCourseClicked}>GET</Button> */}
-
+            <div>
               <h1></h1>
-              <table className="table table-hover">
+              <table >
                 <tbody>
-                    {this.state.course}
-                {/* {this.state.getCourseClicked ? this.getCourse() : null} */}
+                <Container fluid={true}>
+                    <Row noGutters>                    
+                        {this.state.course}
+                    </Row>
+                </Container> 
                 </tbody>
               </table>
             </div>

@@ -10,6 +10,12 @@ class SpecificCourses extends React.Component {
         this.state={
             addCourseClicked: false,
             getCourseClicked: false,
+            searchCourseClicked: false,
+            searchStart: false,
+            selectButtonValue: "Select Course",
+            query: "",
+            data: [],
+            filteredData: [],
             id: "",
             rating: "",
             review: "",
@@ -21,6 +27,125 @@ class SpecificCourses extends React.Component {
             bestScore: "",
             recordHolder: ""
         };
+    }
+
+    setSelectButtonValue = (newVal) => {
+        this.setState({selectButtonValue : newVal});
+    }
+
+    setSearchTrue = () => {
+        this.setState({searchStart : true});
+    }
+
+    setSearchFalse = () => {
+        this.setState({searchStart : false});
+    }
+
+    setSearchCourseClickedTrue = () => {
+        this.setState({searchCourseClicked : true});
+        this.setSelectButtonValue("Clear Selected");
+    }
+
+    setSearchCourseClickedFalse = () => {
+        this.setState({searchCourseClicked : false});
+        this.setSelectButtonValue("Select Course");
+    }
+
+    componentWillMount() {
+        this.getCourse();
+    }
+
+    handleInputChange = event => {
+        const query = event.target.value;
+        this.setState(prevState => {
+          const filteredData = prevState.data.filter(element => {
+            return element.id.toLowerCase().includes(query.toLowerCase());
+          });
+
+          if (query == "")
+          {
+              this.setSearchFalse();
+              this.setSelectButtonValue("Select Course");
+          }
+          else
+          {
+              this.setSearchTrue();
+              this.setSelectButtonValue("Select All "+ filteredData.length +" Matching Courses");
+          }
+
+          return {
+            query,
+            filteredData
+          };
+        });
+
+    };
+
+    getCourse = async () => {
+        const url = '/allcourses/';
+        fetch(url)
+        .then((response) => {
+            if (response.status == 200)
+                return response.json();
+            else
+            {
+                this.setErrorMsg("ERROR: " + response.statusText);
+                throw Error(response.statusText);
+            }
+        })
+        .then((obj) => 
+        {
+            console.log("GET ALL COURSES SUCCESS!");
+            let data = JSON.parse(obj);
+            const { query } = this.state;
+            const filteredData = data.filter(element => {
+              return element.id.toLowerCase().includes(query.toLowerCase());
+            });
+    
+            this.setState({
+              data,
+              filteredData
+            });
+        }).catch((error) =>{
+            console.log("GET ERROR!");
+        });
+    }
+
+    getSearchedCourse = async (id) => {
+        this.setSearchCourseClickedTrue();
+        this.setSearchFalse();
+        const url = '/courses/'+id;
+        fetch(url)
+        .then((response) => {
+            if (response.status == 200)
+                return response.json();
+            else
+            {
+                this.setErrorMsg("ERROR: " + response.statusText);
+                throw Error(response.statusText);
+            }
+        })
+        .then((obj) => 
+        {
+            console.log("GET SEARCH COURSES SUCCESS!");
+            let thisCourse = JSON.parse(obj);
+            this.setState({
+                course: (
+                    <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
+                        <Card key={thisCourse.id} style={{ width: "30rem", display: "flex" }}>
+                        <Card.Img className="course-image" variant="top" src={thisCourse.picture}></Card.Img>
+                        <Card.Body>
+                            <Card.Title>Location: {thisCourse.location}</Card.Title>
+                            <Card.Text>Review: {thisCourse.review}</Card.Text>
+                        </Card.Body>
+                        <Card.Footer>Rating: {thisCourse.rating}</Card.Footer>
+                        </Card>
+                    </Col>
+                )
+            });
+        }).catch((error) =>{
+            console.log(error);
+        });
     }
 
     toggleAddCourseClicked = () => {
@@ -74,6 +199,39 @@ class SpecificCourses extends React.Component {
 
     }
 
+    handleClick = (event) =>{
+        event.preventDefault();
+
+        if (this.state.selectButtonValue == "Select Course")
+        {
+
+        }
+        else if (this.state.selectButtonValue == "Clear Selected")
+        {
+            this.setSearchCourseClickedFalse();
+            this.setSearchFalse();
+            this.setState({query: ""});
+        }
+        else{
+            this.setSearchCourseClickedTrue();
+            this.setSearchFalse();
+            this.setState({
+                course: this.state.filteredData.map((c) =>(
+                    <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
+                        <Card key={c.id} style={{ width: "30rem", display: "flex" }}>
+                        <Card.Img className="course-image" variant="top" src={c.picture}></Card.Img>
+                        <Card.Body>
+                            <Card.Title>Location: {c.location}</Card.Title>
+                            <Card.Text>Review: {c.review}</Card.Text>
+                        </Card.Body>
+                        <Card.Footer>Rating: {c.rating}</Card.Footer>
+                        </Card>
+                    </Col>
+                ))
+            });
+        }
+    }
+
     handleChange = (event) =>{
         this.setState({[event.target.name]: event.target.value});
     }
@@ -93,11 +251,22 @@ class SpecificCourses extends React.Component {
                         </ReactTooltip>
                     </h3>
                 </div>
-                <input style={{width: '60%'}} placeholder="Enter course name or search term"></input>
-                <button>Select Course</button>
 
-
+                <input style={{width: '60%'}} placeholder="Enter course name or search term"
+                 value={this.state.query} onChange={this.handleInputChange}
+                 disabled={this.state.searchCourseClicked ? true:false}></input>
+                <button onClick={this.handleClick}>{this.state.selectButtonValue}</button>
+                {/* <button>{this.state.searchCourseClicked ? "Clear Selected" : "Select Course"}</button> */}
                 <button onClick={this.toggleAddCourseClicked}>Add Course</button>
+                {this.state.searchStart ? <div>{this.state.filteredData.map(i => <a className="course-search-list" onClick={() => this.getSearchedCourse(i.id)}>{i.id}</a>)}</div> : null}
+                {this.state.searchCourseClicked ? <div style={{marginTop: "50px"}}><h3>1 Course Selected: </h3>
+                <Container fluid={true}>
+                    <Row noGutters>  
+                        {this.state.course}
+                    </Row>
+                </Container>  </div>               
+                 : null}
+
                 {this.state.addCourseClicked ? 
                 <form onSubmit={this.handleSubmit}>
                     <h3>Add Course</h3>
@@ -114,37 +283,6 @@ class SpecificCourses extends React.Component {
                     <button>Submit</button>
                 </form>
                 : null}
-
-                {/* <Button onClick={this.toggleGetCourseClicked}>GET</Button> */}
-                {/* <table>
-                    <tbody>
-                    {this.state.getCourseClicked ? this.getCourse() : null}
-                    </tbody>
-                </table> */}
-                {/* <Container fluid={true}>
-                    <Row noGutters>
-                        <Col>
-                            <tbody>
-                            {this.state.getCourseClicked ? this.getCourse() : null}
-                            </tbody>
-                        </Col>
-                    </Row>
-                </Container> */}
-                {/* <Container fluid={true}>
-                    <Row noGutters>
-                        <Col>
-                            <Card style={{ width: "30rem", display: "flex" }}>
-                                <Card.Img className="apartment-image" variant="top" src="http://brydencanyongolf.com/wp-content/uploads/2017/03/9th-Hole.jpg"></Card.Img>
-                                <Card.Body>
-                                    <Card.Title>Title</Card.Title>
-                                    <Card.Text>Text</Card.Text>
-                                </Card.Body>
-                                <Card.Footer>Footer</Card.Footer>
-                            </Card>
-                        </Col>
-                    </Row>
-                </Container> */}
-                
             </div>
         );
     }   
