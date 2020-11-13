@@ -384,3 +384,22 @@ text-align: center;
     color: black;
     background-color: lightgray;
   }
+
+.course-image {
+  float: left;
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.course-search-list{
+  display: flex;
+  background-color: lightgray;
+  padding: 5px;
+  width: 60%;
+}
+
+.ignore-search-clicked .course-search-input{
+  pointer-events: none;
+  background-color: lightgray;
+}

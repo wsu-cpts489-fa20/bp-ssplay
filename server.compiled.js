@@ -105,6 +105,26 @@ var roundSchema = new Schema({
 });
 roundSchema.virtual('SGS').get(function () {
   return this.strokes * 60 + this.minutes * 60 + this.seconds;
+});
+var courseSchema = new Schema({
+  id: String,
+  rating: String,
+  review: String,
+  picture: String,
+  //link to course image
+  location: String,
+  yardage: String,
+  runningDistance: String,
+  timePar: String,
+  bestScore: String,
+  recordHolder: String
+}, {
+  toObject: {
+    virtuals: true
+  },
+  toJSON: {
+    virtuals: true
+  }
 }); //Define schema that maps to a document in the Users collection in the appdb
 //database.
 
@@ -128,7 +148,9 @@ var userSchema = new Schema({
   rounds: [roundSchema]
 });
 
-var User = _mongoose["default"].model("User", userSchema); //////////////////////////////////////////////////////////////////////////
+var User = _mongoose["default"].model("User", userSchema);
+
+var Course = _mongoose["default"].model("Course", courseSchema); //////////////////////////////////////////////////////////////////////////
 //PASSPORT SET-UP
 //The following code sets up the app with OAuth authentication using
 //the 'github' strategy in passport.js.
@@ -899,5 +921,181 @@ app["delete"]('/rounds/:userId/:roundId', /*#__PURE__*/function () {
 
   return function (_x31, _x32, _x33) {
     return _ref11.apply(this, arguments);
+  };
+}()); // GET ALL COURSES IN THE DATABASE
+
+app.get('/allcourses/', /*#__PURE__*/function () {
+  var _ref12 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee12(req, res, next) {
+    var thisUser;
+    return _regeneratorRuntime["default"].wrap(function _callee12$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            console.log("in /allcourses route (GET)");
+            _context12.prev = 1;
+            _context12.next = 4;
+            return Course.find({});
+
+          case 4:
+            thisUser = _context12.sent;
+
+            if (thisUser) {
+              _context12.next = 9;
+              break;
+            }
+
+            return _context12.abrupt("return", res.status(404).send("Get ALL Courses failed"));
+
+          case 9:
+            return _context12.abrupt("return", res.status(200).json(JSON.stringify(thisUser)));
+
+          case 10:
+            _context12.next = 16;
+            break;
+
+          case 12:
+            _context12.prev = 12;
+            _context12.t0 = _context12["catch"](1);
+            console.log();
+            return _context12.abrupt("return", res.status(400).send("Unexpected error occurred when getting all Courses"));
+
+          case 16:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee12, null, [[1, 12]]);
+  }));
+
+  return function (_x34, _x35, _x36) {
+    return _ref12.apply(this, arguments);
+  };
+}()); //READ course route: Retrieves the course with the specified courseId from courses collection (GET)
+
+app.get('/courses/:courseId', /*#__PURE__*/function () {
+  var _ref13 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee13(req, res, next) {
+    var thisUser;
+    return _regeneratorRuntime["default"].wrap(function _callee13$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            console.log("in /courses route (GET) with courseId = " + JSON.stringify(req.params.courseId));
+            _context13.prev = 1;
+            _context13.next = 4;
+            return Course.findOne({
+              id: req.params.courseId
+            });
+
+          case 4:
+            thisUser = _context13.sent;
+
+            if (thisUser) {
+              _context13.next = 9;
+              break;
+            }
+
+            return _context13.abrupt("return", res.status(404).send("No user account with id " + req.params.courseId + " was found in database."));
+
+          case 9:
+            return _context13.abrupt("return", res.status(200).json(JSON.stringify(thisUser)));
+
+          case 10:
+            _context13.next = 16;
+            break;
+
+          case 12:
+            _context13.prev = 12;
+            _context13.t0 = _context13["catch"](1);
+            console.log();
+            return _context13.abrupt("return", res.status(400).send("Unexpected error occurred when looking up user with id " + req.params.courseId + " in database: " + _context13.t0));
+
+          case 16:
+          case "end":
+            return _context13.stop();
+        }
+      }
+    }, _callee13, null, [[1, 12]]);
+  }));
+
+  return function (_x37, _x38, _x39) {
+    return _ref13.apply(this, arguments);
+  };
+}()); //CREATE course route: Adds a new course as a subdocument to 
+//a document in the courses collection (POST)
+
+app.post('/courses/:courseId', /*#__PURE__*/function () {
+  var _ref14 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee14(req, res, next) {
+    var thisCourse;
+    return _regeneratorRuntime["default"].wrap(function _callee14$(_context14) {
+      while (1) {
+        switch (_context14.prev = _context14.next) {
+          case 0:
+            console.log("in /courses (POST) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
+
+            if (!(!req.body.hasOwnProperty("rating") || !req.body.hasOwnProperty("review") || !req.body.hasOwnProperty("picture") || !req.body.hasOwnProperty("location") || !req.body.hasOwnProperty("yardage") || !req.body.hasOwnProperty("runningDistance") || !req.body.hasOwnProperty("timePar") || !req.body.hasOwnProperty("bestScore") || !req.body.hasOwnProperty("recordHolder"))) {
+              _context14.next = 3;
+              break;
+            }
+
+            return _context14.abrupt("return", res.status(400).send("POST request on /course formulated incorrectly." + "Body must contain all 8 required fields: rating, review, picture, location, yardage, runningDistance, timePar, bestScore, recordHolder."));
+
+          case 3:
+            _context14.prev = 3;
+            _context14.next = 6;
+            return Course.findOne({
+              id: req.params.courseId
+            });
+
+          case 6:
+            thisCourse = _context14.sent;
+
+            if (!thisCourse) {
+              _context14.next = 11;
+              break;
+            }
+
+            //course already exists
+            res.status(400).send("There is already an course with this name '" + req.params.courseId + "'.");
+            _context14.next = 15;
+            break;
+
+          case 11:
+            _context14.next = 13;
+            return new Course({
+              id: req.params.courseId,
+              rating: req.body.rating,
+              review: req.body.review,
+              picture: req.body.picture,
+              location: req.body.location,
+              yardage: req.body.yardage,
+              runningDistance: req.body.runningDistance,
+              timePar: req.body.timePar,
+              bestScore: req.body.bestScore,
+              recordHolder: req.body.recordHolder
+            }).save();
+
+          case 13:
+            thisCourse = _context14.sent;
+            return _context14.abrupt("return", res.status(200).send("New course for '" + req.params.courseId + "' successfully created."));
+
+          case 15:
+            _context14.next = 20;
+            break;
+
+          case 17:
+            _context14.prev = 17;
+            _context14.t0 = _context14["catch"](3);
+            return _context14.abrupt("return", res.status(400).send("Unexpected error occurred when adding or looking up course in database. " + _context14.t0));
+
+          case 20:
+          case "end":
+            return _context14.stop();
+        }
+      }
+    }, _callee14, null, [[3, 17]]);
+  }));
+
+  return function (_x40, _x41, _x42) {
+    return _ref14.apply(this, arguments);
   };
 }());

@@ -16,7 +16,9 @@ modeTitle[AppMode.FEED] = "Activity Feed";
 modeTitle[AppMode.ROUNDS] = "My Rounds";
 modeTitle[AppMode.ROUNDS_LOGROUND] = "Log New Round";
 modeTitle[AppMode.ROUNDS_EDITROUND] = "Edit Round";
-modeTitle[AppMode.COURSES] = "Courses";
+modeTitle[AppMode.COURSES] = "Search Courses";
+modeTitle[AppMode.COURSES_NEARBY] = "Nearby Courses";
+modeTitle[AppMode.COURSES_ALL] = "All Speedgolf-Friendly Courses";
 
 const modeToPage = {};
 modeToPage[AppMode.LOGIN] = LoginPage;
@@ -25,6 +27,8 @@ modeToPage[AppMode.ROUNDS] = Rounds;
 modeToPage[AppMode.ROUNDS_LOGROUND] = Rounds;
 modeToPage[AppMode.ROUNDS_EDITROUND] = Rounds;
 modeToPage[AppMode.COURSES] = CoursesPage;
+modeToPage[AppMode.COURSES_NEARBY] = CoursesPage;
+modeToPage[AppMode.COURSES_ALL] = CoursesPage;
 
 
 class App extends React.Component {
@@ -144,12 +148,14 @@ class App extends React.Component {
               done={this.editAccountDone} 
               cancel={this.cancelEditAccount}/> : null}
         <NavBar 
+          aboutOpen={this.state.showAboutDialog}
           title={modeTitle[this.state.mode]} 
           mode={this.state.mode}
           changeMode={this.handleChangeMode}
           menuOpen={this.state.menuOpen}
           toggleMenuOpen={this.toggleMenuOpen}/>
           <SideMenu 
+            changeMode={this.handleChangeMode}
             menuOpen = {this.state.menuOpen}
             mode={this.state.mode}
             toggleMenuOpen={this.toggleMenuOpen}
@@ -160,6 +166,7 @@ class App extends React.Component {
             logOut={() => this.handleChangeMode(AppMode.LOGIN)}
             showAbout={() => {this.setState({showAboutDialog: true})}}/>
           <ModeBar 
+            aboutOpen={this.state.showAboutDialog}
             mode={this.state.mode} 
             changeMode={this.handleChangeMode}
             menuOpen={this.state.menuOpen}/>
