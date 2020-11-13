@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactTooltip from "react-tooltip";
-import { Navbar, Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Navbar, Container, Row, Col, Card, Button, Modal } from "react-bootstrap";
+import FloatingButton from "./FloatingButton.js";
+import RatesModal from "./RatesModal.js";
 
 class SpecificCourses extends React.Component {
 
@@ -12,6 +14,7 @@ class SpecificCourses extends React.Component {
             getCourseClicked: false,
             searchCourseClicked: false,
             searchStart: false,
+            getRatesButtonClicked: false,
             selectButtonValue: "Select Course",
             query: "",
             data: [],
@@ -27,6 +30,10 @@ class SpecificCourses extends React.Component {
             bestScore: "",
             recordHolder: ""
         };
+    }
+
+    setGetRatesTrue = () => {
+        this.setState({getRatesButtonClicked : true});
     }
 
     setSelectButtonValue = (newVal) => {
@@ -137,6 +144,7 @@ class SpecificCourses extends React.Component {
                         <Card.Body>
                             <Card.Title>Location: {thisCourse.location}</Card.Title>
                             <Card.Text>Review: {thisCourse.review}</Card.Text>
+                            <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
                         </Card.Body>
                         <Card.Footer>Rating: {thisCourse.rating}</Card.Footer>
                         </Card>
@@ -156,6 +164,10 @@ class SpecificCourses extends React.Component {
         this.setState(state => ({getCourseClicked: !state.getCourseClicked}));
     }
 
+    toggleGetRatesClicked = () => {
+        this.setState(state => ({getRatesButtonClicked: !state.getRatesButtonClicked}));
+    }
+f
     addCourse = async (newData) => {
         console.log(newData);
         const url = '/courses/' + this.state.id;
@@ -223,6 +235,7 @@ class SpecificCourses extends React.Component {
                         <Card.Body>
                             <Card.Title>Location: {c.location}</Card.Title>
                             <Card.Text>Review: {c.review}</Card.Text>
+                            <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
                         </Card.Body>
                         <Card.Footer>Rating: {c.rating}</Card.Footer>
                         </Card>
@@ -234,6 +247,10 @@ class SpecificCourses extends React.Component {
 
     handleChange = (event) =>{
         this.setState({[event.target.name]: event.target.value});
+    }
+
+    getRates = () => {
+
     }
 
     render() {
@@ -256,8 +273,7 @@ class SpecificCourses extends React.Component {
                  value={this.state.query} onChange={this.handleInputChange}
                  disabled={this.state.searchCourseClicked ? true:false}></input>
                 <button onClick={this.handleClick}>{this.state.selectButtonValue}</button>
-                {/* <button>{this.state.searchCourseClicked ? "Clear Selected" : "Select Course"}</button> */}
-                <button onClick={this.toggleAddCourseClicked}>Add Course</button>
+                {/* <button onClick={this.toggleAddCourseClicked}>Add Course</button> */}
                 {this.state.searchStart ? <div>{this.state.filteredData.map(i => <a className="course-search-list" onClick={() => this.getSearchedCourse(i.id)}>{i.id}</a>)}</div> : null}
                 {this.state.searchCourseClicked ? <div style={{marginTop: "50px"}}><h3>1 Course Selected: </h3>
                 <Container fluid={true}>
@@ -267,7 +283,7 @@ class SpecificCourses extends React.Component {
                 </Container>  </div>               
                  : null}
 
-                {this.state.addCourseClicked ? 
+                {/* {this.state.addCourseClicked ? 
                 <form onSubmit={this.handleSubmit}>
                     <h3>Add Course</h3>
                     <input name="id" placeholder="id" value={this.state.id} onChange={this.handleChange}></input>
@@ -282,6 +298,11 @@ class SpecificCourses extends React.Component {
                     <input name="recordHolder"  placeholder="recordHolder" value={this.state.recordHolder} onChange={this.handleChange}></input>
                     <button>Submit</button>
                 </form>
+                : null} */}
+
+                {/* <FloatingButton handleClick={this.toggleGetRatesClicked}/> */}
+                {this.state.getRatesButtonClicked ? 
+                <RatesModal handleClose={this.toggleGetRatesClicked} />
                 : null}
             </div>
         );
