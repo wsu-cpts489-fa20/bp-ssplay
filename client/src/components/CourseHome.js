@@ -5,12 +5,14 @@ import AppMode from './../AppMode.js'
 class CourseHome extends React.Component {
     
         
-    render()     {
+    render(){
           return(
             <div>
-            
-            <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSE_RATES)} >
-                <span className="fa fa-th-list"></span>&nbsp;Course Rates</a>
+            <button type="button"
+             className="btn-color-theme btn btn-primary btn-block login-btn"
+              onClick={() => this.handleClick} >
+              <span className="fa fa-th-list"></span>
+              &nbsp;Course Rates</button>
             </div>
           );
       

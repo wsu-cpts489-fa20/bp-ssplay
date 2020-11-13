@@ -10,7 +10,9 @@ class CoursesPage extends React.Component {
             case AppMode.COURSES:
                 return (<CourseHome userObj={this.props.userObj} />);
             case AppMode.COURSES_HOME:
-                return (<CourseHome  />);
+                return (<CourseRates 
+                    handleClick={() => 
+                    this.props.changeMode(AppMode.COURSE_RATES)} />);
             case AppMode.COURSE_RATES:
                 return (<CourseRates />);
         }
