@@ -1,8 +1,13 @@
+
+  
 import React from 'react';
 import AppMode from './../AppMode.js'
 
 class SideMenu extends React.Component {
 
+  componentDidMount() {
+    console.log(this.props);
+  }
 //renderModeItems -- Renders correct subset of mode menu items based on
 //current mode, which is stored in this.prop.mode. Uses switch statement to
 //determine mode.
@@ -59,6 +64,8 @@ renderModeMenuItems = () => {
               <span className="fa fa-user"></span>&nbsp;Account</a> : null}
           <a id="aboutBtn" className="sidemenu-item" onClick={this.props.showAbout}>
             <span className="fa fa-info-circle"></span>&nbsp;About</a>
+          <a id="bookingBtn" className="sidemenu-item" onClick={() => this.props.changeMode('Booking')}>
+            <span className="fa fa-book"></span>&nbsp;Book tee time</a>  
           <a id="logOutBtn" className="sidemenu-item" onClick={this.props.logOut}>
             <span className="fa fa-sign-out-alt"></span>&nbsp;Log Out</a>
         </div>

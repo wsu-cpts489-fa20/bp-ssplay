@@ -80,6 +80,7 @@ const User = mongoose.model("User",userSchema);
 passport.use(new GithubStrategy({
     clientID: process.env.GH_CLIENT_ID,
     clientSecret: process.env.GH_CLIENT_SECRET,
+    
     callbackURL: DEPLOY_URL + "/auth/github/callback"
   },
   //The following function is called after user authenticates with github

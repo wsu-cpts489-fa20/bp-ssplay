@@ -41,7 +41,8 @@ var app = (0, _express["default"])(); //////////////////////////////////////////
 //using the mongoose library.
 //////////////////////////////////////////////////////////////////////////
 
-var connectStr = process.env.MONGO_STR;
+//const connectStr = process.env.MONGO_STR;
+var connectStr = "mongodb+srv://Jospin:Kingombe@cluster0.ac4gy.mongodb.net/appdb?retryWrites=true&w=majority";
 
 _mongoose["default"].connect(connectStr, {
   useNewUrlParser: true,
@@ -136,8 +137,10 @@ var User = _mongoose["default"].model("User", userSchema); /////////////////////
 
 
 _passport["default"].use(new GithubStrategy({
-  clientID: process.env.GH_CLIENT_ID,
-  clientSecret: process.env.GH_CLIENT_SECRET,
+  //clientID: process.env.GH_CLIENT_ID,
+  //clientSecret: process.env.GH_CLIENT_SECRET,
+  clientID: "a075012c4b08543f42a8",
+  clientSecret: "8dde6978090028aee37c72df9ea7ce268678b6d3",
   callbackURL: DEPLOY_URL + "/auth/github/callback"
 },
 /*#__PURE__*/
