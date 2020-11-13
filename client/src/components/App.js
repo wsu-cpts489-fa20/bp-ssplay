@@ -152,6 +152,7 @@ class App extends React.Component {
           menuOpen={this.state.menuOpen}
           toggleMenuOpen={this.toggleMenuOpen}/>
           <SideMenu 
+            changeMode={this.handleChangeMode}
             menuOpen = {this.state.menuOpen}
             mode={this.state.mode}
             toggleMenuOpen={this.toggleMenuOpen}
