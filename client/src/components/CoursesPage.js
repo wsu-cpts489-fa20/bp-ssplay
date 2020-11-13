@@ -1,22 +1,21 @@
 import React from 'react';
 import AppMode from "./../AppMode.js"
-import CourseHome from './CourseHome.js';
-import CourseRates from './CourseRates.js';
 
 class CoursesPage extends React.Component {
 
-    render() {
-        switch(this.props.mode) {
-            case AppMode.COURSES:
-                return (<CourseHome userObj={this.props.userObj} />);
-            case AppMode.COURSES_HOME:
-                return (<CourseRates 
-                    handleClick={() => 
-                    this.props.changeMode(AppMode.COURSE_RATES)} />);
-            case AppMode.COURSE_RATES:
-                return (<CourseRates />);
-        }
-    }   
+render() {
+    return (
+    <div className="padded-page">
+        <center>
+        <h1 >Courses</h1>
+        <button  className="btn btn-primary btn-color-theme modal-submit-btn" 
+        onClick={() => this.props.changeMode(AppMode.COURSE_RATES)}>
+            Course Rates
+        </button>
+        </center>
+    </div>
+    );
+}   
 }
 
 export default CoursesPage;

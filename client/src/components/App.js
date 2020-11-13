@@ -9,6 +9,7 @@ import FeedPage from './FeedPage.js';
 import Rounds from './Rounds.js';
 import CoursesPage from './CoursesPage.js';
 import AboutBox from './AboutBox.js';
+import CourseRates from "./CourseRates.js";
 
 const modeTitle = {};
 modeTitle[AppMode.LOGIN] = "Welcome to SpeedScore";
@@ -17,7 +18,6 @@ modeTitle[AppMode.ROUNDS] = "My Rounds";
 modeTitle[AppMode.ROUNDS_LOGROUND] = "Log New Round";
 modeTitle[AppMode.ROUNDS_EDITROUND] = "Edit Round";
 modeTitle[AppMode.COURSES] = "Courses";
-modeTitle[AppMode.COURSES_HOME] = "Courses Home";
 modeTitle[AppMode.COURSE_RATES] = "Course Rate";
 
 const modeToPage = {};
@@ -27,8 +27,7 @@ modeToPage[AppMode.ROUNDS] = Rounds;
 modeToPage[AppMode.ROUNDS_LOGROUND] = Rounds;
 modeToPage[AppMode.ROUNDS_EDITROUND] = Rounds;
 modeToPage[AppMode.COURSES] = CoursesPage;
-modeToPage[AppMode.COURSES_HOME] = CoursesPage;
-modeToPage[AppMode.COURSE_RATES] = CoursesPage;
+modeToPage[AppMode.COURSE_RATES] = CourseRates;
 
 
 class App extends React.Component {

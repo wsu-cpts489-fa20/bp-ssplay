@@ -1,11 +1,11 @@
 import React from 'react';
 
-//work on getting the actual course name to go with
 class CourseRates extends React.Component {
     constructor() {
         super();
         this.state = {CourseName: "Pasco Airport",
-                      CourseRate: "$50.00"
+                      CourseRate: "$50.00",
+                      showRateModal: true
                     };           
     }
     
@@ -13,13 +13,25 @@ class CourseRates extends React.Component {
         const name = event.target.name;
         
     }
+
+    openModal = () => {
+        this.setState({ showRateModal: true})
+    }
+    
+    close = () => {
+        alert("close modal");
+        this.setState({ showRateModal: false})
+    }
+
+
     render() {
         return (
-            <div id="aboutModal" className="modal" role="dialog">
+            <div id="RatesModal" className="modal" role="dialog">
             <div className="modal-content">
                 <div className="modal-header">
                 <h3>Course Rates</h3>
-                <button className="modal-close" onClick={this.props.close}>
+                <button type="button" className="modal-close" 
+                onClick={this.close}>
                     &times;
                 </button>
             </div>
@@ -39,7 +51,8 @@ class CourseRates extends React.Component {
             <p></p>
                 </center>
                 <div className="modal-footer">
-                      <button className="btn btn-danger" onClick={this.props.deleteRound}>
+                      <button type="button" className="modal-close" 
+                       onClick={this.close}>
                       Close</button>
                 </div>
             </div>

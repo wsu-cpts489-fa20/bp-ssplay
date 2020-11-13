@@ -7,7 +7,6 @@ const AppMode = {
     ROUNDS_LOGROUND: "RoundsMode-LogRound",
     ROUNDS_EDITROUND: "RoundsMode-EditRound",
     COURSES: "CoursesMode", 
-    COURSES_HOME: "CoursesMode-CourseHome", 
     COURSE_RATES: "CoursesMode-CourseRates"
 };
 

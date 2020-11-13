@@ -30,16 +30,10 @@ renderModeMenuItems = () => {
       );
     break;
     case AppMode.COURSES:
-    case AppMode.COURSES_HOME:
-    case AppMode.COURSE_RATES:
       return(
         <div>
         <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES)}>
             <span className="fa fa-search"></span>&nbsp;Courses</a>
-        <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES_HOME)}>
-            <span className="fa fa-map-marker"></span>&nbsp;Courses Home</a>
-        <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSE_RATES)} >
-            <span className="fa fa-th-list"></span>&nbsp;Course Rates</a>
         </div>
       );
     default:
