@@ -81,6 +81,7 @@ const courseSchema = new Schema({
 //Define schema that maps to a document in the Users collection in the appdb
 //database.
 const userSchema = new Schema({
+  type: {type: String, required: true, enum: ['user','operator']},
   id: String, //unique identifier for user
   password: String,
   displayName: String, //Name to be displayed within app
@@ -113,6 +114,7 @@ passport.use(new GithubStrategy({
     let currentUser = await User.findOne({id: userId});
     if (!currentUser) { //Add this user to the database
         currentUser = await new User({
+        type: profile.type,
         id: userId,
         displayName: profile.displayName,
         authStrategy: profile.provider,
@@ -286,6 +288,7 @@ app.post('/users/:userId',  async (req, res, next) => {
   console.log("in /users route (POST) with params = " + JSON.stringify(req.params) +
     " and body = " + JSON.stringify(req.body));  
   if (req.body === undefined ||
+      !req.body.hasOwnProperty("type") || 
       !req.body.hasOwnProperty("password") || 
       !req.body.hasOwnProperty("displayName") ||
       !req.body.hasOwnProperty("profilePicURL") ||
@@ -293,7 +296,7 @@ app.post('/users/:userId',  async (req, res, next) => {
       !req.body.hasOwnProperty("securityAnswer")) {
     //Body does not contain correct properties
     return res.status(400).send("/users POST request formulated incorrectly. " + 
-      "It must contain 'password','displayName','profilePicURL','securityQuestion' and 'securityAnswer fields in message body.")
+      "It must contain 'type', 'password','displayName','profilePicURL','securityQuestion' and 'securityAnswer fields in message body.")
   }
   try {
     let thisUser = await User.findOne({id: req.params.userId});
@@ -302,6 +305,7 @@ app.post('/users/:userId',  async (req, res, next) => {
         req.params.userId + "'.");
     } else { //account available -- add to database
       thisUser = await new User({
+        type: req.body.type,
         id: req.params.userId,
         password: req.body.password,
         displayName: req.body.displayName,

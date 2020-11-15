@@ -129,6 +129,11 @@ var courseSchema = new Schema({
 //database.
 
 var userSchema = new Schema({
+  type: {
+    type: String,
+    required: true,
+    "enum": ['user', 'operator']
+  },
   id: String,
   //unique identifier for user
   password: String,
@@ -190,6 +195,7 @@ function () {
 
             _context.next = 8;
             return new User({
+              type: profile.type,
               id: userId,
               displayName: profile.displayName,
               authStrategy: profile.provider,
@@ -481,12 +487,12 @@ app.post('/users/:userId', /*#__PURE__*/function () {
           case 0:
             console.log("in /users route (POST) with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
 
-            if (!(req.body === undefined || !req.body.hasOwnProperty("password") || !req.body.hasOwnProperty("displayName") || !req.body.hasOwnProperty("profilePicURL") || !req.body.hasOwnProperty("securityQuestion") || !req.body.hasOwnProperty("securityAnswer"))) {
+            if (!(req.body === undefined || !req.body.hasOwnProperty("type") || !req.body.hasOwnProperty("password") || !req.body.hasOwnProperty("displayName") || !req.body.hasOwnProperty("profilePicURL") || !req.body.hasOwnProperty("securityQuestion") || !req.body.hasOwnProperty("securityAnswer"))) {
               _context5.next = 3;
               break;
             }
 
-            return _context5.abrupt("return", res.status(400).send("/users POST request formulated incorrectly. " + "It must contain 'password','displayName','profilePicURL','securityQuestion' and 'securityAnswer fields in message body."));
+            return _context5.abrupt("return", res.status(400).send("/users POST request formulated incorrectly. " + "It must contain 'type', 'password','displayName','profilePicURL','securityQuestion' and 'securityAnswer fields in message body."));
 
           case 3:
             _context5.prev = 3;
@@ -511,6 +517,7 @@ app.post('/users/:userId', /*#__PURE__*/function () {
           case 11:
             _context5.next = 13;
             return new User({
+              type: req.body.type,
               id: req.params.userId,
               password: req.body.password,
               displayName: req.body.displayName,

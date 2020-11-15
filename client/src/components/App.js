@@ -19,6 +19,7 @@ modeTitle[AppMode.ROUNDS_EDITROUND] = "Edit Round";
 modeTitle[AppMode.COURSES] = "Search Courses";
 modeTitle[AppMode.COURSES_NEARBY] = "Nearby Courses";
 modeTitle[AppMode.COURSES_ALL] = "All Speedgolf-Friendly Courses";
+modeTitle[AppMode.COURSES_ADD] = "Add a Course";
 
 const modeToPage = {};
 modeToPage[AppMode.LOGIN] = LoginPage;
@@ -29,6 +30,7 @@ modeToPage[AppMode.ROUNDS_EDITROUND] = Rounds;
 modeToPage[AppMode.COURSES] = CoursesPage;
 modeToPage[AppMode.COURSES_NEARBY] = CoursesPage;
 modeToPage[AppMode.COURSES_ALL] = CoursesPage;
+modeToPage[AppMode.COURSES_ADD] = CoursesPage;
 
 
 class App extends React.Component {
@@ -155,6 +157,7 @@ class App extends React.Component {
           menuOpen={this.state.menuOpen}
           toggleMenuOpen={this.toggleMenuOpen}/>
           <SideMenu 
+            type={this.state.userObj.type}
             changeMode={this.handleChangeMode}
             menuOpen = {this.state.menuOpen}
             mode={this.state.mode}

@@ -32,6 +32,7 @@ renderModeMenuItems = () => {
     case AppMode.COURSES:
     case AppMode.COURSES_NEARBY:
     case AppMode.COURSES_ALL:
+    case AppMode.COURSES_ADD:
       return(
         <div>
         <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES)}>
@@ -40,6 +41,8 @@ renderModeMenuItems = () => {
             <span className="fa fa-map-marker"></span>&nbsp;Nearby Courses</a>
         <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES_ALL)}>
             <span className="fa fa-th-list"></span>&nbsp;All Speedgolf-Friendly Courses</a>
+        {this.props.type === "operator" ? <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES_ADD)}>
+            <span className="fa fa-plus"></span>&nbsp;Add a Course</a> : null}
         </div>
       );
     default:

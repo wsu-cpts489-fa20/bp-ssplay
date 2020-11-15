@@ -1,5 +1,7 @@
 import React from 'react';
 import { Navbar, Container, Row, Col, Card, Button } from "react-bootstrap";
+import RatesModal from "./RatesModal.js";
+import MoreModal from "./MoreModal.js";
 
 class AllCourses extends React.Component {
 
@@ -7,7 +9,10 @@ class AllCourses extends React.Component {
         super();
     
         this.state={
-            getCourseClicked: false
+            item: "",
+            getCourseClicked: false,
+            getRatesButtonClicked: false,
+            more: false
         };
     }
 
@@ -18,6 +23,16 @@ class AllCourses extends React.Component {
     toggleGetCourseClicked = () => {
         this.setState(state => ({getCourseClicked: !state.getCourseClicked}));
     }
+
+    toggleMoreClicked = (key) => {
+        this.setState({item: key});
+        this.setState(state => ({more: !state.more}));
+    }
+
+    toggleGetRatesClicked = () => {
+        this.setState(state => ({getRatesButtonClicked: !state.getRatesButtonClicked}));
+    }
+
     getCourse = async () => {
         const url = '/allcourses/';
         fetch(url)
@@ -43,6 +58,8 @@ class AllCourses extends React.Component {
                         <Card.Body>
                             <Card.Title>Location: {c.location}</Card.Title>
                             <Card.Text>Review: {c.review}</Card.Text>
+                            <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>
+                            <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
                         </Card.Body>
                         <Card.Footer>Rating: {c.rating}</Card.Footer>
                         </Card>
@@ -70,6 +87,14 @@ class AllCourses extends React.Component {
                 </Container> 
                 </tbody>
               </table>
+              {this.state.getRatesButtonClicked ? 
+                <RatesModal handleClose={this.toggleGetRatesClicked} />
+                : null}
+                {this.state.more ? 
+                <MoreModal handleClose={this.toggleMoreClicked} 
+                    course={this.state.item}
+                />
+                : null}
             </div>
             );
     }   

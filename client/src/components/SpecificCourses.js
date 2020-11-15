@@ -173,49 +173,9 @@ class SpecificCourses extends React.Component {
     toggleGetRatesClicked = () => {
         this.setState(state => ({getRatesButtonClicked: !state.getRatesButtonClicked}));
     }
-f
-    addCourse = async (newData) => {
-        console.log(newData);
-        const url = '/courses/' + this.state.id;
-        const res = await fetch(url, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-                },
-            method: 'POST',
-            body: JSON.stringify(newData)}); 
-        const msg = await res.text();
-        if (res.status == 200) {
-            console.log("SUCCESS");
-            console.log(msg);
-            // this.setState({errorMsg: msg});
-            // this.props.changeMode(AppMode.COURSE);
-        } else {
-            console.log("FAILURE");
-            console.log(msg);
-            // this.setState({errorMsg: ""});
-            // this.props.refreshOnUpdate(AppMode.COURSE);
-        }
-    }
 
 
-    handleSubmit = (event) => {
-        event.preventDefault();
-        let courseData = {
-            id: this.state.id,
-            rating: this.state.rating,
-            review: this.state.review,
-            picture: this.state.picture,
-            location: this.state.location,
-            yardage: this.state.yardage,
-            runningDistance: this.state.runningDistance,
-            timePar: this.state.timePar,
-            bestScore: this.state.bestScore,
-            recordHolder: this.state.recordHolder
-        };
-        this.addCourse(courseData);
 
-    }
 
     handleClick = (event) =>{
         event.preventDefault();
@@ -252,9 +212,7 @@ f
         }
     }
 
-    handleChange = (event) =>{
-        this.setState({[event.target.name]: event.target.value});
-    }
+
 
     getRates = () => {
 

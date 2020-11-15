@@ -11,15 +11,17 @@ class CreateEditAccountDialog extends React.Component {
         this.newUserRef = React.createRef();
         this.repeatPassRef = React.createRef();
         this.profilePicRef = React.createRef();
-        this.state = {accountName: "",
-                      displayName: "",
-                      profilePicURL: "https://icon-library.net//images/default-profile-icon/default-profile-icon-24.jpg",
-                      password: "",
-                      passwordRepeat: "",
-                      securityQuestion: "",
-                      securityAnswer: "",
-                      formUpdated: false,
-                      confirmDelete: false};
+        this.state = {
+                    type: "user",
+                    accountName: "",
+                    displayName: "",
+                    profilePicURL: "https://icon-library.net//images/default-profile-icon/default-profile-icon-24.jpg",
+                    password: "",
+                    passwordRepeat: "",
+                    securityQuestion: "",
+                    securityAnswer: "",
+                    formUpdated: false,
+                    confirmDelete: false};
     } 
 
     //componentDidMount -- If we are editing an existing user acccount, we need to grab the data from
@@ -33,13 +35,15 @@ class CreateEditAccountDialog extends React.Component {
             const userData = JSON.parse(json);
             this.origAccountInfo = userData; //This determines whether update can occur
             this.origAccountInfo.passwordRepeat = userData.password;
-            this.setState({accountName: this.props.userId,
-                           displayName: userData.displayName,
-                           profilePicURL: userData.profilePicURL,
-                           password: userData.password,
-                           passwordRepeat: userData.password,
-                           securityQuestion: userData.securityQuestion,
-                           securityAnswer: userData.securityAnswer});
+            this.setState({
+                        type: this.props.type,
+                        accountName: this.props.userId,
+                        displayName: userData.displayName,
+                        profilePicURL: userData.profilePicURL,
+                        password: userData.password,
+                        passwordRepeat: userData.password,
+                        securityQuestion: userData.securityQuestion,
+                        securityAnswer: userData.securityAnswer});
         }
     }
 
@@ -92,6 +96,9 @@ class CreateEditAccountDialog extends React.Component {
     //Should be called whenever the user makes a change to form data.
     formIsUpdated = (updateField,updateVal) => {
         if (this.origAccountInfo[updateField] != updateVal) {return true;}
+        if (updateField != "type" && 
+             this.state.type != this.origAccountInfo.type) 
+             {return true;}
         if (updateField != "displayName" && 
              this.state.displayName != this.origAccountInfo.displayName) 
              {return true;}
@@ -132,6 +139,7 @@ class CreateEditAccountDialog extends React.Component {
         event.preventDefault();
         //Initialize user account
         let userData = {
+            type: this.state.type,
             displayName: this.state.displayName,
             password: this.state.password,
             profilePicURL: this.state.profilePicURL,
@@ -212,6 +220,15 @@ class CreateEditAccountDialog extends React.Component {
             </div>
             <div className="modal-body">
             <form onSubmit={this.handleSubmit}>
+            <label>
+                Type:
+                <select name="type" value={this.state.type} 
+                    className="form-control form-center" onChange={this.handleChange}>
+                    <option value="user">User</option>
+                    <option value="operator">Operator</option>
+                </select> 
+            </label>
+            <br/>
             <label>
                 Email: 
                 <input  
