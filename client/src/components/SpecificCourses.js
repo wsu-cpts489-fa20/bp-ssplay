@@ -143,7 +143,7 @@ class SpecificCourses extends React.Component {
                         <Card.Img className="course-image" variant="top" src={thisCourse.picture}></Card.Img>
                         <Card.Body>
                             <Card.Title>Location: {thisCourse.location}</Card.Title>
-                            <Card.Text>Review: {thisCourse.review}</Card.Text>
+                            <Card.Text>Record Holder: {thisCourse.recordHolder}</Card.Text>
                             <Button type="button" onClick={() => this.toggleMoreClicked(thisCourse.id)}>More</Button>
                             <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
                         </Card.Body>
@@ -200,7 +200,7 @@ class SpecificCourses extends React.Component {
                         <Card.Img className="course-image" variant="top" src={c.picture}></Card.Img>
                         <Card.Body>
                             <Card.Title>Location: {c.location}</Card.Title>
-                            <Card.Text>Review: {c.review}</Card.Text>
+                            <Card.Text>Record Holder: {c.recordHolder}</Card.Text>
                             <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>
                             <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
                         </Card.Body>
@@ -225,7 +225,7 @@ class SpecificCourses extends React.Component {
                     <h3>Find Speedgolf-Friendly Courses:&nbsp;</h3>
                     <h3>
                         <a data-tip="React-tooltip">&#9432;</a>
-                        <ReactTooltip effect="solid">
+                        <ReactTooltip variant="bottom" effect="solid">
                             <span>
                                 Enter search term or course name to see matching courses, or enter a space to see ALL courses in the database.
                                 Click on course in the list to select it, or click on 'Select' button to select all matching courses.
@@ -271,7 +271,8 @@ class SpecificCourses extends React.Component {
                 : null}
                 {this.state.more ? 
                 <MoreModal handleClose={this.toggleMoreClicked} 
-                    course={this.state.item}
+                    course={this.state.item}  changeMode={this.props.changeMode} 
+                    refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
                 />
                 : null}
             </div>

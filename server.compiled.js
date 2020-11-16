@@ -1105,4 +1105,83 @@ app.post('/courses/:courseId', /*#__PURE__*/function () {
   return function (_x40, _x41, _x42) {
     return _ref14.apply(this, arguments);
   };
+}()); //UPDATE course route: Updates a new course information in the courses collection (POST)
+
+app.put('/courses/:courseId', /*#__PURE__*/function () {
+  var _ref15 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee15(req, res, next) {
+    var validProps, bodyProp, status;
+    return _regeneratorRuntime["default"].wrap(function _callee15$(_context15) {
+      while (1) {
+        switch (_context15.prev = _context15.next) {
+          case 0:
+            console.log("in /courses update route (PUT) with courseId = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
+
+            if (req.params.hasOwnProperty("courseId")) {
+              _context15.next = 3;
+              break;
+            }
+
+            return _context15.abrupt("return", res.status(400).send("courses/ PUT request formulated incorrectly." + "It must contain 'courseId' as parameter."));
+
+          case 3:
+            validProps = ['id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder'];
+            _context15.t0 = _regeneratorRuntime["default"].keys(req.body);
+
+          case 5:
+            if ((_context15.t1 = _context15.t0()).done) {
+              _context15.next = 11;
+              break;
+            }
+
+            bodyProp = _context15.t1.value;
+
+            if (validProps.includes(bodyProp)) {
+              _context15.next = 9;
+              break;
+            }
+
+            return _context15.abrupt("return", res.status(400).send("courses/ PUT request formulated incorrectly." + "Only the following props are allowed in body: " + "'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder'"));
+
+          case 9:
+            _context15.next = 5;
+            break;
+
+          case 11:
+            _context15.prev = 11;
+            _context15.next = 14;
+            return Course.updateOne({
+              id: req.params.courseId
+            }, {
+              $set: req.body
+            });
+
+          case 14:
+            status = _context15.sent;
+
+            if (status.nModified != 1) {
+              //account could not be found
+              res.status(404).send("No course " + req.params.courseId + " exists. Course could not be updated.");
+            } else {
+              res.status(200).send("Course " + req.params.courseId + " successfully updated.");
+            }
+
+            _context15.next = 21;
+            break;
+
+          case 18:
+            _context15.prev = 18;
+            _context15.t2 = _context15["catch"](11);
+            res.status(400).send("Unexpected error occurred when updating course data in database: " + _context15.t2);
+
+          case 21:
+          case "end":
+            return _context15.stop();
+        }
+      }
+    }, _callee15, null, [[11, 18]]);
+  }));
+
+  return function (_x43, _x44, _x45) {
+    return _ref15.apply(this, arguments);
+  };
 }());

@@ -570,3 +570,32 @@ app.post('/courses/:courseId', async (req, res, next) => {
     return res.status(400).send("Unexpected error occurred when adding or looking up course in database. " + err);
   }
 });
+
+//UPDATE course route: Updates a new course information in the courses collection (POST)
+app.put('/courses/:courseId',  async (req, res, next) => {
+  console.log("in /courses update route (PUT) with courseId = " + JSON.stringify(req.params) + 
+    " and body = " + JSON.stringify(req.body));
+  if (!req.params.hasOwnProperty("courseId"))  {
+    return res.status(400).send("courses/ PUT request formulated incorrectly." +
+        "It must contain 'courseId' as parameter.");
+  }
+  const validProps = ['id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder'];
+  for (const bodyProp in req.body) {
+    if (!validProps.includes(bodyProp)) {
+      return res.status(400).send("courses/ PUT request formulated incorrectly." +
+        "Only the following props are allowed in body: " +
+        "'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder'");
+    } 
+  }
+  try {
+        let status = await Course.updateOne({id: req.params.courseId}, 
+          {$set: req.body});
+        if (status.nModified != 1) { //account could not be found
+          res.status(404).send("No course " + req.params.courseId + " exists. Course could not be updated.");
+        } else {
+          res.status(200).send("Course " + req.params.courseId + " successfully updated.")
+        }
+      } catch (err) {
+        res.status(400).send("Unexpected error occurred when updating course data in database: " + err);
+      }
+});

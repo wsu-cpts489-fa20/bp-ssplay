@@ -4,7 +4,7 @@ import SideMenu from './SideMenu.js';
 import ModeBar from './ModeBar.js';
 import CreateEditAccountDialog from './CreateEditAccountDialog.js'
 import LoginPage from './LoginPage.js';
-import AppMode from "./../AppMode.js"
+import AppMode from "./../AppMode.js";
 import FeedPage from './FeedPage.js';
 import Rounds from './Rounds.js';
 import CoursesPage from './CoursesPage.js';

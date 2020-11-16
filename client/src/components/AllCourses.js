@@ -57,7 +57,7 @@ class AllCourses extends React.Component {
                         <Card.Img className="course-image" variant="top" src={c.picture}></Card.Img>
                         <Card.Body>
                             <Card.Title>Location: {c.location}</Card.Title>
-                            <Card.Text>Review: {c.review}</Card.Text>
+                            <Card.Text>Record Holder: {c.recordHolder}</Card.Text>
                             <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>
                             <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
                         </Card.Body>
@@ -68,7 +68,7 @@ class AllCourses extends React.Component {
             });
 
             // this.renderCourses(thisCourse);
-            console.log(thisCourse);
+            // console.log(thisCourse);
         }).catch((error) =>{
             console.log("GET ERROR!");
         });
@@ -92,7 +92,8 @@ class AllCourses extends React.Component {
                 : null}
                 {this.state.more ? 
                 <MoreModal handleClose={this.toggleMoreClicked} 
-                    course={this.state.item}
+                    course={this.state.item} changeMode={this.props.changeMode} 
+                    refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
                 />
                 : null}
             </div>
