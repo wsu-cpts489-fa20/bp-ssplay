@@ -2,6 +2,7 @@ import React from 'react';
 import { Navbar, Container, Row, Col, Card, Button } from "react-bootstrap";
 import RatesModal from "./RatesModal.js";
 import MoreModal from "./MoreModal.js";
+import BookingPage from "./BookingPage.js";
 
 class AllCourses extends React.Component {
 
@@ -12,6 +13,7 @@ class AllCourses extends React.Component {
             item: "",
             getCourseClicked: false,
             getRatesButtonClicked: false,
+            bookTeeTimeClicked: false,
             more: false
         };
     }
@@ -33,6 +35,11 @@ class AllCourses extends React.Component {
         this.setState(state => ({getRatesButtonClicked: !state.getRatesButtonClicked}));
     }
 
+    toggleBookTeeTimeClicked = (key) => {
+        this.setState({item: key});
+        this.setState(state => ({bookTeeTimeClicked: !state.bookTeeTimeClicked}));
+    }
+
     getCourse = async () => {
         const url = '/allcourses/';
         fetch(url)
@@ -49,7 +56,6 @@ class AllCourses extends React.Component {
         {
             console.log("GET SUCCESS!");
             let thisCourse = JSON.parse(obj);
-
             this.setState({
                 course: thisCourse.map((c) =>(
                     <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
@@ -58,8 +64,10 @@ class AllCourses extends React.Component {
                         <Card.Body>
                             <Card.Title>Location: {c.location}</Card.Title>
                             <Card.Text>Record Holder: {c.recordHolder}</Card.Text>
-                            <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>
-                            <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
+                            {this.setState({item: c.id})}
+                            <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
+                            <Button type="button" onClick={this.toggleGetRatesClicked}>Get Rates</Button>&nbsp;
+                            <Button type="button" onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
                         </Card.Body>
                         <Card.Footer>Rating: {c.rating}</Card.Footer>
                         </Card>
@@ -77,25 +85,31 @@ class AllCourses extends React.Component {
     render() {
         return(
             <div>
-              <h1></h1>
-              <table >
-                <tbody>
-                <Container fluid={true}>
-                    <Row noGutters>                    
-                        {this.state.course}
-                    </Row>
-                </Container> 
-                </tbody>
-              </table>
-              {this.state.getRatesButtonClicked ? 
-                <RatesModal handleClose={this.toggleGetRatesClicked} />
-                : null}
+                <h1></h1>
+                <table >
+                    <tbody>
+                    <Container fluid={true}>
+                        <Row noGutters>                    
+                            {this.state.course}
+                        </Row>
+                    </Container> 
+                    </tbody>
+                </table>
+                {this.state.getRatesButtonClicked ? 
+                    <RatesModal handleClose={this.toggleGetRatesClicked} />
+                    : null}
                 {this.state.more ? 
-                <MoreModal handleClose={this.toggleMoreClicked} 
-                    course={this.state.item} changeMode={this.props.changeMode} 
-                    refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
-                />
-                : null}
+                    <MoreModal handleClose={this.toggleMoreClicked} 
+                        course={this.state.item} changeMode={this.props.changeMode} 
+                        refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
+                    />
+                    : null}
+                {this.state.bookTeeTimeClicked ? 
+                    <BookingPage handleClose={this.toggleBookTeeTimeClicked} 
+                        course={this.state.item} changeMode={this.props.changeMode} 
+                        refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
+                    />
+                    : null}
             </div>
             );
     }   
