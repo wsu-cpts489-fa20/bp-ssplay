@@ -1,21 +1,21 @@
 import React from 'react';
-import AppMode from "./../AppMode.js"
+import AppMode from '../AppMode';
+import AllCourses from './AllCourses.js';
+import NearbyCourses from './NearbyCourses.js';
+import SpecificCourses from './SpecificCourses.js';
 
 class CoursesPage extends React.Component {
 
-render() {
-    return (
-    <div className="padded-page">
-        <center>
-        <h1 >Courses</h1>
-        <button  className="btn btn-primary btn-color-theme modal-submit-btn" 
-        onClick={() => this.props.changeMode(AppMode.COURSE_RATES)}>
-            Course Rates
-        </button>
-        </center>
-    </div>
-    );
-}   
+    render() {
+        switch(this.props.mode){
+            case AppMode.COURSES:
+                return (<SpecificCourses userObj={this.props.userObj} />);
+            case AppMode.COURSES_NEARBY:
+                return (<NearbyCourses />);
+            case AppMode.COURSES_ALL:
+                return (<AllCourses />);
+        }
+    }   
 }
 
 export default CoursesPage;

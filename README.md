@@ -1,5 +1,3 @@
-#Carlos Martinez  **Branch
-
 # Final Speedgolf App
 This code base starts with the MERN stack MVP implmentation of the speedgolf
 app as it was deployed to MongoDB Atlas and AWS EB in Chapter 24. To that it adds
