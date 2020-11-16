@@ -16,7 +16,7 @@ class CoursesPage extends React.Component {
             case AppMode.COURSES_ALL:
                 return (<AllCourses changeMode={this.props.changeMode} mode={this.props.mode} refreshOnUpdate={this.props.refreshOnUpdate}/>);
             case AppMode.COURSES_ADD:
-                return (<AddCourses />);
+                return (<AddCourses changeMode={this.props.changeMode}/>);
         }
     }   
 }

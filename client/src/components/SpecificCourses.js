@@ -36,6 +36,27 @@ class SpecificCourses extends React.Component {
         };
     }
 
+    componentWillMount() {
+        this.getCourse();
+    }
+
+    toggleAddCourseClicked = () => {
+        this.setState(state => ({addCourseClicked: !state.addCourseClicked}));
+    }
+
+    toggleMoreClicked = (key) => {
+        this.setState({item: key});
+        this.setState(state => ({more: !state.more}));
+    }
+
+    toggleGetCourseClicked = () => {
+        this.setState(state => ({getCourseClicked: !state.getCourseClicked}));
+    }
+
+    toggleGetRatesClicked = () => {
+        this.setState(state => ({getRatesButtonClicked: !state.getRatesButtonClicked}));
+    }
+
     setSelectButtonValue = (newVal) => {
         this.setState({selectButtonValue : newVal});
     }
@@ -56,10 +77,6 @@ class SpecificCourses extends React.Component {
     setSearchCourseClickedFalse = () => {
         this.setState({searchCourseClicked : false});
         this.setSelectButtonValue("Select Course");
-    }
-
-    componentWillMount() {
-        this.getCourse();
     }
 
     handleInputChange = event => {
@@ -157,26 +174,6 @@ class SpecificCourses extends React.Component {
         });
     }
 
-    toggleAddCourseClicked = () => {
-        this.setState(state => ({addCourseClicked: !state.addCourseClicked}));
-    }
-
-    toggleMoreClicked = (key) => {
-        this.setState({item: key});
-        this.setState(state => ({more: !state.more}));
-    }
-
-    toggleGetCourseClicked = () => {
-        this.setState(state => ({getCourseClicked: !state.getCourseClicked}));
-    }
-
-    toggleGetRatesClicked = () => {
-        this.setState(state => ({getRatesButtonClicked: !state.getRatesButtonClicked}));
-    }
-
-
-
-
     handleClick = (event) =>{
         event.preventDefault();
 
@@ -220,7 +217,7 @@ class SpecificCourses extends React.Component {
 
     render() {
         return (
-            <div>
+            <div id="specificCoursePage">
                 <div style={{display: 'flex'}}>
                     <h3>Find Speedgolf-Friendly Courses:&nbsp;</h3>
                     <h3>
@@ -238,8 +235,8 @@ class SpecificCourses extends React.Component {
                  value={this.state.query} onChange={this.handleInputChange}
                  disabled={this.state.searchCourseClicked ? true:false}></input>
                 <button onClick={this.handleClick}>{this.state.selectButtonValue}</button>
-                {/* <button onClick={this.toggleAddCourseClicked}>Add Course</button> */}
                 {this.state.searchStart ? <div>{this.state.filteredData.map(i => <a className="course-search-list" onClick={() => this.getSearchedCourse(i.id)}>{i.id}</a>)}</div> : null}
+                
                 {this.state.searchCourseClicked ? <div style={{marginTop: "50px"}}><h3>1 Course Selected: </h3>
                 <Container fluid={true}>
                     <Row noGutters>  
@@ -248,24 +245,6 @@ class SpecificCourses extends React.Component {
                 </Container>  </div>               
                  : null}
 
-                {/* {this.state.addCourseClicked ? 
-                <form onSubmit={this.handleSubmit}>
-                    <h3>Add Course</h3>
-                    <input name="id" placeholder="id" value={this.state.id} onChange={this.handleChange}></input>
-                    <input name="rating" placeholder="rating" value={this.state.rating} onChange={this.handleChange}></input>
-                    <input name="review"  placeholder="review" value={this.state.review} onChange={this.handleChange}></input>
-                    <input name="picture"  placeholder="picture" value={this.state.picture} onChange={this.handleChange}></input>
-                    <input name="location"  placeholder="location" value={this.state.location} onChange={this.handleChange}></input>
-                    <input name="yardage"  placeholder="yardage" value={this.state.yardage} onChange={this.handleChange}></input>
-                    <input name="runningDistance"  placeholder="runningDistance" value={this.state.runningDistance} onChange={this.handleChange}></input>
-                    <input name="timePar"  placeholder="timePar" value={this.state.timePar} onChange={this.handleChange}></input>
-                    <input name="bestScore"  placeholder="bestScore" value={this.state.bestScore} onChange={this.handleChange}></input>
-                    <input name="recordHolder"  placeholder="recordHolder" value={this.state.recordHolder} onChange={this.handleChange}></input>
-                    <button>Submit</button>
-                </form>
-                : null} */}
-
-                {/* <FloatingButton handleClick={this.toggleGetRatesClicked}/> */}
                 {this.state.getRatesButtonClicked ? 
                 <RatesModal handleClose={this.toggleGetRatesClicked} />
                 : null}

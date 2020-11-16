@@ -25,7 +25,9 @@
     "react-autosuggest": "^10.0.3",
     "react-bootstrap": "^1.4.0",
     "react-tooltip": "^4.2.10",
-    "regenerator-runtime": "^0.13.7"
+    "regenerator-runtime": "^0.13.7",
+    "testcafe": "^1.9.4",
+    "testcafe-react-selectors": "^4.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
