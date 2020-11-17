@@ -145,7 +145,7 @@ class SpecificCourses extends React.Component {
                             <Card.Title>Location: {thisCourse.location}</Card.Title>
                             <Card.Text>Review: {thisCourse.review}</Card.Text>
                             <Button type="button" onClick={() => this.toggleMoreClicked(thisCourse.id)}>More</Button>
-                            <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
+                            <Button  type="button" onClick={() => this.toggleGetRatesClicked(thisCourse.id)}>Get Rates</Button>
                         </Card.Body>
                         <Card.Footer>Rating: {thisCourse.rating}</Card.Footer>
                         </Card>
@@ -170,7 +170,8 @@ class SpecificCourses extends React.Component {
         this.setState(state => ({getCourseClicked: !state.getCourseClicked}));
     }
 
-    toggleGetRatesClicked = () => {
+    toggleGetRatesClicked = (key) => {
+        this.setState({item: key});
         this.setState(state => ({getRatesButtonClicked: !state.getRatesButtonClicked}));
     }
 f
@@ -242,7 +243,7 @@ f
                             <Card.Title>Location: {c.location}</Card.Title>
                             <Card.Text>Review: {c.review}</Card.Text>
                             <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>
-                            <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
+                            <Button type="button" onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>
                         </Card.Body>
                         <Card.Footer>Rating: {c.rating}</Card.Footer>
                         </Card>
@@ -309,7 +310,8 @@ f
 
                 {/* <FloatingButton handleClick={this.toggleGetRatesClicked}/> */}
                 {this.state.getRatesButtonClicked ? 
-                <RatesModal handleClose={this.toggleGetRatesClicked} />
+                <RatesModal handleClose={this.toggleGetRatesClicked}
+                      course={this.state.item} />
                 : null}
                 {this.state.more ? 
                 <MoreModal handleClose={this.toggleMoreClicked} 
