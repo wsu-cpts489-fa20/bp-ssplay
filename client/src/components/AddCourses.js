@@ -7,6 +7,7 @@ class AddCourses extends React.Component {
         super();
 
         this.state={
+            courseName: "",
             id: "",
             rating: "",
             review: "",
@@ -16,7 +17,9 @@ class AddCourses extends React.Component {
             runningDistance: "",
             timePar: "",
             bestScore: "",
-            recordHolder: ""
+            recordHolder: "",
+            rateStandard: "",
+            rateSenior: ""
         };
     }
 
@@ -38,13 +41,10 @@ class AddCourses extends React.Component {
         if (res.status == 200) {
             console.log("SUCCESS");
             console.log(msg);
-            // this.setState({errorMsg: msg});
-            this.props.changeMode(AppMode.COURSES);
+            this.props.changeMode(AppMode.COURSES_ALL);
         } else {
             console.log("FAILURE");
             console.log(msg);
-            // this.setState({errorMsg: ""});
-            // this.props.refreshOnUpdate(AppMode.COURSE);
         }
     }
 
@@ -62,8 +62,23 @@ class AddCourses extends React.Component {
                     <center>
                     <h3>Add Course</h3>
                     <label>
-                        Course Name:<br></br>
+                        Course ID:<br></br>
                         <input id="id" name="id" placeholder="id" value={this.state.id} onChange={this.handleChange}></input>
+                    </label>
+                    <p></p>
+                    <label>
+                        Course Name:<br></br>
+                        <input id="courseName" name="courseName" placeholder="courseName" value={this.state.courseName} onChange={this.handleChange}></input>
+                    </label>
+                    <p></p>
+                    <label>
+                        Standard Rate: $<br></br>
+                        <input id="rateStandard" name="rateStandard" placeholder="rateStandard" value={this.state.rateStandard} onChange={this.handleChange}></input>
+                    </label>
+                    <p></p>
+                    <label>
+                        Senior Rate: $<br></br>
+                        <input id="rateSenior" name="rateSenior" placeholder="rateSenior" value={this.state.rateSenior} onChange={this.handleChange}></input>
                     </label>
                     <p></p>
                     <label>

@@ -67,7 +67,10 @@ const courseSchema = new Schema({
   runningDistance: String,
   timePar: String,
   bestScore: String,
-  recordHolder: String
+  recordHolder: String,
+  rateSenior: String,
+  rateStandard: String,
+  courseName: String,
 },
 {
   toObject: {
@@ -532,7 +535,8 @@ app.post('/courses/:courseId', async (req, res, next) => {
   console.log("in /courses (POST) route with params = " + 
               JSON.stringify(req.params) + " and body = " + 
               JSON.stringify(req.body));
-  if (!req.body.hasOwnProperty("rating") || 
+  if (!req.body.hasOwnProperty("courseName") ||
+      !req.body.hasOwnProperty("rating") || 
       !req.body.hasOwnProperty("review") || 
       !req.body.hasOwnProperty("picture") ||
       !req.body.hasOwnProperty("location") || 
@@ -540,10 +544,12 @@ app.post('/courses/:courseId', async (req, res, next) => {
       !req.body.hasOwnProperty("runningDistance") ||
       !req.body.hasOwnProperty("timePar") || 
       !req.body.hasOwnProperty("bestScore") || 
-      !req.body.hasOwnProperty("recordHolder")) {
+      !req.body.hasOwnProperty("recordHolder") ||
+      !req.body.hasOwnProperty("rateSenior") ||
+      !req.body.hasOwnProperty("rateStandard")) {
     //Body does not contain correct properties
     return res.status(400).send("POST request on /course formulated incorrectly." +
-      "Body must contain all 8 required fields: rating, review, picture, location, yardage, runningDistance, timePar, bestScore, recordHolder.");
+      "Body must contain all 8 required fields: courseName, rating, review, picture, location, yardage, runningDistance, timePar, bestScore, recordHolder, rateSenior, rateStandard.");
   }
   try {
     let thisCourse = await Course.findOne({id: req.params.courseId});
@@ -552,6 +558,7 @@ app.post('/courses/:courseId', async (req, res, next) => {
         req.params.courseId + "'.");
     } else { //account available -- add to database
       thisCourse = await new Course({
+        courseName: req.body.courseName,
         id: req.params.courseId,
         rating: req.body.rating,
         review: req.body.review,
@@ -561,7 +568,9 @@ app.post('/courses/:courseId', async (req, res, next) => {
         runningDistance: req.body.runningDistance,
         timePar: req.body.timePar,
         bestScore: req.body.bestScore,
-        recordHolder: req.body.recordHolder
+        recordHolder: req.body.recordHolder,
+        rateSenior: req.body.rateSenior,
+        rateStandard: req.body.rateStandard
       }).save();
       return res.status(200).send("New course for '" + 
         req.params.courseId + "' successfully created.");
@@ -579,12 +588,12 @@ app.put('/courses/:courseId',  async (req, res, next) => {
     return res.status(400).send("courses/ PUT request formulated incorrectly." +
         "It must contain 'courseId' as parameter.");
   }
-  const validProps = ['id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder'];
+  const validProps = ['courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
   for (const bodyProp in req.body) {
     if (!validProps.includes(bodyProp)) {
       return res.status(400).send("courses/ PUT request formulated incorrectly." +
         "Only the following props are allowed in body: " +
-        "'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder'");
+        "'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'");
     } 
   }
   try {

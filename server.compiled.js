@@ -117,7 +117,10 @@ var courseSchema = new Schema({
   runningDistance: String,
   timePar: String,
   bestScore: String,
-  recordHolder: String
+  recordHolder: String,
+  rateSenior: String,
+  rateStandard: String,
+  courseName: String
 }, {
   toObject: {
     virtuals: true
@@ -1039,12 +1042,12 @@ app.post('/courses/:courseId', /*#__PURE__*/function () {
           case 0:
             console.log("in /courses (POST) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
 
-            if (!(!req.body.hasOwnProperty("rating") || !req.body.hasOwnProperty("review") || !req.body.hasOwnProperty("picture") || !req.body.hasOwnProperty("location") || !req.body.hasOwnProperty("yardage") || !req.body.hasOwnProperty("runningDistance") || !req.body.hasOwnProperty("timePar") || !req.body.hasOwnProperty("bestScore") || !req.body.hasOwnProperty("recordHolder"))) {
+            if (!(!req.body.hasOwnProperty("courseName") || !req.body.hasOwnProperty("rating") || !req.body.hasOwnProperty("review") || !req.body.hasOwnProperty("picture") || !req.body.hasOwnProperty("location") || !req.body.hasOwnProperty("yardage") || !req.body.hasOwnProperty("runningDistance") || !req.body.hasOwnProperty("timePar") || !req.body.hasOwnProperty("bestScore") || !req.body.hasOwnProperty("recordHolder") || !req.body.hasOwnProperty("rateSenior") || !req.body.hasOwnProperty("rateStandard"))) {
               _context14.next = 3;
               break;
             }
 
-            return _context14.abrupt("return", res.status(400).send("POST request on /course formulated incorrectly." + "Body must contain all 8 required fields: rating, review, picture, location, yardage, runningDistance, timePar, bestScore, recordHolder."));
+            return _context14.abrupt("return", res.status(400).send("POST request on /course formulated incorrectly." + "Body must contain all 8 required fields: courseName, rating, review, picture, location, yardage, runningDistance, timePar, bestScore, recordHolder, rateSenior, rateStandard."));
 
           case 3:
             _context14.prev = 3;
@@ -1069,6 +1072,7 @@ app.post('/courses/:courseId', /*#__PURE__*/function () {
           case 11:
             _context14.next = 13;
             return new Course({
+              courseName: req.body.courseName,
               id: req.params.courseId,
               rating: req.body.rating,
               review: req.body.review,
@@ -1078,7 +1082,9 @@ app.post('/courses/:courseId', /*#__PURE__*/function () {
               runningDistance: req.body.runningDistance,
               timePar: req.body.timePar,
               bestScore: req.body.bestScore,
-              recordHolder: req.body.recordHolder
+              recordHolder: req.body.recordHolder,
+              rateSenior: req.body.rateSenior,
+              rateStandard: req.body.rateStandard
             }).save();
 
           case 13:
@@ -1124,7 +1130,7 @@ app.put('/courses/:courseId', /*#__PURE__*/function () {
             return _context15.abrupt("return", res.status(400).send("courses/ PUT request formulated incorrectly." + "It must contain 'courseId' as parameter."));
 
           case 3:
-            validProps = ['id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder'];
+            validProps = ['courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
             _context15.t0 = _regeneratorRuntime["default"].keys(req.body);
 
           case 5:
@@ -1140,7 +1146,7 @@ app.put('/courses/:courseId', /*#__PURE__*/function () {
               break;
             }
 
-            return _context15.abrupt("return", res.status(400).send("courses/ PUT request formulated incorrectly." + "Only the following props are allowed in body: " + "'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder'"));
+            return _context15.abrupt("return", res.status(400).send("courses/ PUT request formulated incorrectly." + "Only the following props are allowed in body: " + "'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'"));
 
           case 9:
             _context15.next = 5;

@@ -55,7 +55,8 @@ class SpecificCourses extends React.Component {
         this.setState(state => ({getCourseClicked: !state.getCourseClicked}));
     }
 
-    toggleGetRatesClicked = () => {
+    toggleGetRatesClicked = (key) => {
+        this.setState({item: key});
         this.setState(state => ({getRatesButtonClicked: !state.getRatesButtonClicked}));
     }
 
@@ -166,10 +167,10 @@ class SpecificCourses extends React.Component {
                         <Card key={thisCourse.id} style={{ width: "30rem", display: "flex" }}>
                         <Card.Img className="course-image" variant="top" src={thisCourse.picture}></Card.Img>
                         <Card.Body>
-                            <Card.Title>Location: {thisCourse.location}</Card.Title>
+                            <Card.Title>{thisCourse.courseName}</Card.Title>
                             <Card.Text>Record Holder: {thisCourse.recordHolder}</Card.Text>
                             <Button type="button" onClick={() => this.toggleMoreClicked(thisCourse.id)}>More</Button>&nbsp;
-                            <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>&nbsp;
+                            <Button onClick={() => this.toggleGetRatesClicked(thisCourse.id)}>Get Rates</Button>&nbsp;
                             <Button onClick={() => this.toggleBookTeeTimeClicked(thisCourse.id)}>Book Tee Time</Button>&nbsp;
                         </Card.Body>
                         <Card.Footer>Rating: {thisCourse.rating}</Card.Footer>
@@ -203,10 +204,10 @@ class SpecificCourses extends React.Component {
                         <Card key={c.id} style={{ width: "30rem", display: "flex" }}>
                         <Card.Img className="course-image" variant="top" src={c.picture}></Card.Img>
                         <Card.Body>
-                            <Card.Title>Location: {c.location}</Card.Title>
+                            <Card.Title>{c.courseName}</Card.Title>
                             <Card.Text>Record Holder: {c.recordHolder}</Card.Text>
                             <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
-                            <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>&nbsp;
+                            <Button onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
                             <Button onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
                         </Card.Body>
                         <Card.Footer>Rating: {c.rating}</Card.Footer>
@@ -254,7 +255,10 @@ class SpecificCourses extends React.Component {
                  : null}
 
                 {this.state.getRatesButtonClicked ? 
-                    <RatesModal handleClose={this.toggleGetRatesClicked} />
+                    <RatesModal handleClose={this.toggleGetRatesClicked}
+                    course={this.state.item}  changeMode={this.props.changeMode} 
+                    refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
+                    />
                     : null}
                 {this.state.more ? 
                     <MoreModal handleClose={this.toggleMoreClicked} 

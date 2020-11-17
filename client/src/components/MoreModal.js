@@ -40,6 +40,7 @@ getSearchedCourse = async (id) => {
         console.log("GET SEARCH COURSES SUCCESS!");
         let thisCourse = JSON.parse(obj);
         this.setState({
+            courseName: thisCourse.courseName,
             id: thisCourse.id,
             rating: thisCourse.rating,
             review: thisCourse.review,
@@ -50,20 +51,21 @@ getSearchedCourse = async (id) => {
             timePar: thisCourse.timePar,
             bestScore: thisCourse.bestScore,
             recordHolder: thisCourse.recordHolder,
+            rateSenior: thisCourse.rateSenior,
+            rateStandard: thisCourse.rateStandard,
             course: (
                 <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
                     <Card key={thisCourse.id} style={{ width: "30rem", display: "flex" }}>
                     <Card.Img className="course-image" variant="top" src={thisCourse.picture}></Card.Img>
                     <Card.Body>
                         <Card.Title>Location: {thisCourse.location}</Card.Title>
-                        <Card.Text>Review: {thisCourse.review}</Card.Text>
                         <Card.Text>Yardage: {thisCourse.yardage}</Card.Text>
                         <Card.Text>Running Distance: {thisCourse.runningDistance}</Card.Text>
                         <Card.Text>Time Par: {thisCourse.timePar}</Card.Text>
                         <Card.Text>Best Score: {thisCourse.bestScore}</Card.Text>
                         <Card.Text>Record Holder: {thisCourse.recordHolder}</Card.Text>
                     </Card.Body>
-                    <Card.Footer>Rating: {thisCourse.rating}</Card.Footer>
+                    <Card.Footer>Rating: {thisCourse.rating}<br></br>Review: {thisCourse.review}</Card.Footer>
                     <Button onClick={this.toggleReviewClicked}>Leave A Review:</Button>
                     </Card>
                 </Col>
@@ -92,7 +94,6 @@ editCourse = async (newData) =>{
             this.props.refreshOnUpdate(AppMode.COURSES);
         else 
             this.props.refreshOnUpdate(AppMode.COURSES_ALL);
-        // this.props.changeMode(AppMode.COURSES_ALL);
     } else {
         this.props.refreshOnUpdate(AppMode.COURSES_ALL);
     }
@@ -101,6 +102,7 @@ editCourse = async (newData) =>{
 handleSubmit = (event) =>{
     event.preventDefault();
     let newData = {
+        courseName: this.state.courseName,
         id: this.state.id,
         rating: this.state.rating,
         review: this.state.review,
@@ -110,7 +112,9 @@ handleSubmit = (event) =>{
         runningDistance: this.state.runningDistance,
         timePar: this.state.timePar,
         bestScore: this.state.bestScore,
-        recordHolder: this.state.recordHolder
+        recordHolder: this.state.recordHolder,
+        rateSenior: this.state.rateSenior,
+        rateStandard: this.state.rateStandard
     }
 
     this.editCourse(newData);
@@ -127,7 +131,7 @@ render() {
         <div className="modal-dialog modal-lg">
             <div className="modal-content">
             <div className="modal-header">
-                <h3>{this.state.id}</h3>
+                <h3>{this.state.courseName}</h3>
                 <button className="modal-close" onClick={this.props.handleClose}>
                     &times;
                 </button>

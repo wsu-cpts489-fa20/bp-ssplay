@@ -44,11 +44,12 @@ class BookingPage extends React.Component {
                 <div className="padded-page">
                     <form onSubmit={this.handleBookTeeTime}>
                     <center>
-                        <h1>Request Tee Time at {this.state.courseName}</h1>
-                        <label for="bookingDate">Date: </label>
-                        <input type="date" id="bookingDate" name="bookingDate" value={this.state.bookingDate} onChange={this.handleChange} required></input>
-                        <br/>
-                        <label for="bookingTime">Time: </label>
+                        <h1>Request Tee Time at {this.state.courseName}</h1><br></br>
+                        <label for="bookingDate">Date: <br></br>
+                            <input type="date" id="bookingDate" name="bookingDate" value={this.state.bookingDate} onChange={this.handleChange} required></input>
+                        </label>
+                        <p></p>
+                        <label for="bookingTime">Time: <br></br>
                         <select type="date" id="bookingTime" name="bookingTime" value={this.state.bookingTime} onChange={this.handleChange} required>
                             <option></option>
                             <option value="9:00 AM">9:00 AM</option>
@@ -61,7 +62,8 @@ class BookingPage extends React.Component {
                             <option value="4:00 PM">4:00 PM</option>
                             <option value="5:00 PM">5:00 PM</option>    
                         </select>
-                        <br/>
+                        </label>
+                        <p></p>
                         <button className="btn btn-primary btn-color-theme modal-submit-btn">Request Tee Time</button>
                         <button onClick={this.props.handleClose} className="btn btn-primary btn-color-theme modal-submit-btn">Cancel</button>
                     </center>
