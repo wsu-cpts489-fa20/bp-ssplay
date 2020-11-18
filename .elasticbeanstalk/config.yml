@@ -1,13 +1,18 @@
 branch-defaults:
   master:
     environment: SpeedgolfMern-env
+  por:
+    environment: Ssplay-env
 environment-defaults:
   SpeedgolfMern-env:
     branch: null
     repository: null
+  Ssplay-env:
+    branch: null
+    repository: null
 global:
-  application_name: speedgolf-MERN
-  default_ec2_keyname: null
+  application_name: ssplay
+  default_ec2_keyname: speedgolf-eb
   default_platform: Node.js 12 running on 64bit Amazon Linux 2
   default_region: us-west-2
   include_git_submodules: true
