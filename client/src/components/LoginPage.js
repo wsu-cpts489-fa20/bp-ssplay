@@ -23,7 +23,9 @@ constructor() {
                   githubIcon: "fa fa-github",
                   githubLabel: "Sign in with GitHub",
                   loginMsg: "",
-                  newAccountCreated: false
+                  newAccountCreated: false,
+                  googleIcon: "fa fa-google",
+                  googleLabel: "Sign in with Google"
                   };
 } 
     
@@ -214,6 +216,11 @@ cancelCreateAccount = () => {
                onClick={() => this.handleOAuthLoginClick("github")}>
               <span className={this.state.githubIcon}></span>&nbsp;
                 {this.state.githubLabel}
+            </button>
+            <button type="button" className="btn btn-google"
+               onClick={() => this.handleOAuthLoginClick("google")}>
+              <span className={this.state.googleIcon}></span>&nbsp;
+                {this.state.googleLabel}
             </button>
             <p>
                 <i>Version CptS 489</i>

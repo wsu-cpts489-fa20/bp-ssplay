@@ -5,6 +5,7 @@
 //////////////////////////////////////////////////////////////////////////
 import passport from 'passport';
 import passportGithub from 'passport-github'; 
+import passportGoogle from 'passport-google-oauth2'; 
 import passportLocal from 'passport-local';
 import session from 'express-session';
 import regeneratorRuntime from "regenerator-runtime";
@@ -14,8 +15,10 @@ require('dotenv').config();
 
 const LOCAL_PORT = 8081;
 const DEPLOY_URL = "http://localhost:8081";
+// const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
 const PORT = process.env.HTTP_PORT || LOCAL_PORT;
 const GithubStrategy = passportGithub.Strategy;
+const GoogleStrategy = passportGoogle.Strategy;
 const LocalStrategy = passportLocal.Strategy;
 const app = express();
 
@@ -117,12 +120,36 @@ passport.use(new GithubStrategy({
     let currentUser = await User.findOne({id: userId});
     if (!currentUser) { //Add this user to the database
         currentUser = await new User({
-        type: profile.type,
+        type: 'operator',
         id: userId,
         displayName: profile.displayName,
         authStrategy: profile.provider,
         profilePicURL: profile.photos[0].value,
         rounds: []
+      }).save();
+  }
+  return done(null,currentUser);
+}));
+
+passport.use(new GoogleStrategy({
+  clientID: "909887696769-o31hn2i23rmajsov9oal8vftfu1e4n1r.apps.googleusercontent.com",
+  clientSecret: "JmKC0RIuBWh3Cr9n_lddKF93",
+  callbackURL: DEPLOY_URL + "/auth/google/callback",
+},
+  //The following function is called after user authenticates with github
+  async (accessToken, refreshToken, profile, done) => {
+    console.log("User authenticated through Google! In passport callback.");
+    //Our convention is to build userId from displayName and provider
+    const userId = `${profile.sub}@${profile.provider}`;
+    //See if document with this unique userId exists in database 
+    let currentUser = await User.findOne({id: userId});
+    if (!currentUser) { //Add this user to the database
+        currentUser = await new User({
+        type: 'user',
+        id: userId,
+        displayName: profile.displayName,
+        authStrategy: profile.provider,
+        profilePicURL: profile.photos[0].value
       }).save();
   }
   return done(null,currentUser);
@@ -207,6 +234,7 @@ app
 //Should be accessed when user clicks on 'Login with GitHub' button on 
 //Log In page.
 app.get('/auth/github', passport.authenticate('github'));
+app.get('/auth/google', passport.authenticate('google', {scope: ['profile']}));
 
 //CALLBACK route:  GitHub will call this route after the
 //OAuth authentication process is complete.
@@ -214,6 +242,14 @@ app.get('/auth/github', passport.authenticate('github'));
 app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/' }),
   (req, res) => {
     console.log("auth/github/callback reached.")
+    res.redirect('/'); //sends user back to login screen; 
+                       //req.isAuthenticated() indicates status
+  }
+);
+
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+    console.log("auth/google/callback reached.")
     res.redirect('/'); //sends user back to login screen; 
                        //req.isAuthenticated() indicates status
   }
