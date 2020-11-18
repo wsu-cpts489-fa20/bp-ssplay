@@ -5,6 +5,7 @@ import FloatingButton from "./FloatingButton.js";
 import RatesModal from "./RatesModal.js";
 import MoreModal from "./MoreModal.js";
 import BookingPage from "./BookingPage.js";
+import AdvancedSearch from "./AdvancedSearch.js";
 
 class SpecificCourses extends React.Component {
 
@@ -18,6 +19,7 @@ class SpecificCourses extends React.Component {
             searchStart: false,
             getRatesButtonClicked: false,
             bookTeeTimeClicked: false,
+            advancedSearchClicked: false,
             more: false,
             selectButtonValue: "Select Course",
             query: "",
@@ -44,6 +46,10 @@ class SpecificCourses extends React.Component {
 
     toggleAddCourseClicked = () => {
         this.setState(state => ({addCourseClicked: !state.addCourseClicked}));
+    }
+
+    toggleAdvancedSearchClicked = () => {
+        this.setState(state => ({advancedSearchClicked: !state.advancedSearchClicked}));
     }
 
     toggleMoreClicked = (key) => {
@@ -243,7 +249,8 @@ class SpecificCourses extends React.Component {
                 <input style={{width: '60%'}} placeholder="Enter course name or search term"
                  value={this.state.query} onChange={this.handleInputChange}
                  disabled={this.state.searchCourseClicked ? true:false}></input>
-                <button onClick={this.handleClick}>{this.state.selectButtonValue}</button>
+                <Button onClick={this.handleClick}>{this.state.selectButtonValue}</Button>&nbsp;
+                <Button onClick={this.toggleAdvancedSearchClicked}>Advanced Search</Button>
                 {this.state.searchStart ? <div>{this.state.filteredData.map(i => <a className="course-search-list" onClick={() => this.getSearchedCourse(i.id)}>{i.id}</a>)}</div> : null}
                 
                 {this.state.searchCourseClicked ? <div style={{marginTop: "50px"}}><h3>1 Course Selected: </h3>
@@ -254,6 +261,13 @@ class SpecificCourses extends React.Component {
                 </Container>  </div>               
                  : null}
 
+
+                {this.state.advancedSearchClicked ? 
+                    <AdvancedSearch handleClose={this.toggleAdvancedSearchClicked}
+                    course={this.state.item}  changeMode={this.props.changeMode} 
+                    refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
+                    />
+                    : null}
                 {this.state.getRatesButtonClicked ? 
                     <RatesModal handleClose={this.toggleGetRatesClicked}
                     course={this.state.item}  changeMode={this.props.changeMode} 
