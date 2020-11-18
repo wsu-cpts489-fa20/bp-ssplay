@@ -85,7 +85,7 @@ class AllCourses extends React.Component {
 
     render() {
         return(
-            <div>
+            <div id="allCoursesPage">
                 <h1></h1>
                 <table >
                     <tbody>

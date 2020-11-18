@@ -63,67 +63,67 @@ class AddCourses extends React.Component {
                     <h3>Add Course</h3>
                     <label>
                         Course ID:<br></br>
-                        <input id="id" name="id" placeholder="id" value={this.state.id} onChange={this.handleChange}></input>
+                        <input id="id" name="id" placeholder="id" value={this.state.id} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <label>
                         Course Name:<br></br>
-                        <input id="courseName" name="courseName" placeholder="courseName" value={this.state.courseName} onChange={this.handleChange}></input>
+                        <input id="courseName" name="courseName" placeholder="courseName" value={this.state.courseName} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <label>
                         Standard Rate: $<br></br>
-                        <input id="rateStandard" name="rateStandard" placeholder="rateStandard" value={this.state.rateStandard} onChange={this.handleChange}></input>
+                        <input id="rateStandard" name="rateStandard" placeholder="rateStandard" value={this.state.rateStandard} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <label>
                         Senior Rate: $<br></br>
-                        <input id="rateSenior" name="rateSenior" placeholder="rateSenior" value={this.state.rateSenior} onChange={this.handleChange}></input>
+                        <input id="rateSenior" name="rateSenior" placeholder="rateSenior" value={this.state.rateSenior} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <label>
                         Rating:<br></br>
-                        <input id="rating" name="rating" placeholder="rating" value={this.state.rating} onChange={this.handleChange}></input>
+                        <input id="rating" name="rating" placeholder="rating" value={this.state.rating} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <label>
                         Review:<br></br>
-                        <input id="review" name="review"  placeholder="review" value={this.state.review} onChange={this.handleChange}></input>
+                        <input id="review" name="review"  placeholder="review" value={this.state.review} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <label>
                         Picture:<br></br>
-                        <input id="picture" name="picture"  placeholder="picture" value={this.state.picture} onChange={this.handleChange}></input>
+                        <input id="picture" name="picture"  placeholder="picture" value={this.state.picture} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <label>
                         Location:<br></br>
-                        <input id="location" name="location"  placeholder="location" value={this.state.location} onChange={this.handleChange}></input>
+                        <input id="location" name="location"  placeholder="location" value={this.state.location} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <label>
                         Yardage:<br></br>
-                        <input id="yardage" name="yardage"  placeholder="yardage" value={this.state.yardage} onChange={this.handleChange}></input>
+                        <input id="yardage" name="yardage"  placeholder="yardage" value={this.state.yardage} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <label>
                         Running Distance:<br></br>
-                        <input id="runningDistance" name="runningDistance"  placeholder="runningDistance" value={this.state.runningDistance} onChange={this.handleChange}></input>
+                        <input id="runningDistance" name="runningDistance"  placeholder="runningDistance" value={this.state.runningDistance} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <label>
                         Time Par:<br></br>
-                        <input id="timePar" name="timePar"  placeholder="timePar" value={this.state.timePar} onChange={this.handleChange}></input>
+                        <input id="timePar" name="timePar"  placeholder="timePar" value={this.state.timePar} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <label>
                         Best Score:<br></br>
-                        <input id="bestScore" name="bestScore"  placeholder="bestScore" value={this.state.bestScore} onChange={this.handleChange}></input>
+                        <input id="bestScore" name="bestScore"  placeholder="bestScore" value={this.state.bestScore} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <label>
                         Record Holder:<br></br>
-                        <input id="recordHolder" name="recordHolder"  placeholder="recordHolder" value={this.state.recordHolder} onChange={this.handleChange}></input>
+                        <input id="recordHolder" name="recordHolder"  placeholder="recordHolder" value={this.state.recordHolder} onChange={this.handleChange} required></input>
                     </label>
                     <p></p>
                     <button id="submitBtn" type="submit" style={{width: "70%",fontSize: "36px"}} 

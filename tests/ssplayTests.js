@@ -5,7 +5,7 @@ const login = ReactSelector('loginInterface')
 
 fixture `ssplay test`.page `localhost:8081`.beforeEach(async()=>{await waitForReact()})
 
-test('test login', async t => {
+test('test local login', async t => {
     await t
     .typeText("#emailInput", "a@a.com")
     .typeText("#passwordInput", "aaAA11!!")
@@ -51,10 +51,13 @@ test('test add course', async t =>{
     .expect(Selector('#addCoursePage').visible).eql(true)
     .wait(1000)
 
-    .typeText('#id', "k")
+    .typeText('#id', "Windross Farm Golf Course (Auckland, NZ)")
+    .typeText('#courseName', "Windross Farm Golf Course")
+    .typeText('#rateStandard', "150")
+    .typeText('#rateSenior', "100")
     .typeText('#rating', "4")
     .typeText('#review', "kk")
-    .typeText('#picture', "kk")
+    .typeText('#picture', "https://www.australiangolfdigest.com.au/wp-content/uploads/2017/09/Landscapes_FI.jpg")
     .typeText('#location', "kk")
     .typeText('#yardage', "kk")
     .typeText('#runningDistance', "kk")
@@ -64,6 +67,6 @@ test('test add course', async t =>{
     .click('#submitBtn')
     .wait(500)
 
-    .expect(Selector('#specificCoursePage').visible).eql(true)
+    .expect(Selector('#allCoursesPage').visible).eql(true)
     .wait(1000)
 })
