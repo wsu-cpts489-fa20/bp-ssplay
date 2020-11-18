@@ -217,11 +217,11 @@ cancelCreateAccount = () => {
               <span className={this.state.githubIcon}></span>&nbsp;
                 {this.state.githubLabel}
             </button>
-            {/* <button id="google-login-btn" type="button" className="btn btn-google"
+            <button id="google-login-btn" type="button" className="btn btn-google"
                onClick={() => this.handleOAuthLoginClick("google")}>
               <span className={this.state.googleIcon}></span>&nbsp;
                 {this.state.googleLabel}
-            </button> */}
+            </button>
             <p>
                 <i>Version CptS 489</i>
             </p>
