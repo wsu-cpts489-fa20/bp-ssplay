@@ -13,9 +13,9 @@ import path from 'path';
 import express from 'express';
 require('dotenv').config();
 
-const LOCAL_PORT = 8081;
-const DEPLOY_URL = "http://localhost:8081";
-// const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
+const LOCAL_PORT = 8080;
+// const DEPLOY_URL = "http://localhost:8080";
+const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
 const PORT = process.env.HTTP_PORT || LOCAL_PORT;
 const GithubStrategy = passportGithub.Strategy;
 const GoogleStrategy = passportGoogle.Strategy;
@@ -132,8 +132,8 @@ passport.use(new GithubStrategy({
 }));
 
 passport.use(new GoogleStrategy({
-  clientID: "909887696769-o31hn2i23rmajsov9oal8vftfu1e4n1r.apps.googleusercontent.com",
-  clientSecret: "JmKC0RIuBWh3Cr9n_lddKF93",
+  clientID: process.env.GO_CLIENT_ID,
+  clientSecret: process.env.GO_CLIENT_SECRET,
   callbackURL: DEPLOY_URL + "/auth/google/callback",
 },
   //The following function is called after user authenticates with github

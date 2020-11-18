@@ -32,9 +32,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 require('dotenv').config();
 
-var LOCAL_PORT = 8081;
-var DEPLOY_URL = "http://localhost:8081"; // const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
+var LOCAL_PORT = 8080; // const DEPLOY_URL = "http://localhost:8080";
 
+var DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
 var PORT = process.env.HTTP_PORT || LOCAL_PORT;
 var GithubStrategy = _passportGithub["default"].Strategy;
 var GoogleStrategy = _passportGoogleOauth["default"].Strategy;
@@ -230,8 +230,8 @@ function () {
 }()));
 
 _passport["default"].use(new GoogleStrategy({
-  clientID: "909887696769-o31hn2i23rmajsov9oal8vftfu1e4n1r.apps.googleusercontent.com",
-  clientSecret: "JmKC0RIuBWh3Cr9n_lddKF93",
+  clientID: process.env.GO_CLIENT_ID,
+  clientSecret: process.env.GO_CLIENT_SECRET,
   callbackURL: DEPLOY_URL + "/auth/google/callback"
 },
 /*#__PURE__*/
