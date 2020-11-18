@@ -1,27 +1,23 @@
-# Final Speedgolf App
-This code base starts with the MERN stack MVP implmentation of the speedgolf
-app as it was deployed to MongoDB Atlas and AWS EB in Chapter 24. To that it adds
-some key features that were included as end-of-chapter exercises:
+# ssplay-app features	
+* a UI for speedgolfers who want to browse courses, rate courses, review courses, and book/pay for tee times;
+* a UI for course operators who want to set speedgolf rates, specify available tee times, and receive payments for speedgolf reservations
+* a UI is needed to allow users to specify the details of a given course: hole yardages, running distances, time pars, stroke pars. These details could be specified by speedgolfers familiar with the course, or by course operators.
 
-* Ability to reset password using security question/answer
-* Ability to delete a speedgolf round
-* Ability to edit and delete a user account
+# Link to eb
+http://ssplay.us-west-2.elasticbeanstalk.com/
 
-This repo serves as the starting code for all of the CptS 489 project teams in the
-Fa20 semester. It will be pushed to their repos, deployed to their instances on
-AWS EB, and served through https://[proj-name].bfapp.org.
+# Link to testing gifs
+https://drive.google.com/file/d/1D1yAcjRA58xQMfy4SfV9n2-pIF1aazCg/view?usp=sharing
 
-To connect the app to your MongoDB database, create a .env file in the 
-project root directory. On the first line of that file, add this:
-MONGO_STR=<YOUR_MONGO_CONNECTION_STRING>
+# Code Quality
+SpecificCourses.js, AddCourses.js, AllCourses.js
 
-You'll should also add the client ids and client secrets of each of your 
-OAuth providers to the .env file. Here's an example for GitHub:
-GH_CLIENT_ID='<CLIENT ID INSIDE QUOTES>'
-GH_CLIENT_SECRET='<CLIENT SECRET INSIDE QUOTES>'
-
-Make sure to add .env to your .gitignore file so that your secrets aren't
-stored in your GitHub repo!
-
-The app is presently set be served to http://localhost:8081 through the command
-npm run dev. You'll need to update DEPLOY_URL in server.js for remote deployment.
+# Retrospective
+* Week1: 
+	* Goods:
+		* The code progress is going well as we all try to implement features required. 
+		* Code commits are being done consistently by everyone in the team.
+		* Coding-wise, our team did a pretty good job.
+	
+	* Bads:
+		* None of us paid much attention to the rubric so we were missing some key requirements which got us penalties on our grades.
