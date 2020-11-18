@@ -73,7 +73,7 @@ const courseSchema = new Schema({
   recordHolder: String,
   rateSenior: String,
   rateStandard: String,
-  courseName: String,
+  courseName: String
 },
 {
   toObject: {
