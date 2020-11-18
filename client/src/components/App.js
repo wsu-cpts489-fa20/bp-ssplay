@@ -114,6 +114,10 @@ class App extends React.Component {
     this.setState({showEditAccountDialog: false});
   }
 
+  setUserObjType = (newType) => {
+    this.setState({userObj: newType});
+  }
+
   //editAccountDone -- called after successful edit or
   //deletion of user account. msg contains the status
   //message and deleted indicates whether an account was
@@ -174,6 +178,7 @@ class App extends React.Component {
             changeMode={this.handleChangeMode}
             menuOpen={this.state.menuOpen}/>
           <ModePage 
+            setUserObjType={this.setUserObjType}
             menuOpen={this.state.menuOpen}
             mode={this.state.mode}
             changeMode={this.handleChangeMode}

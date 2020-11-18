@@ -120,7 +120,7 @@ passport.use(new GithubStrategy({
     let currentUser = await User.findOne({id: userId});
     if (!currentUser) { //Add this user to the database
         currentUser = await new User({
-        type: 'operator',
+        type: "operator",
         id: userId,
         displayName: profile.displayName,
         authStrategy: profile.provider,
@@ -145,7 +145,7 @@ passport.use(new GoogleStrategy({
     let currentUser = await User.findOne({id: userId});
     if (!currentUser) { //Add this user to the database
         currentUser = await new User({
-        type: 'user',
+        type: "user",
         id: userId,
         displayName: profile.displayName,
         authStrategy: profile.provider,

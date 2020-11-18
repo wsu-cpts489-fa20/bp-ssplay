@@ -32,9 +32,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 require('dotenv').config();
 
-var LOCAL_PORT = 8080; // const DEPLOY_URL = "http://localhost:8080";
+var LOCAL_PORT = 8080;
+var DEPLOY_URL = "http://localhost:8080"; // const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
 
-var DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
 var PORT = process.env.HTTP_PORT || LOCAL_PORT;
 var GithubStrategy = _passportGithub["default"].Strategy;
 var GoogleStrategy = _passportGoogleOauth["default"].Strategy;
@@ -202,7 +202,7 @@ function () {
 
             _context.next = 8;
             return new User({
-              type: 'operator',
+              type: "operator",
               id: userId,
               displayName: profile.displayName,
               authStrategy: profile.provider,
@@ -262,7 +262,7 @@ function () {
 
             _context2.next = 8;
             return new User({
-              type: 'user',
+              type: "user",
               id: userId,
               displayName: profile.displayName,
               authStrategy: profile.provider,
