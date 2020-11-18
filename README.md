@@ -1,13 +1,13 @@
-#Link to eb
+# Link to eb
 http://ssplay.us-west-2.elasticbeanstalk.com/
 
-#Link to testing gifs
+# Link to testing gifs
 https://drive.google.com/file/d/1D1yAcjRA58xQMfy4SfV9n2-pIF1aazCg/view?usp=sharing
 
-#Code Quality
+# Code Quality
 SpecificCourses.js, AddCourses.js, AllCourses.js
 
-#Retrospective
+# Retrospective
 * Week1: 
 	* Goods:
 		* The code progress is going well as we all try to implement features required. 
