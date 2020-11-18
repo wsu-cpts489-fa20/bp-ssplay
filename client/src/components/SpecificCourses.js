@@ -26,7 +26,7 @@ class SpecificCourses extends React.Component {
             data: [],
             filteredData: [],
             item: "",
-
+            
             id: "",
             rating: "",
             review: "",
@@ -91,6 +91,26 @@ class SpecificCourses extends React.Component {
     setSearchCourseClickedFalse = () => {
         this.setState({searchCourseClicked : false});
         this.setSelectButtonValue("Select Course");
+    }
+
+    setFilteredData = (newData) => {
+        this.setState({
+            course: newData.map((c) =>(
+                <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
+                    <Card key={c.id} style={{ width: "30rem", display: "flex" }}>
+                    <Card.Img className="course-image" variant="top" src={c.picture}></Card.Img>
+                    <Card.Body>
+                        <Card.Title>{c.courseName}</Card.Title>
+                        <Card.Text>Record Holder: {c.recordHolder}</Card.Text>
+                        <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
+                        <Button onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
+                        <Button onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
+                    </Card.Body>
+                    <Card.Footer>Rating: {c.rating}</Card.Footer>
+                    </Card>
+                </Col>
+            ))
+        });
     }
 
     handleInputChange = event => {
@@ -248,9 +268,9 @@ class SpecificCourses extends React.Component {
 
                 <input style={{width: '60%'}} placeholder="Enter course name or search term"
                  value={this.state.query} onChange={this.handleInputChange}
-                 disabled={this.state.searchCourseClicked ? true:false}></input>
+                 disabled={this.state.searchCourseClicked ? true:false}></input>&nbsp;
                 <Button onClick={this.handleClick}>{this.state.selectButtonValue}</Button>&nbsp;
-                <Button onClick={this.toggleAdvancedSearchClicked}>Advanced Search</Button>
+                <Button onClick={this.toggleAdvancedSearchClicked} disabled={this.state.searchCourseClicked ? true:false}>Advanced Search</Button>
                 {this.state.searchStart ? <div>{this.state.filteredData.map(i => <a className="course-search-list" onClick={() => this.getSearchedCourse(i.id)}>{i.id}</a>)}</div> : null}
                 
                 {this.state.searchCourseClicked ? <div style={{marginTop: "50px"}}><h3>1 Course Selected: </h3>
@@ -264,8 +284,13 @@ class SpecificCourses extends React.Component {
 
                 {this.state.advancedSearchClicked ? 
                     <AdvancedSearch handleClose={this.toggleAdvancedSearchClicked}
+                    searchStart={this.setSearchCourseClickedTrue}
+                    toggleMoreClicked={this.toggleMoreClicked}
+                    toggleGetRatesClicked={this.toggleGetRatesClicked}
+                    toggleBookTeeTimeClicked={this.toggleBookTeeTimeClicked}
                     course={this.state.item}  changeMode={this.props.changeMode} 
                     refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
+                    setFilteredData={this.setFilteredData}
                     />
                     : null}
                 {this.state.getRatesButtonClicked ? 

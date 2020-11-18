@@ -1,4 +1,5 @@
 import React from 'react';
+import { Navbar, Container, Row, Col, Card, Button, Modal } from "react-bootstrap";
 
 class AdvancedSearch extends React.Component {
     constructor(){
@@ -11,7 +12,9 @@ class AdvancedSearch extends React.Component {
             timePar: "",
             rateStandard: "",
             rateSenior: "",
-            searchType: ""
+            searchType: "",
+            allCourses: [],
+            filteredCourses: []
         };
     }
 
@@ -35,26 +38,14 @@ class AdvancedSearch extends React.Component {
         {
             console.log("GET SUCCESS!");
             let thisCourse = JSON.parse(obj);
-            // for (var i = 0; i < thisCourse.length; i++)
-            //     console.log(thisCourse[i].courseName);
-            // this.setState({
-            //     course: thisCourse.map((c) =>(
-            //         <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
-            //             <Card key={c.id} style={{ width: "30rem", display: "flex" }}>
-            //             <Card.Img className="course-image" variant="top" src={c.picture}></Card.Img>
-            //             <Card.Body>
-            //                 <Card.Title>{c.courseName}</Card.Title>
-            //                 <Card.Text>Record Holder: {c.recordHolder}</Card.Text>
-            //                 {this.setState({item: c.id})}
-            //                 <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
-            //                 <Button type="button" onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
-            //                 <Button type="button" onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
-            //             </Card.Body>
-            //             <Card.Footer>Rating: {c.rating}</Card.Footer>
-            //             </Card>
-            //         </Col>
-            //     ))
-            // });
+            let table = [];
+            for (var i = 0; i < thisCourse.length; i++)
+            {
+                table.push(thisCourse[i]);
+            }
+            
+            this.setState({allCourses: table});
+            // console.log(this.state.allCourses);
         }).catch((error) =>{
             console.log("GET ERROR!");
         });
@@ -66,7 +57,61 @@ class AdvancedSearch extends React.Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        console.log("SUBMIT ADVANCED SEARCH!");
+        this.props.searchStart();
+        let type = this.state.searchType;
+        let len = this.state.allCourses.length;
+        let c = this.state.allCourses;
+        let table = [];
+        switch (type){
+            case "rates":
+                for (var i = 0; i < len; i++)
+                {
+                    if (c[i].rateSenior === this.state.rateSenior || c[i].rateStandard === this.state.rateStandard)
+                    {
+                        table.push(c[i]);
+                    }
+                }
+                break;
+            case "rating":
+                for (var i = 0; i < len; i++)
+                {
+                    if (c[i].rating === this.state.rating)
+                    {
+                        table.push(c[i]);
+                    }
+                }
+                break;
+            case "yardage":
+                for (var i = 0; i < len; i++)
+                {
+                    if (c[i].yardage === this.state.yardage)
+                    {
+                        table.push(c[i]);
+                    }
+                }
+                break;
+            case "runningDistance":
+                for (var i = 0; i < len; i++)
+                {
+                    if (c[i].runningDistance === this.state.runningDistance)
+                    {
+                        table.push(c[i]);
+                    }
+                }
+                break;
+            case "timePar":
+                for (var i = 0; i < len; i++)
+                {
+                    if (c[i].timePar === this.state.timePar)
+                    {
+                        table.push(c[i]);
+                    }
+                }
+                break;
+        }
+        // console.log(table);
+        this.props.setFilteredData(table);
+        this.props.handleClose();
     }
 
     handleSwitch = (type) => {
@@ -85,10 +130,6 @@ class AdvancedSearch extends React.Component {
                         <input id="rateSenior" name="rateSenior" placeholder="rateSenior" value={this.state.rateSenior} onChange={this.handleChange}></input>
                     </label>
                     <p></p>
-                    <button id="submitBtn" type="submit" style={{width: "70%",fontSize: "36px"}} 
-                        className="btn btn-primary btn-color-theme">
-                        &nbsp;Submit
-                    </button>
                     </center>
                 </form>
             );
@@ -102,10 +143,6 @@ class AdvancedSearch extends React.Component {
                         <input id="rating" name="rating" placeholder="rating" value={this.state.rating} onChange={this.handleChange}></input>
                     </label>
                     <p></p> 
-                    <button id="submitBtn" type="submit" style={{width: "70%",fontSize: "36px"}} 
-                        className="btn btn-primary btn-color-theme">
-                        &nbsp;Submit
-                    </button>
                     </center>
                 </form>
             );
@@ -119,10 +156,6 @@ class AdvancedSearch extends React.Component {
                         <input id="yardage" name="yardage"  placeholder="yardage" value={this.state.yardage} onChange={this.handleChange}></input>
                     </label>
                     <p></p>  
-                    <button id="submitBtn" type="submit" style={{width: "70%",fontSize: "36px"}} 
-                        className="btn btn-primary btn-color-theme">
-                        &nbsp;Submit
-                    </button>
                     </center>
                 </form>
             );
@@ -136,10 +169,6 @@ class AdvancedSearch extends React.Component {
                         <input id="runningDistance" name="runningDistance"  placeholder="runningDistance" value={this.state.runningDistance} onChange={this.handleChange}></input>
                     </label>
                     <p></p> 
-                    <button id="submitBtn" type="submit" style={{width: "70%",fontSize: "36px"}} 
-                        className="btn btn-primary btn-color-theme">
-                        &nbsp;Submit
-                    </button>
                     </center>
                 </form>
             );
@@ -153,10 +182,6 @@ class AdvancedSearch extends React.Component {
                         <input id="timePar" name="timePar"  placeholder="timePar" value={this.state.timePar} onChange={this.handleChange}></input>
                     </label>
                     <p></p>
-                    <button id="submitBtn" type="submit" style={{width: "70%",fontSize: "36px"}} 
-                        className="btn btn-primary btn-color-theme">
-                        &nbsp;Submit
-                    </button>
                     </center>
                 </form>
             );
@@ -190,6 +215,13 @@ class AdvancedSearch extends React.Component {
                             <p></p>
                         </form>
                         {this.handleSwitch(this.state.searchType)}
+                    </div>
+                    <div className="modal-footer">
+                        {this.state.searchType !== "" ? 
+                        <button onClick={this.handleSubmit} id="submitBtn" type="submit" style={{width: "70%",fontSize: "36px"}} 
+                            className="btn btn-primary btn-color-theme">
+                            &nbsp;Submit
+                        </button> : null}
                     </div>
                 </div>
             </div>
