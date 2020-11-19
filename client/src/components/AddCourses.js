@@ -19,9 +19,17 @@ class AddCourses extends React.Component {
             bestScore: "",
             recordHolder: "",
             rateStandard: "",
-            rateSenior: ""
+            rateSenior: "",
+            appointments: {
+                day1:[true, true],
+                day2:[true, true]
+              }
         };
     }
+
+    // componentDidMount(){
+    //     console.log(this.state.appointments.day1.nine);
+    // }
 
     handleChange = (event) =>{
         this.setState({[event.target.name]: event.target.value});

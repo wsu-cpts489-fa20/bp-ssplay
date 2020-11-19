@@ -32,9 +32,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 require('dotenv').config();
 
-var LOCAL_PORT = 8080; // const DEPLOY_URL = "http://localhost:8080";
+var LOCAL_PORT = 8080;
+var DEPLOY_URL = "http://localhost:8080"; // const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
 
-var DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
 var PORT = process.env.HTTP_PORT || LOCAL_PORT;
 var GithubStrategy = _passportGithub["default"].Strategy;
 var GoogleStrategy = _passportGoogleOauth["default"].Strategy;
@@ -124,7 +124,11 @@ var courseSchema = new Schema({
   recordHolder: String,
   rateSenior: String,
   rateStandard: String,
-  courseName: String
+  courseName: String,
+  appointments: {
+    day1: [],
+    day2: []
+  }
 }, {
   toObject: {
     virtuals: true
@@ -1157,7 +1161,8 @@ app.post('/courses/:courseId', /*#__PURE__*/function () {
               bestScore: req.body.bestScore,
               recordHolder: req.body.recordHolder,
               rateSenior: req.body.rateSenior,
-              rateStandard: req.body.rateStandard
+              rateStandard: req.body.rateStandard,
+              appointments: req.body.appointments
             }).save();
 
           case 13:
@@ -1203,7 +1208,7 @@ app.put('/courses/:courseId', /*#__PURE__*/function () {
             return _context16.abrupt("return", res.status(400).send("courses/ PUT request formulated incorrectly." + "It must contain 'courseId' as parameter."));
 
           case 3:
-            validProps = ['courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
+            validProps = ['appointments', 'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
             _context16.t0 = _regeneratorRuntime["default"].keys(req.body);
 
           case 5:
@@ -1219,7 +1224,7 @@ app.put('/courses/:courseId', /*#__PURE__*/function () {
               break;
             }
 
-            return _context16.abrupt("return", res.status(400).send("courses/ PUT request formulated incorrectly." + "Only the following props are allowed in body: " + "'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'"));
+            return _context16.abrupt("return", res.status(400).send("courses/ PUT request formulated incorrectly." + "Only the following props are allowed in body: " + "'appointments', 'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'"));
 
           case 9:
             _context16.next = 5;

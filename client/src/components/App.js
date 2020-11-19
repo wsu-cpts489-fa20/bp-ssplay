@@ -59,7 +59,7 @@ class App extends React.Component {
             this.setState({
               userObj: obj.user,
               authenticated: true,
-              mode: AppMode.FEED //We're authenticated so can get into the app.
+              mode: AppMode.COURSES_ALL //We're authenticated so can get into the app.
             });
           }
         }
