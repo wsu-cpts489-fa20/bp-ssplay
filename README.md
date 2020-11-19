@@ -7,9 +7,10 @@
 http://ssplay.us-west-2.elasticbeanstalk.com/
 
 # Link to testing gifs
-	* Week 1
+* Week 1
 	https://drive.google.com/file/d/1D1yAcjRA58xQMfy4SfV9n2-pIF1aazCg/view?usp=sharing
-	* Week 2
+	
+* Week 2
 	https://drive.google.com/file/d/12Ps2GfDvjzKIolzZiCActPQIomGOWO_h/view?usp=sharing
 
 # Code Quality
