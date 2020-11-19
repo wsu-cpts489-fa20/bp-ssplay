@@ -1,18 +1,27 @@
 import React from 'react';
 import AppMode from '../AppMode';
 
-let t1 = new Date(Date.now()-(new Date()).getTimezoneOffset()*60000);
-let day1 = t1.toISOString().substr(0,10);
-console.log(day1); // today
+let today = new Date();
+let tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+let thirdDay = new Date(tomorrow);
+thirdDay.setDate(thirdDay.getDate() + 1);
+let fourthDay = new Date(thirdDay);
+fourthDay.setDate(fourthDay.getDate() + 1);
+let fifthDay = new Date(fourthDay);
+fifthDay.setDate(fifthDay.getDate() + 1);
+let sixthDay = new Date(fifthDay);
+sixthDay.setDate(sixthDay.getDate() + 1);
+let seventhDay = new Date(sixthDay);
+seventhDay.setDate(seventhDay.getDate() + 1);
 
-let shortcut = t1.toISOString().substr(0,8);
-let cur = parseInt(t1.toISOString().substr(8,2));
-
-let day2 = shortcut+(cur+1).toString();
-console.log(day2); // tomorrow
-
-let day7 = shortcut+(cur+6).toString();
-console.log(day7); // Seven Days From Now
+let day1 = today.toISOString().substring(0,10);
+let day2 = tomorrow.toISOString().substring(0,10);
+let day3 = thirdDay.toISOString().substring(0,10);
+let day4 = fourthDay.toISOString().substring(0,10);
+let day5 = fifthDay.toISOString().substring(0,10);
+let day6 = sixthDay.toISOString().substring(0,10);
+let day7 = seventhDay.toISOString().substring(0,10);
 
 
 class BookingPage extends React.Component {
@@ -54,35 +63,57 @@ class BookingPage extends React.Component {
         });
     }
 
-    handleBookTeeTime = () => {
+    handleBookTeeTime = (event) => {
+        event.preventDefault();
         console.log("Booking tee time");
+        let newData = {
+            appointments: this.state.course.appointments,
+            courseName: this.state.course.courseName,
+            id: this.state.course.id,
+            rating: this.state.course.rating,
+            review: this.state.course.review,
+            picture: this.state.course.picture,
+            location: this.state.course.location,
+            yardage: this.state.course.yardage,
+            runningDistance: this.state.course.runningDistance,
+            timePar: this.state.course.timePar,
+            bestScore: this.state.course.bestScore,
+            recordHolder: this.state.course.recordHolder,
+            rateSenior: this.state.course.rateSenior,
+            rateStandard: this.state.course.rateStandard
+        }
+
         switch(this.state.bookingDate){
             case day1:
-                this.state.course.appointments.day1[this.state.bookingTime] = false;
-                let newData = {
-                    appointments: this.state.course.appointments,
-                    courseName: this.state.course.courseName,
-                    id: this.state.course.id,
-                    rating: this.state.course.rating,
-                    review: this.state.course.review,
-                    picture: this.state.course.picture,
-                    location: this.state.course.location,
-                    yardage: this.state.course.yardage,
-                    runningDistance: this.state.course.runningDistance,
-                    timePar: this.state.course.timePar,
-                    bestScore: this.state.course.bestScore,
-                    recordHolder: this.state.course.recordHolder,
-                    rateSenior: this.state.course.rateSenior,
-                    rateStandard: this.state.course.rateStandard
-                }
+                newData.appointments.day1[this.state.bookingTime] = false;
                 this.editCourse(newData);
                 break;
             case day2:
-                console.log(day2);
+                newData.appointments.day2[this.state.bookingTime] = false;
+                this.editCourse(newData);
+                break;
+            case day3:
+                newData.appointments.day3[this.state.bookingTime] = false;
+                this.editCourse(newData);
+                break;
+            case day4:
+                newData.appointments.day4[this.state.bookingTime] = false;
+                this.editCourse(newData);
+                break;
+            case day5:
+                newData.appointments.day5[this.state.bookingTime] = false;
+                this.editCourse(newData);
+                break;
+            case day6:
+                newData.appointments.day6[this.state.bookingTime] = false;
+                this.editCourse(newData);
+                break;
+            case day7:
+                newData.appointments.day7[this.state.bookingTime] = false;
+                this.editCourse(newData);
                 break;
         }
         this.props.handleClose();
-        alert("Tee Time Booked!");
     }
 
     
@@ -100,6 +131,7 @@ class BookingPage extends React.Component {
         if (res.status === 200) {
             // this.toggleReviewClicked();
             // this.props.handleClose();
+            alert("Tee Time Booked!");
             if (this.props.mode === AppMode.COURSES)
                 this.props.refreshOnUpdate(AppMode.COURSES);
             else 
@@ -141,15 +173,16 @@ class BookingPage extends React.Component {
                         <label for="bookingTime">Time: <br></br>
                         <select type="date" id="bookingTime" name="bookingTime" value={this.state.bookingTime} onChange={this.handleChange} required>
                             <option></option>
+                            {/* disabled={!this.state.course.appointments.day1[0]} */}
                             <option value="0">9:00 AM</option>
                             <option value="1">10:00 AM</option>
-                            <option value="11:00 AM">11:00 AM</option>
-                            <option value="12:00 AM">12:00 PM</option> 
-                            <option value="1:00 PM">1:00 PM</option>
-                            <option value="2:00 PM">2:00 PM</option> 
-                            <option value="3:00 PM">3:00 PM</option>
-                            <option value="4:00 PM">4:00 PM</option>
-                            <option value="5:00 PM">5:00 PM</option>    
+                            <option value="2">11:00 AM</option>
+                            <option value="3">12:00 PM</option> 
+                            <option value="4">1:00 PM</option>
+                            <option value="5">2:00 PM</option> 
+                            <option value="6">3:00 PM</option>
+                            <option value="7">4:00 PM</option>
+                            <option value="8">5:00 PM</option>    
                         </select>
                         </label>
                         <p></p>

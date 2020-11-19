@@ -75,9 +75,6 @@ class AllCourses extends React.Component {
                     </Col>
                 ))
             });
-
-            // this.renderCourses(thisCourse);
-            // console.log(thisCourse);
         }).catch((error) =>{
             console.log("GET ERROR!");
         });

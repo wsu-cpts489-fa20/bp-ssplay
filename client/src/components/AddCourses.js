@@ -21,8 +21,13 @@ class AddCourses extends React.Component {
             rateStandard: "",
             rateSenior: "",
             appointments: {
-                day1:[true, true],
-                day2:[true, true]
+                day1:[true, true, true, true, true, true, true, true, true],
+                day2:[true, true, true, true, true, true, true, true, true],
+                day3:[true, true, true, true, true, true, true, true, true],
+                day4:[true, true, true, true, true, true, true, true, true],
+                day5:[true, true, true, true, true, true, true, true, true],
+                day6:[true, true, true, true, true, true, true, true, true],
+                day7:[true, true, true, true, true, true, true, true, true]
               }
         };
     }
