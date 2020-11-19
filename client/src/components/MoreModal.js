@@ -15,6 +15,7 @@ constructor(){
     };
 }
 
+// Get information on the course that was selected on render
 componentDidMount(){
     this.getSearchedCourse(this.props.course);
 }
@@ -23,6 +24,8 @@ toggleReviewClicked = () =>{
     this.setState(state =>({reviewClicked: !state.reviewClicked}));
 }
 
+// Get information of course selected to show more information
+// Also save the course information, for PUT request, in case user wants to edit
 getSearchedCourse = async (id) => {
     const url = '/courses/'+id;
     fetch(url)
@@ -76,6 +79,7 @@ getSearchedCourse = async (id) => {
     });
 }
 
+// Sends a PUT request to the backend to edit a course in the courses schema
 editCourse = async (newData) =>{
     const url = '/courses/' + this.state.id;
     const res = await fetch(url, {
@@ -99,6 +103,7 @@ editCourse = async (newData) =>{
     }
 }
 
+// Save the new information that were changed then call editCourse(newInformation) to update the backend
 handleSubmit = (event) =>{
     event.preventDefault();
     let newData = {
@@ -116,7 +121,6 @@ handleSubmit = (event) =>{
         rateSenior: this.state.rateSenior,
         rateStandard: this.state.rateStandard
     }
-
     this.editCourse(newData);
 
 }

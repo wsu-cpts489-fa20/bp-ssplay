@@ -22,6 +22,7 @@ class SpecificCourses extends React.Component {
             advancedSearchClicked: false,
             more: false,
             selectButtonValue: "Select Course",
+            courseAmount: 1,
             query: "",
             data: [],
             filteredData: [],
@@ -83,6 +84,10 @@ class SpecificCourses extends React.Component {
         this.setState({searchStart : false});
     }
 
+    setCourseAmount = (x) => {
+        this.setState({courseAmount: x});
+    }
+
     setSearchCourseClickedTrue = () => {
         this.setState({searchCourseClicked : true});
         this.setSelectButtonValue("Clear Selected");
@@ -93,6 +98,7 @@ class SpecificCourses extends React.Component {
         this.setSelectButtonValue("Select Course");
     }
 
+    // Show courses that were selected when user searches
     setFilteredData = (newData) => {
         this.setState({
             course: newData.map((c) =>(
@@ -113,6 +119,7 @@ class SpecificCourses extends React.Component {
         });
     }
 
+    // Handles changing the name of the Select Button to the appropriate values
     handleInputChange = event => {
         const query = event.target.value;
         this.setState(prevState => {
@@ -129,6 +136,7 @@ class SpecificCourses extends React.Component {
           {
               this.setSearchTrue();
               this.setSelectButtonValue("Select All "+ filteredData.length +" Matching Courses");
+              this.setCourseAmount(filteredData.length);
           }
 
           return {
@@ -139,6 +147,7 @@ class SpecificCourses extends React.Component {
 
     };
 
+    // Retrieve information for all courses for searching usage
     getCourse = async () => {
         const url = '/allcourses/';
         fetch(url)
@@ -169,9 +178,11 @@ class SpecificCourses extends React.Component {
         });
     }
 
+    // Retrieve information of 1 course provided an id
     getSearchedCourse = async (id) => {
         this.setSearchCourseClickedTrue();
         this.setSearchFalse();
+        this.setCourseAmount(1);
         const url = '/courses/'+id;
         fetch(url)
         .then((response) => {
@@ -209,6 +220,7 @@ class SpecificCourses extends React.Component {
         });
     }
 
+    // Handle event when user clicks into 1 of the choices provided when searching for a course
     handleClick = (event) =>{
         event.preventDefault();
         if (this.state.selectButtonValue == "Select Course")
@@ -244,12 +256,6 @@ class SpecificCourses extends React.Component {
         }
     }
 
-
-
-    getRates = () => {
-
-    }
-
     render() {
         return (
             <div id="specificCoursePage">
@@ -273,7 +279,7 @@ class SpecificCourses extends React.Component {
                 <Button onClick={this.toggleAdvancedSearchClicked} disabled={this.state.searchCourseClicked ? true:false}>Advanced Search</Button>
                 {this.state.searchStart ? <div>{this.state.filteredData.map(i => <a className="course-search-list" onClick={() => this.getSearchedCourse(i.id)}>{i.id}</a>)}</div> : null}
                 
-                {this.state.searchCourseClicked ? <div style={{marginTop: "50px"}}><h3>1 Course Selected: </h3>
+                {this.state.searchCourseClicked ? <div style={{marginTop: "50px"}}><h3>{this.state.courseAmount} Course Selected: </h3>
                 <Container fluid={true}>
                     <Row noGutters>  
                         {this.state.course}
@@ -291,6 +297,7 @@ class SpecificCourses extends React.Component {
                     course={this.state.item}  changeMode={this.props.changeMode} 
                     refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
                     setFilteredData={this.setFilteredData}
+                    setCourseAmount={this.setCourseAmount}
                     />
                     : null}
                 {this.state.getRatesButtonClicked ? 

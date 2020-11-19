@@ -32,14 +32,11 @@ class AddCourses extends React.Component {
         };
     }
 
-    // componentDidMount(){
-    //     console.log(this.state.appointments.day1.nine);
-    // }
-
     handleChange = (event) =>{
         this.setState({[event.target.name]: event.target.value});
     }
 
+    // sends a POST request to the backend to add a course to do the courses schema
     addCourse = async (newData) => {
         console.log(newData);
         const url = '/courses/' + this.state.id;
@@ -61,11 +58,11 @@ class AddCourses extends React.Component {
         }
     }
 
+    // Handles form submit
     handleSubmit = (event) => {
         event.preventDefault();
         let courseData = this.state;
         this.addCourse(courseData);
-
     }
 
     render() {

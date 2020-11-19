@@ -18,6 +18,7 @@ class AllCourses extends React.Component {
         };
     }
 
+    // Get information of all courses on render
     componentDidMount(){
         this.getCourse();
     }
@@ -41,6 +42,7 @@ class AllCourses extends React.Component {
         this.setState(state => ({bookTeeTimeClicked: !state.bookTeeTimeClicked}));
     }
 
+    // Get information of all courses to show on page
     getCourse = async () => {
         const url = '/allcourses/';
         fetch(url)

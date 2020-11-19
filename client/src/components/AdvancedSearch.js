@@ -18,10 +18,12 @@ class AdvancedSearch extends React.Component {
         };
     }
 
+    // Get information on all courses at render
     componentDidMount(){
         this.getCourse();
     }
 
+    // Get information on all courses for searching purposes
     getCourse = async () => {
         const url = '/allcourses/';
         fetch(url)
@@ -55,6 +57,7 @@ class AdvancedSearch extends React.Component {
         this.setState({[event.target.name]: event.target.value});
     }
 
+    // Query what to show depending on form that was submitted
     handleSubmit = (event) => {
         event.preventDefault();
         this.props.searchStart();
@@ -109,11 +112,13 @@ class AdvancedSearch extends React.Component {
                 }
                 break;
         }
-        // console.log(table);
+        console.log(table.length);
+        this.props.setCourseAmount(table.length);
         this.props.setFilteredData(table);
         this.props.handleClose();
     }
 
+    // toggling between different forms of advanced search
     handleSwitch = (type) => {
         if (type === "rates")
         {

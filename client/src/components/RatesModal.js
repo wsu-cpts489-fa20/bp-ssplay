@@ -10,10 +10,12 @@ class RatesModal extends React.Component {
                    };
         }
 
+        // Get information of the course that was selected on render
         componentDidMount(){
             this.getSearchedCourse(this.props.course);
         }
 
+        // Get information of the course that was selected to show rates information
         getSearchedCourse = async (id) => {
             const url = '/courses/'+id;
             fetch(url)

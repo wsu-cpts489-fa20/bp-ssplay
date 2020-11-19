@@ -1,6 +1,8 @@
 import React from 'react';
 import AppMode from '../AppMode';
 
+// For setting min and max value of <input type="date">
+// Also to later usage of actual booking tee time implementation
 let today = new Date();
 let tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
@@ -36,10 +38,12 @@ class BookingPage extends React.Component {
         }
     }
 
+    // Get information on selected course on render
     componentDidMount(){
         this.getSearchedCourse(this.props.course);
     }
 
+    // Get information on selected course then set it to a state for usage in this component
     getSearchedCourse = async (id) => {
         const url = '/courses/'+id;
         fetch(url)
@@ -63,6 +67,9 @@ class BookingPage extends React.Component {
         });
     }
 
+    // Checks for the date and time that were requested for booking
+    // Then prepare data to send to the database
+    // by calling editCourse(newData)
     handleBookTeeTime = (event) => {
         event.preventDefault();
         console.log("Booking tee time");
@@ -85,13 +92,8 @@ class BookingPage extends React.Component {
 
         switch(this.state.bookingDate){
             case day1:
-                if (newData.appointments.day1[this.state.bookingTime])
-                {
-                    newData.appointments.day1[this.state.bookingTime] = false;
-                    this.editCourse(newData);
-                }
-                else
-                    alert("Tee Time Not Available!");
+                newData.appointments.day1[this.state.bookingTime] = false;
+                this.editCourse(newData);
                 break;
             case day2:
                 newData.appointments.day2[this.state.bookingTime] = false;
@@ -121,7 +123,8 @@ class BookingPage extends React.Component {
         this.props.handleClose();
     }
 
-    
+    // Sends a PUT request to the backend with the new information
+    // new information here is the appointments that were scheduled
     editCourse = async (newData) =>{
         const url = '/courses/' + this.props.course;
         const res = await fetch(url, {
@@ -151,6 +154,8 @@ class BookingPage extends React.Component {
         this.setState({[event.target.name]: event.target.value});
     }
 
+    // Handles enabling/disabling the time slots option on each date
+    // depending on the state of the appointments.day.time
     handleClick = () =>{
         document.getElementById("0").removeAttribute("disabled");
         document.getElementById("1").removeAttribute("disabled");
