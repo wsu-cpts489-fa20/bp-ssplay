@@ -131,7 +131,7 @@ handleChange = (event) => {
 
 render() {
     return (
-        <div className="modal" role="dialog">
+        <div id="moreModal" className="modal" role="dialog">
         <div className="modal-dialog modal-lg">
             <div className="modal-content">
             <div className="modal-header">

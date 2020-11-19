@@ -195,7 +195,7 @@ class AdvancedSearch extends React.Component {
 
     render (){
         return(
-        <div className="modal" role="dialog">
+        <div id="advancedSearchPage" className="modal" role="dialog">
             <div className="modal-dialog modal-lg">
                 <div className="modal-content">
                     <div className="modal-header">
@@ -207,11 +207,11 @@ class AdvancedSearch extends React.Component {
                     <div className="modal-body">
                         <form>
                             <label>Search By:&nbsp;
-                            <select name="searchType" value={this.state.searchType} 
+                            <select id="searchOptions" name="searchType" value={this.state.searchType} 
                                 className="form-control form-center" onChange={this.handleChange}>
                                 <option></option>
                                 <option value="rates">Rates</option>
-                                <option value="rating">Ratings</option>
+                                <option id="RATING" value="rating">Ratings</option>
                                 <option value="yardage">Holes Yardage</option>
                                 <option value="runningDistance">Running Distance</option>
                                 <option value="timePar">Time Pars</option>

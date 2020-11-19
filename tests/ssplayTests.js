@@ -3,14 +3,14 @@ import {ReactSelector, waitForReact} from 'testcafe-react-selectors'
 
 const login = ReactSelector('loginInterface')
 
-fixture `ssplay test`.page `localhost:8081`.beforeEach(async()=>{await waitForReact()})
+fixture `ssplay test`.page `localhost:8080`.beforeEach(async()=>{await waitForReact()})
 
 test('test local login', async t => {
     await t
     .typeText("#emailInput", "a@a.com")
     .typeText("#passwordInput", "aaAA11!!")
     .click('#login-btn-icon')
-    .expect(Selector('#feedMode').visible).eql(true)
+    .expect(Selector('#allCoursesPage').visible).eql(true)
     .wait(1000)
 })
 
@@ -19,14 +19,14 @@ test('test view all courses', async t =>{
     .typeText("#emailInput", "a@a.com")
     .typeText("#passwordInput", "aaAA11!!")
     .click('#login-btn-icon')
-    .expect(Selector('#feedMode').visible).eql(true)
-    .wait(1000)
+    .expect(Selector('#allCoursesPage').visible).eql(true)
+    .wait(100)
 
     .click("#courseMode")
-    .wait(1000)
+    .wait(100)
 
     .click('#menuBtnIcon')
-    .wait(500)
+    .wait(100)
 
     .click('#addCourse')
     .expect(Selector('#addCoursePage').visible).eql(true)
@@ -38,18 +38,15 @@ test('test add course', async t =>{
     .typeText("#emailInput", "a@a.com")
     .typeText("#passwordInput", "aaAA11!!")
     .click('#login-btn-icon')
-    .expect(Selector('#feedMode').visible).eql(true)
-    .wait(1000)
-
-    .click("#courseMode")
-    .wait(1000)
+    .expect(Selector('#allCoursesPage').visible).eql(true)
+    .wait(100)
 
     .click('#menuBtnIcon')
-    .wait(500)
+    .wait(100)
 
     .click('#addCourse')
     .expect(Selector('#addCoursePage').visible).eql(true)
-    .wait(1000)
+    .wait(100)
 
     .typeText('#id', "Windross Farm Golf Course (Auckland, NZ)")
     .typeText('#courseName', "Windross Farm Golf Course")
@@ -65,8 +62,70 @@ test('test add course', async t =>{
     .typeText('#bestScore', "kk")
     .typeText('#recordHolder', "kk")
     .click('#submitBtn')
-    .wait(500)
+    .wait(100)
 
     .expect(Selector('#allCoursesPage').visible).eql(true)
+    .wait(1000)
+})
+
+test('test show more modal', async t => {
+    await t
+    .typeText("#emailInput", "a@a.com")
+    .typeText("#passwordInput", "aaAA11!!")
+    .click('#login-btn-icon')
+    .expect(Selector('#allCoursesPage').visible).eql(true)
+
+    .click('#moreBtn')
+    .expect(Selector('#moreModal').visible).eql(true)
+    .wait(1000)
+})
+
+test('test show rates modal', async t => {
+    await t
+    .typeText("#emailInput", "a@a.com")
+    .typeText("#passwordInput", "aaAA11!!")
+    .click('#login-btn-icon')
+    .expect(Selector('#allCoursesPage').visible).eql(true)
+
+    .click('#ratesBtn')
+    .expect(Selector('#ratesModal').visible).eql(true)
+    .wait(1000)
+})
+
+test('test show booking page', async t => {
+    await t
+    .typeText("#emailInput", "a@a.com")
+    .typeText("#passwordInput", "aaAA11!!")
+    .click('#login-btn-icon')
+    .expect(Selector('#allCoursesPage').visible).eql(true)
+
+    .click('#bookingBtn')
+    .expect(Selector('#bookingPage').visible).eql(true)
+    .wait(1000)
+})
+
+test('test show advanced search', async t => {
+    await t
+    .typeText("#emailInput", "a@a.com")
+    .typeText("#passwordInput", "aaAA11!!")
+    .click('#login-btn-icon')
+    .expect(Selector('#allCoursesPage').visible).eql(true)
+
+    .click('#menuBtnIcon')
+    .wait(100)
+
+    .click('#specificCourse')
+    .expect(Selector('#specificCoursePage').visible).eql(true)
+    .wait(100)
+
+    .click('#advancedSearchBtn')
+    .expect(Selector('#advancedSearchPage').visible).eql(true)
+
+    .click('#searchOptions')
+    .click('#RATING')
+    .typeText('#rating', "1")
+    .click('#submitBtn')
+
+    .expect(Selector('#specificCoursePage').visible).eql(true)
     .wait(1000)
 })

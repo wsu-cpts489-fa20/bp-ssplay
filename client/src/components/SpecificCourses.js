@@ -276,7 +276,7 @@ class SpecificCourses extends React.Component {
                  value={this.state.query} onChange={this.handleInputChange}
                  disabled={this.state.searchCourseClicked ? true:false}></input>&nbsp;
                 <Button onClick={this.handleClick}>{this.state.selectButtonValue}</Button>&nbsp;
-                <Button onClick={this.toggleAdvancedSearchClicked} disabled={this.state.searchCourseClicked ? true:false}>Advanced Search</Button>
+                <Button id="advancedSearchBtn" onClick={this.toggleAdvancedSearchClicked} disabled={this.state.searchCourseClicked ? true:false}>Advanced Search</Button>
                 {this.state.searchStart ? <div>{this.state.filteredData.map(i => <a className="course-search-list" onClick={() => this.getSearchedCourse(i.id)}>{i.id}</a>)}</div> : null}
                 
                 {this.state.searchCourseClicked ? <div style={{marginTop: "50px"}}><h3>{this.state.courseAmount} Course Selected: </h3>

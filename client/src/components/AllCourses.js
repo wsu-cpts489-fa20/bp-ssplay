@@ -68,9 +68,9 @@ class AllCourses extends React.Component {
                             <Card.Title>{c.courseName}</Card.Title>
                             <Card.Text>Record Holder: {c.recordHolder}</Card.Text>
                             {this.setState({item: c.id})}
-                            <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
-                            <Button type="button" onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
-                            <Button type="button" onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
+                            <Button id="moreBtn" type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
+                            <Button id="ratesBtn" type="button" onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
+                            <Button id="bookingBtn" type="button" onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
                         </Card.Body>
                         <Card.Footer>Rating: {c.rating}</Card.Footer>
                         </Card>

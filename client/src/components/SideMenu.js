@@ -35,7 +35,7 @@ renderModeMenuItems = () => {
     case AppMode.COURSES_ADD:
       return(
         <div>
-        <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES)}>
+        <a id="specificCourse" className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES)}>
             <span className="fa fa-search"></span>&nbsp;Specific Course</a>
         <a className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES_NEARBY)}>
             <span className="fa fa-map-marker"></span>&nbsp;Nearby Courses</a>
