@@ -3,8 +3,8 @@
 * a UI for course operators who want to set speedgolf rates, specify available tee times, and receive payments for speedgolf reservations
 * a UI is needed to allow users to specify the details of a given course: hole yardages, running distances, time pars, stroke pars. These details could be specified by speedgolfers familiar with the course, or by course operators.
 
-# Link to eb
-http://ssplay.us-west-2.elasticbeanstalk.com/
+# Link to website
+https://ssplay.bfapp.org/
 
 # Link to testing gifs
 * Week 1
