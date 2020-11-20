@@ -4,7 +4,7 @@ import SideMenu from './SideMenu.js';
 import ModeBar from './ModeBar.js';
 import CreateEditAccountDialog from './CreateEditAccountDialog.js'
 import LoginPage from './LoginPage.js';
-import AppMode from "./../AppMode.js"
+import AppMode from "./../AppMode.js";
 import FeedPage from './FeedPage.js';
 import Rounds from './Rounds.js';
 import CoursesPage from './CoursesPage.js';
@@ -19,6 +19,7 @@ modeTitle[AppMode.ROUNDS_EDITROUND] = "Edit Round";
 modeTitle[AppMode.COURSES] = "Search Courses";
 modeTitle[AppMode.COURSES_NEARBY] = "Nearby Courses";
 modeTitle[AppMode.COURSES_ALL] = "All Speedgolf-Friendly Courses";
+modeTitle[AppMode.COURSES_ADD] = "Add a Course";
 
 const modeToPage = {};
 modeToPage[AppMode.LOGIN] = LoginPage;
@@ -29,6 +30,7 @@ modeToPage[AppMode.ROUNDS_EDITROUND] = Rounds;
 modeToPage[AppMode.COURSES] = CoursesPage;
 modeToPage[AppMode.COURSES_NEARBY] = CoursesPage;
 modeToPage[AppMode.COURSES_ALL] = CoursesPage;
+modeToPage[AppMode.COURSES_ADD] = CoursesPage;
 
 
 class App extends React.Component {
@@ -57,7 +59,7 @@ class App extends React.Component {
             this.setState({
               userObj: obj.user,
               authenticated: true,
-              mode: AppMode.FEED //We're authenticated so can get into the app.
+              mode: AppMode.COURSES_ALL //We're authenticated so can get into the app.
             });
           }
         }
@@ -112,6 +114,10 @@ class App extends React.Component {
     this.setState({showEditAccountDialog: false});
   }
 
+  setUserObjType = (newType) => {
+    this.setState({userObj: newType});
+  }
+
   //editAccountDone -- called after successful edit or
   //deletion of user account. msg contains the status
   //message and deleted indicates whether an account was
@@ -155,6 +161,7 @@ class App extends React.Component {
           menuOpen={this.state.menuOpen}
           toggleMenuOpen={this.toggleMenuOpen}/>
           <SideMenu 
+            type={this.state.userObj.type}
             changeMode={this.handleChangeMode}
             menuOpen = {this.state.menuOpen}
             mode={this.state.mode}
@@ -171,6 +178,7 @@ class App extends React.Component {
             changeMode={this.handleChangeMode}
             menuOpen={this.state.menuOpen}/>
           <ModePage 
+            setUserObjType={this.setUserObjType}
             menuOpen={this.state.menuOpen}
             mode={this.state.mode}
             changeMode={this.handleChangeMode}

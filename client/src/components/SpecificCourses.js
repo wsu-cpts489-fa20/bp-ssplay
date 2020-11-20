@@ -4,6 +4,8 @@ import { Navbar, Container, Row, Col, Card, Button, Modal } from "react-bootstra
 import FloatingButton from "./FloatingButton.js";
 import RatesModal from "./RatesModal.js";
 import MoreModal from "./MoreModal.js";
+import BookingPage from "./BookingPage.js";
+import AdvancedSearch from "./AdvancedSearch.js";
 
 class SpecificCourses extends React.Component {
 
@@ -16,13 +18,16 @@ class SpecificCourses extends React.Component {
             searchCourseClicked: false,
             searchStart: false,
             getRatesButtonClicked: false,
+            bookTeeTimeClicked: false,
+            advancedSearchClicked: false,
             more: false,
             selectButtonValue: "Select Course",
+            courseAmount: 1,
             query: "",
             data: [],
             filteredData: [],
             item: "",
-
+            
             id: "",
             rating: "",
             review: "",
@@ -34,6 +39,37 @@ class SpecificCourses extends React.Component {
             bestScore: "",
             recordHolder: ""
         };
+    }
+
+    componentWillMount() {
+        this.getCourse();
+    }
+
+    toggleAddCourseClicked = () => {
+        this.setState(state => ({addCourseClicked: !state.addCourseClicked}));
+    }
+
+    toggleAdvancedSearchClicked = () => {
+        this.setState(state => ({advancedSearchClicked: !state.advancedSearchClicked}));
+    }
+
+    toggleMoreClicked = (key) => {
+        this.setState({item: key});
+        this.setState(state => ({more: !state.more}));
+    }
+
+    toggleGetCourseClicked = () => {
+        this.setState(state => ({getCourseClicked: !state.getCourseClicked}));
+    }
+
+    toggleGetRatesClicked = (key) => {
+        this.setState({item: key});
+        this.setState(state => ({getRatesButtonClicked: !state.getRatesButtonClicked}));
+    }
+
+    toggleBookTeeTimeClicked = (key) => {
+        this.setState({item: key});
+        this.setState(state => ({bookTeeTimeClicked: !state.bookTeeTimeClicked}));
     }
 
     setSelectButtonValue = (newVal) => {
@@ -48,6 +84,10 @@ class SpecificCourses extends React.Component {
         this.setState({searchStart : false});
     }
 
+    setCourseAmount = (x) => {
+        this.setState({courseAmount: x});
+    }
+
     setSearchCourseClickedTrue = () => {
         this.setState({searchCourseClicked : true});
         this.setSelectButtonValue("Clear Selected");
@@ -58,10 +98,28 @@ class SpecificCourses extends React.Component {
         this.setSelectButtonValue("Select Course");
     }
 
-    componentWillMount() {
-        this.getCourse();
+    // Show courses that were selected when user searches
+    setFilteredData = (newData) => {
+        this.setState({
+            course: newData.map((c) =>(
+                <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
+                    <Card key={c.id} style={{ width: "30rem", display: "flex" }}>
+                    <Card.Img className="course-image" variant="top" src={c.picture}></Card.Img>
+                    <Card.Body>
+                        <Card.Title>{c.courseName}</Card.Title>
+                        <Card.Text>Record Holder: {c.recordHolder}</Card.Text>
+                        <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
+                        <Button onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
+                        <Button onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
+                    </Card.Body>
+                    <Card.Footer>Rating: {c.rating}</Card.Footer>
+                    </Card>
+                </Col>
+            ))
+        });
     }
 
+    // Handles changing the name of the Select Button to the appropriate values
     handleInputChange = event => {
         const query = event.target.value;
         this.setState(prevState => {
@@ -78,6 +136,7 @@ class SpecificCourses extends React.Component {
           {
               this.setSearchTrue();
               this.setSelectButtonValue("Select All "+ filteredData.length +" Matching Courses");
+              this.setCourseAmount(filteredData.length);
           }
 
           return {
@@ -88,6 +147,7 @@ class SpecificCourses extends React.Component {
 
     };
 
+    // Retrieve information for all courses for searching usage
     getCourse = async () => {
         const url = '/allcourses/';
         fetch(url)
@@ -118,9 +178,11 @@ class SpecificCourses extends React.Component {
         });
     }
 
+    // Retrieve information of 1 course provided an id
     getSearchedCourse = async (id) => {
         this.setSearchCourseClickedTrue();
         this.setSearchFalse();
+        this.setCourseAmount(1);
         const url = '/courses/'+id;
         fetch(url)
         .then((response) => {
@@ -142,10 +204,11 @@ class SpecificCourses extends React.Component {
                         <Card key={thisCourse.id} style={{ width: "30rem", display: "flex" }}>
                         <Card.Img className="course-image" variant="top" src={thisCourse.picture}></Card.Img>
                         <Card.Body>
-                            <Card.Title>Location: {thisCourse.location}</Card.Title>
-                            <Card.Text>Review: {thisCourse.review}</Card.Text>
-                            <Button type="button" onClick={() => this.toggleMoreClicked(thisCourse.id)}>More</Button>
-                            <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
+                            <Card.Title>{thisCourse.courseName}</Card.Title>
+                            <Card.Text>Record Holder: {thisCourse.recordHolder}</Card.Text>
+                            <Button type="button" onClick={() => this.toggleMoreClicked(thisCourse.id)}>More</Button>&nbsp;
+                            <Button onClick={() => this.toggleGetRatesClicked(thisCourse.id)}>Get Rates</Button>&nbsp;
+                            <Button onClick={() => this.toggleBookTeeTimeClicked(thisCourse.id)}>Book Tee Time</Button>&nbsp;
                         </Card.Body>
                         <Card.Footer>Rating: {thisCourse.rating}</Card.Footer>
                         </Card>
@@ -157,69 +220,9 @@ class SpecificCourses extends React.Component {
         });
     }
 
-    toggleAddCourseClicked = () => {
-        this.setState(state => ({addCourseClicked: !state.addCourseClicked}));
-    }
-
-    toggleMoreClicked = (key) => {
-        this.setState({item: key});
-        this.setState(state => ({more: !state.more}));
-    }
-
-    toggleGetCourseClicked = () => {
-        this.setState(state => ({getCourseClicked: !state.getCourseClicked}));
-    }
-
-    toggleGetRatesClicked = () => {
-        this.setState(state => ({getRatesButtonClicked: !state.getRatesButtonClicked}));
-    }
-f
-    addCourse = async (newData) => {
-        console.log(newData);
-        const url = '/courses/' + this.state.id;
-        const res = await fetch(url, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-                },
-            method: 'POST',
-            body: JSON.stringify(newData)}); 
-        const msg = await res.text();
-        if (res.status == 200) {
-            console.log("SUCCESS");
-            console.log(msg);
-            // this.setState({errorMsg: msg});
-            // this.props.changeMode(AppMode.COURSE);
-        } else {
-            console.log("FAILURE");
-            console.log(msg);
-            // this.setState({errorMsg: ""});
-            // this.props.refreshOnUpdate(AppMode.COURSE);
-        }
-    }
-
-
-    handleSubmit = (event) => {
-        event.preventDefault();
-        let courseData = {
-            id: this.state.id,
-            rating: this.state.rating,
-            review: this.state.review,
-            picture: this.state.picture,
-            location: this.state.location,
-            yardage: this.state.yardage,
-            runningDistance: this.state.runningDistance,
-            timePar: this.state.timePar,
-            bestScore: this.state.bestScore,
-            recordHolder: this.state.recordHolder
-        };
-        this.addCourse(courseData);
-
-    }
-
+    // Handle event when user clicks into 1 of the choices provided when searching for a course
     handleClick = (event) =>{
         event.preventDefault();
-
         if (this.state.selectButtonValue == "Select Course")
         {
 
@@ -239,10 +242,11 @@ f
                         <Card key={c.id} style={{ width: "30rem", display: "flex" }}>
                         <Card.Img className="course-image" variant="top" src={c.picture}></Card.Img>
                         <Card.Body>
-                            <Card.Title>Location: {c.location}</Card.Title>
-                            <Card.Text>Review: {c.review}</Card.Text>
-                            <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>
-                            <Button onClick={this.toggleGetRatesClicked}>Get Rates</Button>
+                            <Card.Title>{c.courseName}</Card.Title>
+                            <Card.Text>Record Holder: {c.recordHolder}</Card.Text>
+                            <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
+                            <Button onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
+                            <Button onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
                         </Card.Body>
                         <Card.Footer>Rating: {c.rating}</Card.Footer>
                         </Card>
@@ -252,22 +256,14 @@ f
         }
     }
 
-    handleChange = (event) =>{
-        this.setState({[event.target.name]: event.target.value});
-    }
-
-    getRates = () => {
-
-    }
-
     render() {
         return (
-            <div>
+            <div id="specificCoursePage">
                 <div style={{display: 'flex'}}>
                     <h3>Find Speedgolf-Friendly Courses:&nbsp;</h3>
                     <h3>
                         <a data-tip="React-tooltip">&#9432;</a>
-                        <ReactTooltip effect="solid">
+                        <ReactTooltip variant="bottom" effect="solid">
                             <span>
                                 Enter search term or course name to see matching courses, or enter a space to see ALL courses in the database.
                                 Click on course in the list to select it, or click on 'Select' button to select all matching courses.
@@ -278,11 +274,12 @@ f
 
                 <input style={{width: '60%'}} placeholder="Enter course name or search term"
                  value={this.state.query} onChange={this.handleInputChange}
-                 disabled={this.state.searchCourseClicked ? true:false}></input>
-                <button onClick={this.handleClick}>{this.state.selectButtonValue}</button>
-                {/* <button onClick={this.toggleAddCourseClicked}>Add Course</button> */}
+                 disabled={this.state.searchCourseClicked ? true:false}></input>&nbsp;
+                <Button onClick={this.handleClick}>{this.state.selectButtonValue}</Button>&nbsp;
+                <Button id="advancedSearchBtn" onClick={this.toggleAdvancedSearchClicked} disabled={this.state.searchCourseClicked ? true:false}>Advanced Search</Button>
                 {this.state.searchStart ? <div>{this.state.filteredData.map(i => <a className="course-search-list" onClick={() => this.getSearchedCourse(i.id)}>{i.id}</a>)}</div> : null}
-                {this.state.searchCourseClicked ? <div style={{marginTop: "50px"}}><h3>1 Course Selected: </h3>
+                
+                {this.state.searchCourseClicked ? <div style={{marginTop: "50px"}}><h3>{this.state.courseAmount} Course Selected: </h3>
                 <Container fluid={true}>
                     <Row noGutters>  
                         {this.state.course}
@@ -290,32 +287,37 @@ f
                 </Container>  </div>               
                  : null}
 
-                {/* {this.state.addCourseClicked ? 
-                <form onSubmit={this.handleSubmit}>
-                    <h3>Add Course</h3>
-                    <input name="id" placeholder="id" value={this.state.id} onChange={this.handleChange}></input>
-                    <input name="rating" placeholder="rating" value={this.state.rating} onChange={this.handleChange}></input>
-                    <input name="review"  placeholder="review" value={this.state.review} onChange={this.handleChange}></input>
-                    <input name="picture"  placeholder="picture" value={this.state.picture} onChange={this.handleChange}></input>
-                    <input name="location"  placeholder="location" value={this.state.location} onChange={this.handleChange}></input>
-                    <input name="yardage"  placeholder="yardage" value={this.state.yardage} onChange={this.handleChange}></input>
-                    <input name="runningDistance"  placeholder="runningDistance" value={this.state.runningDistance} onChange={this.handleChange}></input>
-                    <input name="timePar"  placeholder="timePar" value={this.state.timePar} onChange={this.handleChange}></input>
-                    <input name="bestScore"  placeholder="bestScore" value={this.state.bestScore} onChange={this.handleChange}></input>
-                    <input name="recordHolder"  placeholder="recordHolder" value={this.state.recordHolder} onChange={this.handleChange}></input>
-                    <button>Submit</button>
-                </form>
-                : null} */}
 
-                {/* <FloatingButton handleClick={this.toggleGetRatesClicked}/> */}
+                {this.state.advancedSearchClicked ? 
+                    <AdvancedSearch handleClose={this.toggleAdvancedSearchClicked}
+                    searchStart={this.setSearchCourseClickedTrue}
+                    toggleMoreClicked={this.toggleMoreClicked}
+                    toggleGetRatesClicked={this.toggleGetRatesClicked}
+                    toggleBookTeeTimeClicked={this.toggleBookTeeTimeClicked}
+                    course={this.state.item}  changeMode={this.props.changeMode} 
+                    refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
+                    setFilteredData={this.setFilteredData}
+                    setCourseAmount={this.setCourseAmount}
+                    />
+                    : null}
                 {this.state.getRatesButtonClicked ? 
-                <RatesModal handleClose={this.toggleGetRatesClicked} />
-                : null}
+                    <RatesModal handleClose={this.toggleGetRatesClicked}
+                    course={this.state.item}  changeMode={this.props.changeMode} 
+                    refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
+                    />
+                    : null}
                 {this.state.more ? 
-                <MoreModal handleClose={this.toggleMoreClicked} 
-                    course={this.state.item}
-                />
-                : null}
+                    <MoreModal handleClose={this.toggleMoreClicked} 
+                        course={this.state.item}  changeMode={this.props.changeMode} 
+                        refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
+                    />
+                    : null}
+                {this.state.bookTeeTimeClicked ? 
+                    <BookingPage handleClose={this.toggleBookTeeTimeClicked} 
+                        course={this.state.item} changeMode={this.props.changeMode} 
+                        refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
+                    />
+                    : null}
             </div>
         );
     }   

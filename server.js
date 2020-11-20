@@ -5,6 +5,7 @@
 //////////////////////////////////////////////////////////////////////////
 import passport from 'passport';
 import passportGithub from 'passport-github'; 
+import passportGoogle from 'passport-google-oauth2'; 
 import passportLocal from 'passport-local';
 import session from 'express-session';
 import regeneratorRuntime from "regenerator-runtime";
@@ -12,10 +13,12 @@ import path from 'path';
 import express from 'express';
 require('dotenv').config();
 
-const LOCAL_PORT = 8081;
-const DEPLOY_URL = "http://localhost:8081";
+const LOCAL_PORT = 8080;
+const DEPLOY_URL = "http://localhost:8080";
+// const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
 const PORT = process.env.HTTP_PORT || LOCAL_PORT;
 const GithubStrategy = passportGithub.Strategy;
+const GoogleStrategy = passportGoogle.Strategy;
 const LocalStrategy = passportLocal.Strategy;
 const app = express();
 
@@ -67,7 +70,19 @@ const courseSchema = new Schema({
   runningDistance: String,
   timePar: String,
   bestScore: String,
-  recordHolder: String
+  recordHolder: String,
+  rateSenior: String,
+  rateStandard: String,
+  courseName: String,
+  appointments: {
+    day1:[],
+    day2:[],
+    day3:[],
+    day4:[],
+    day5:[],
+    day6:[],
+    day7:[]
+  }
 },
 {
   toObject: {
@@ -81,6 +96,7 @@ const courseSchema = new Schema({
 //Define schema that maps to a document in the Users collection in the appdb
 //database.
 const userSchema = new Schema({
+  type: {type: String, required: true, enum: ['user','operator']},
   id: String, //unique identifier for user
   password: String,
   displayName: String, //Name to be displayed within app
@@ -113,11 +129,36 @@ passport.use(new GithubStrategy({
     let currentUser = await User.findOne({id: userId});
     if (!currentUser) { //Add this user to the database
         currentUser = await new User({
+        type: "operator",
         id: userId,
         displayName: profile.displayName,
         authStrategy: profile.provider,
         profilePicURL: profile.photos[0].value,
         rounds: []
+      }).save();
+  }
+  return done(null,currentUser);
+}));
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.GO_CLIENT_ID,
+  clientSecret: process.env.GO_CLIENT_SECRET,
+  callbackURL: DEPLOY_URL + "/auth/google/callback",
+},
+  //The following function is called after user authenticates with github
+  async (accessToken, refreshToken, profile, done) => {
+    console.log("User authenticated through Google! In passport callback.");
+    //Our convention is to build userId from displayName and provider
+    const userId = `${profile.sub}@${profile.provider}`;
+    //See if document with this unique userId exists in database 
+    let currentUser = await User.findOne({id: userId});
+    if (!currentUser) { //Add this user to the database
+        currentUser = await new User({
+        type: "user",
+        id: userId,
+        displayName: profile.displayName,
+        authStrategy: profile.provider,
+        profilePicURL: profile.photos[0].value
       }).save();
   }
   return done(null,currentUser);
@@ -202,6 +243,7 @@ app
 //Should be accessed when user clicks on 'Login with GitHub' button on 
 //Log In page.
 app.get('/auth/github', passport.authenticate('github'));
+app.get('/auth/google', passport.authenticate('google', {scope: ['profile']}));
 
 //CALLBACK route:  GitHub will call this route after the
 //OAuth authentication process is complete.
@@ -209,6 +251,14 @@ app.get('/auth/github', passport.authenticate('github'));
 app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/' }),
   (req, res) => {
     console.log("auth/github/callback reached.")
+    res.redirect('/'); //sends user back to login screen; 
+                       //req.isAuthenticated() indicates status
+  }
+);
+
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+    console.log("auth/google/callback reached.")
     res.redirect('/'); //sends user back to login screen; 
                        //req.isAuthenticated() indicates status
   }
@@ -286,6 +336,7 @@ app.post('/users/:userId',  async (req, res, next) => {
   console.log("in /users route (POST) with params = " + JSON.stringify(req.params) +
     " and body = " + JSON.stringify(req.body));  
   if (req.body === undefined ||
+      !req.body.hasOwnProperty("type") || 
       !req.body.hasOwnProperty("password") || 
       !req.body.hasOwnProperty("displayName") ||
       !req.body.hasOwnProperty("profilePicURL") ||
@@ -293,7 +344,7 @@ app.post('/users/:userId',  async (req, res, next) => {
       !req.body.hasOwnProperty("securityAnswer")) {
     //Body does not contain correct properties
     return res.status(400).send("/users POST request formulated incorrectly. " + 
-      "It must contain 'password','displayName','profilePicURL','securityQuestion' and 'securityAnswer fields in message body.")
+      "It must contain 'type', 'password','displayName','profilePicURL','securityQuestion' and 'securityAnswer fields in message body.")
   }
   try {
     let thisUser = await User.findOne({id: req.params.userId});
@@ -302,6 +353,7 @@ app.post('/users/:userId',  async (req, res, next) => {
         req.params.userId + "'.");
     } else { //account available -- add to database
       thisUser = await new User({
+        type: req.body.type,
         id: req.params.userId,
         password: req.body.password,
         displayName: req.body.displayName,
@@ -528,7 +580,8 @@ app.post('/courses/:courseId', async (req, res, next) => {
   console.log("in /courses (POST) route with params = " + 
               JSON.stringify(req.params) + " and body = " + 
               JSON.stringify(req.body));
-  if (!req.body.hasOwnProperty("rating") || 
+  if (!req.body.hasOwnProperty("courseName") ||
+      !req.body.hasOwnProperty("rating") || 
       !req.body.hasOwnProperty("review") || 
       !req.body.hasOwnProperty("picture") ||
       !req.body.hasOwnProperty("location") || 
@@ -536,10 +589,12 @@ app.post('/courses/:courseId', async (req, res, next) => {
       !req.body.hasOwnProperty("runningDistance") ||
       !req.body.hasOwnProperty("timePar") || 
       !req.body.hasOwnProperty("bestScore") || 
-      !req.body.hasOwnProperty("recordHolder")) {
+      !req.body.hasOwnProperty("recordHolder") ||
+      !req.body.hasOwnProperty("rateSenior") ||
+      !req.body.hasOwnProperty("rateStandard")) {
     //Body does not contain correct properties
     return res.status(400).send("POST request on /course formulated incorrectly." +
-      "Body must contain all 8 required fields: rating, review, picture, location, yardage, runningDistance, timePar, bestScore, recordHolder.");
+      "Body must contain all 8 required fields: courseName, rating, review, picture, location, yardage, runningDistance, timePar, bestScore, recordHolder, rateSenior, rateStandard.");
   }
   try {
     let thisCourse = await Course.findOne({id: req.params.courseId});
@@ -548,6 +603,7 @@ app.post('/courses/:courseId', async (req, res, next) => {
         req.params.courseId + "'.");
     } else { //account available -- add to database
       thisCourse = await new Course({
+        courseName: req.body.courseName,
         id: req.params.courseId,
         rating: req.body.rating,
         review: req.body.review,
@@ -557,7 +613,10 @@ app.post('/courses/:courseId', async (req, res, next) => {
         runningDistance: req.body.runningDistance,
         timePar: req.body.timePar,
         bestScore: req.body.bestScore,
-        recordHolder: req.body.recordHolder
+        recordHolder: req.body.recordHolder,
+        rateSenior: req.body.rateSenior,
+        rateStandard: req.body.rateStandard,
+        appointments: req.body.appointments
       }).save();
       return res.status(200).send("New course for '" + 
         req.params.courseId + "' successfully created.");
@@ -565,4 +624,33 @@ app.post('/courses/:courseId', async (req, res, next) => {
   } catch (err) {
     return res.status(400).send("Unexpected error occurred when adding or looking up course in database. " + err);
   }
+});
+
+//UPDATE course route: Updates a new course information in the courses collection (POST)
+app.put('/courses/:courseId',  async (req, res, next) => {
+  console.log("in /courses update route (PUT) with courseId = " + JSON.stringify(req.params) + 
+    " and body = " + JSON.stringify(req.body));
+  if (!req.params.hasOwnProperty("courseId"))  {
+    return res.status(400).send("courses/ PUT request formulated incorrectly." +
+        "It must contain 'courseId' as parameter.");
+  }
+  const validProps = ['appointments', 'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
+  for (const bodyProp in req.body) {
+    if (!validProps.includes(bodyProp)) {
+      return res.status(400).send("courses/ PUT request formulated incorrectly." +
+        "Only the following props are allowed in body: " +
+        "'appointments', 'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'");
+    } 
+  }
+  try {
+        let status = await Course.updateOne({id: req.params.courseId}, 
+          {$set: req.body});
+        if (status.nModified != 1) { //account could not be found
+          res.status(404).send("No course " + req.params.courseId + " exists. Course could not be updated.");
+        } else {
+          res.status(200).send("Course " + req.params.courseId + " successfully updated.")
+        }
+      } catch (err) {
+        res.status(400).send("Unexpected error occurred when updating course data in database: " + err);
+      }
 });

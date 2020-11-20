@@ -23,7 +23,9 @@ constructor() {
                   githubIcon: "fa fa-github",
                   githubLabel: "Sign in with GitHub",
                   loginMsg: "",
-                  newAccountCreated: false
+                  newAccountCreated: false,
+                  googleIcon: "fa fa-google",
+                  googleLabel: "Sign in with Google"
                   };
 } 
     
@@ -189,6 +191,7 @@ cancelCreateAccount = () => {
                 ref={this.passwordInputRef}
                 className="form-control login-text"
                 type="password"
+                id="passwordInput"
                 placeholder="Enter Password"
                 pattern="[A-Za-z0-9!@#$%^&*()_+\-]+"
                 required={true}
@@ -209,10 +212,15 @@ cancelCreateAccount = () => {
                         onClick={() => {this.setState({showLookUpAccountDialog: true});}}>
                 Reset your password</button>
             </p>  
-            <button type="button" className="btn btn-github"
+            <button id="github-login-btn" type="button" className="btn btn-github"
                onClick={() => this.handleOAuthLoginClick("github")}>
               <span className={this.state.githubIcon}></span>&nbsp;
                 {this.state.githubLabel}
+            </button>
+            <button id="google-login-btn" type="button" className="btn btn-google"
+               onClick={() => this.handleOAuthLoginClick("google")}>
+              <span className={this.state.googleIcon}></span>&nbsp;
+                {this.state.googleLabel}
             </button>
             <p>
                 <i>Version CptS 489</i>

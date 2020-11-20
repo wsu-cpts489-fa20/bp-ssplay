@@ -4,7 +4,8 @@ import AppMode from '../AppMode';
 class NavBar extends React.Component {
 
   getMenuBtnIcon = () => {
-      if (this.props.mode === AppMode.ROUNDS_LOGROUND || 
+      if (this.props.mode === AppMode.COURSES_ADD || 
+          this.props.mode === AppMode.ROUNDS_LOGROUND || 
           this.props.mode === AppMode.ROUNDS_EDITROUND)
           return "fa fa-arrow-left";
       if (this.props.menuOpen)
@@ -16,7 +17,10 @@ class NavBar extends React.Component {
     if (this.props.mode === AppMode.ROUNDS_LOGROUND ||
         this.props.mode === AppMode.ROUNDS_EDITROUND) {
       this.props.changeMode(AppMode.ROUNDS);
-    } else if (this.props.mode != AppMode.LOGIN) {
+    } else if (this.props.mode === AppMode.COURSES_ADD) {
+      this.props.changeMode(AppMode.COURSES);
+    } 
+    else if (this.props.mode !== AppMode.LOGIN) {
       this.props.toggleMenuOpen();
     }
   }
