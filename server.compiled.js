@@ -33,8 +33,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 require('dotenv').config();
 
 var LOCAL_PORT = 8080; // const DEPLOY_URL = "http://localhost:8080";
+// const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
 
-var DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
+var DEPLOY_URL = "https://ssplay.bfapp.org";
 var PORT = process.env.HTTP_PORT || LOCAL_PORT;
 var GithubStrategy = _passportGithub["default"].Strategy;
 var GoogleStrategy = _passportGoogleOauth["default"].Strategy;
