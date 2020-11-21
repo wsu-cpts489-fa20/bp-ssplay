@@ -848,3 +848,15 @@ app.post('/appointments_op/', async (req, res, next) => {
     return res.status(400).send("Unexpected error occurred when adding or looking up appointment in database. " + err);
   }
 });
+
+//READ appointment route: Returns all appointments
+app.get('/allappointments_op/', async(req, res) => {
+  console.log("in /allappointments_op route (GET)");
+  try {
+    let allAppointment = await Appointment.find({});
+    return res.status(200).json(JSON.stringify(allAppointment));
+  } catch (err) {
+    console.log()
+    return res.status(400).message("Unexpected error occurred when getting all appointments from database: " + err);
+  }
+});

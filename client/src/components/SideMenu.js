@@ -43,6 +43,8 @@ renderModeMenuItems = () => {
             <span className="fa fa-th-list"></span>&nbsp;All Speedgolf-Friendly Courses</a>
         {this.props.type === "operator" ? <a id="addCourse" className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES_ADD)}>
             <span className="fa fa-plus"></span>&nbsp;Add a Course</a> : null}
+        {this.props.type === "operator" ? <a id="allAppointments" className="sidemenu-item" onClick={() => this.props.changeMode(AppMode.COURSES_APPT)}>
+            <span className="fa fa-eye"></span>&nbsp;View all Appointments</a> : null}
         </div>
       );
     default:

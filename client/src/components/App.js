@@ -20,6 +20,7 @@ modeTitle[AppMode.COURSES] = "Search Courses";
 modeTitle[AppMode.COURSES_NEARBY] = "Nearby Courses";
 modeTitle[AppMode.COURSES_ALL] = "All Speedgolf-Friendly Courses";
 modeTitle[AppMode.COURSES_ADD] = "Add a Course";
+modeTitle[AppMode.COURSES_APPT] = "All Appointments";
 
 const modeToPage = {};
 modeToPage[AppMode.LOGIN] = LoginPage;
@@ -31,6 +32,7 @@ modeToPage[AppMode.COURSES] = CoursesPage;
 modeToPage[AppMode.COURSES_NEARBY] = CoursesPage;
 modeToPage[AppMode.COURSES_ALL] = CoursesPage;
 modeToPage[AppMode.COURSES_ADD] = CoursesPage;
+modeToPage[AppMode.COURSES_APPT] = CoursesPage;
 
 
 class App extends React.Component {

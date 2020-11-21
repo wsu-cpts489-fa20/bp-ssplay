@@ -4,6 +4,7 @@ import AllCourses from './AllCourses.js';
 import NearbyCourses from './NearbyCourses.js';
 import SpecificCourses from './SpecificCourses.js';
 import AddCourses from './AddCourses.js';
+import AllAppointments from './AllAppointments.js';
 
 class CoursesPage extends React.Component {
 
@@ -17,6 +18,8 @@ class CoursesPage extends React.Component {
                 return (<AllCourses changeMode={this.props.changeMode} mode={this.props.mode} refreshOnUpdate={this.props.refreshOnUpdate} userObj={this.props.userObj}/>);
             case AppMode.COURSES_ADD:
                 return (<AddCourses changeMode={this.props.changeMode}/>);
+            case AppMode.COURSES_APPT:
+                return (<AllAppointments changeMode={this.props.changeMode}/>);
         }
     }   
 }

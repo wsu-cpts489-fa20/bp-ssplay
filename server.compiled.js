@@ -1647,4 +1647,39 @@ app.post('/appointments_op/', /*#__PURE__*/function () {
   return function (_x64, _x65, _x66) {
     return _ref22.apply(this, arguments);
   };
+}()); //READ appointment route: Returns all appointments
+
+app.get('/allappointments_op/', /*#__PURE__*/function () {
+  var _ref23 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee23(req, res) {
+    var allAppointment;
+    return _regeneratorRuntime["default"].wrap(function _callee23$(_context23) {
+      while (1) {
+        switch (_context23.prev = _context23.next) {
+          case 0:
+            console.log("in /allappointments_op route (GET)");
+            _context23.prev = 1;
+            _context23.next = 4;
+            return Appointment.find({});
+
+          case 4:
+            allAppointment = _context23.sent;
+            return _context23.abrupt("return", res.status(200).json(JSON.stringify(allAppointment)));
+
+          case 8:
+            _context23.prev = 8;
+            _context23.t0 = _context23["catch"](1);
+            console.log();
+            return _context23.abrupt("return", res.status(400).message("Unexpected error occurred when getting all appointments from database: " + _context23.t0));
+
+          case 12:
+          case "end":
+            return _context23.stop();
+        }
+      }
+    }, _callee23, null, [[1, 8]]);
+  }));
+
+  return function (_x67, _x68) {
+    return _ref23.apply(this, arguments);
+  };
 }());
