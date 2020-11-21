@@ -14,9 +14,9 @@ import express from 'express';
 require('dotenv').config();
 
 const LOCAL_PORT = 8080;
-// const DEPLOY_URL = "http://localhost:8080";
+const DEPLOY_URL = "http://localhost:8080";
 // const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
-const DEPLOY_URL = "https://ssplay.bfapp.org";
+// const DEPLOY_URL = "https://ssplay.bfapp.org";
 const PORT = process.env.HTTP_PORT || LOCAL_PORT;
 const GithubStrategy = passportGithub.Strategy;
 const GoogleStrategy = passportGoogle.Strategy;
@@ -654,4 +654,25 @@ app.put('/courses/:courseId',  async (req, res, next) => {
       } catch (err) {
         res.status(400).send("Unexpected error occurred when updating course data in database: " + err);
       }
+});
+
+//DELETE course route: Deletes a specific course 
+//for a given id in the course collection (DELETE)
+app.delete('/courses/:courseId', async(req, res, next) => {
+  console.log("in /courses route (DELETE) with courseId = " + 
+    JSON.stringify(req.params.courseId));
+  try {
+    let status = await Course.deleteOne({id: req.params.courseId});
+    if (status.deletedCount != 1) {
+      return res.status(404).send("No course " +
+        req.params.courseId + " was found. Course could not be deleted.");
+    } else {
+      return res.status(200).send("Course " +
+      req.params.courseId + " was successfully deleted.");
+    }
+  } catch (err) {
+    console.log()
+    return res.status(400).send("Unexpected error occurred when attempting to delete course with id " +
+      req.params.courseId + ": " + err);
+  }
 });

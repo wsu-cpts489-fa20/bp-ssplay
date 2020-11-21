@@ -14,7 +14,7 @@ class CoursesPage extends React.Component {
             case AppMode.COURSES_NEARBY:
                 return (<NearbyCourses changeMode={this.props.changeMode} mode={this.props.mode} refreshOnUpdate={this.props.refreshOnUpdate}/>);
             case AppMode.COURSES_ALL:
-                return (<AllCourses changeMode={this.props.changeMode} mode={this.props.mode} refreshOnUpdate={this.props.refreshOnUpdate}/>);
+                return (<AllCourses changeMode={this.props.changeMode} mode={this.props.mode} refreshOnUpdate={this.props.refreshOnUpdate} userObj={this.props.userObj}/>);
             case AppMode.COURSES_ADD:
                 return (<AddCourses changeMode={this.props.changeMode}/>);
         }

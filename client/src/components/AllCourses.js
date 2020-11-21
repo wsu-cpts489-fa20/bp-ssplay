@@ -1,4 +1,5 @@
 import React from 'react';
+import AppMode from "./../AppMode.js";
 import { Navbar, Container, Row, Col, Card, Button } from "react-bootstrap";
 import RatesModal from "./RatesModal.js";
 import MoreModal from "./MoreModal.js";
@@ -42,6 +43,28 @@ class AllCourses extends React.Component {
         this.setState(state => ({bookTeeTimeClicked: !state.bookTeeTimeClicked}));
     }
 
+    // Delete course with this id from database
+    handleDelete = async (key) => {
+        const url = '/courses/' + key;
+        const res = await fetch(url, {method: 'DELETE'}); 
+        const msg = await res.text();
+        console.log(msg);
+        if (res.status == 200) {
+            for (var i = 0; i < this.state.filteredData.length; i++)
+            {
+                if (this.state.filteredData[i].id === key)
+                {
+                    this.state.course.splice(i, 1);
+                    this.setState({
+                        course: this.state.course
+                    });
+                }
+            }
+        } else {
+            alert(msg);
+        }  
+    }
+
     // Get information of all courses to show on page
     getCourse = async () => {
         const url = '/allcourses/';
@@ -60,9 +83,10 @@ class AllCourses extends React.Component {
             console.log("GET SUCCESS!");
             let thisCourse = JSON.parse(obj);
             this.setState({
+                filteredData: thisCourse,
                 course: thisCourse.map((c) =>(
                     <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
-                        <Card key={c.id} style={{ width: "30rem", display: "flex" }}>
+                        <Card key={c.id} style={{ width: "30rem", display: "flex" }}>                      
                         <Card.Img className="course-image" variant="top" src={c.picture}></Card.Img>
                         <Card.Body>
                             <Card.Title>{c.courseName}</Card.Title>
@@ -71,6 +95,9 @@ class AllCourses extends React.Component {
                             <Button id="moreBtn" type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
                             <Button id="ratesBtn" type="button" onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
                             <Button id="bookingBtn" type="button" onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
+                            {this.props.userObj.type === "operator" ? 
+                            <Button style={{display: 'flex', float: 'right'}} onClick={() => this.handleDelete(c.id)}>&times;</Button>
+                            : null}
                         </Card.Body>
                         <Card.Footer>Rating: {c.rating}</Card.Footer>
                         </Card>

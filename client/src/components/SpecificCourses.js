@@ -1,4 +1,5 @@
 import React from 'react';
+import AppMode from "./../AppMode.js";
 import ReactTooltip from "react-tooltip";
 import { Navbar, Container, Row, Col, Card, Button, Modal } from "react-bootstrap";
 import FloatingButton from "./FloatingButton.js";
@@ -23,6 +24,7 @@ class SpecificCourses extends React.Component {
             more: false,
             selectButtonValue: "Select Course",
             courseAmount: 1,
+            oneDelete: false,
             query: "",
             data: [],
             filteredData: [],
@@ -98,6 +100,10 @@ class SpecificCourses extends React.Component {
         this.setSelectButtonValue("Select Course");
     }
 
+    toggleOneDelete = () => {
+        this.setState(state => ({oneDelete: !state.oneDelete}));
+    }
+
     // Show courses that were selected when user searches
     setFilteredData = (newData) => {
         this.setState({
@@ -147,6 +153,37 @@ class SpecificCourses extends React.Component {
 
     };
 
+    // Delete course with this id from database
+    handleDelete = async (key) => {
+        const url = '/courses/' + key;
+        const res = await fetch(url, {method: 'DELETE'}); 
+        const msg = await res.text();
+        console.log(msg);
+        if (res.status == 200) {
+            if (this.state.oneDelete)
+            {
+                this.setState({
+                    course: '',
+                    courseAmount: 0
+                });
+            }
+            else{
+                for (var i = 0; i < this.state.filteredData.length; i++)
+                {
+                    if (this.state.filteredData[i].id === key)
+                    {
+                        this.state.course.splice(i, 1);
+                        this.setState({
+                            course: this.state.course
+                        });
+                    }
+                }
+            }
+        } else {
+            alert(msg);
+        }  
+    }
+
     // Retrieve information for all courses for searching usage
     getCourse = async () => {
         const url = '/allcourses/';
@@ -156,7 +193,6 @@ class SpecificCourses extends React.Component {
                 return response.json();
             else
             {
-                this.setErrorMsg("ERROR: " + response.statusText);
                 throw Error(response.statusText);
             }
         })
@@ -183,6 +219,7 @@ class SpecificCourses extends React.Component {
         this.setSearchCourseClickedTrue();
         this.setSearchFalse();
         this.setCourseAmount(1);
+        this.toggleOneDelete();
         const url = '/courses/'+id;
         fetch(url)
         .then((response) => {
@@ -209,6 +246,9 @@ class SpecificCourses extends React.Component {
                             <Button type="button" onClick={() => this.toggleMoreClicked(thisCourse.id)}>More</Button>&nbsp;
                             <Button onClick={() => this.toggleGetRatesClicked(thisCourse.id)}>Get Rates</Button>&nbsp;
                             <Button onClick={() => this.toggleBookTeeTimeClicked(thisCourse.id)}>Book Tee Time</Button>&nbsp;
+                            {this.props.userObj.type === "operator" ? 
+                            <Button style={{display: 'flex', float: 'right'}} onClick={() => this.handleDelete(thisCourse.id)}>&times;</Button>
+                            : null}
                         </Card.Body>
                         <Card.Footer>Rating: {thisCourse.rating}</Card.Footer>
                         </Card>
@@ -247,6 +287,9 @@ class SpecificCourses extends React.Component {
                             <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
                             <Button onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
                             <Button onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
+                            {this.props.userObj.type === "operator" ? 
+                            <Button style={{display: 'flex', float: 'right'}} onClick={() => this.handleDelete(c.id)}>&times;</Button>
+                            : null}
                         </Card.Body>
                         <Card.Footer>Rating: {c.rating}</Card.Footer>
                         </Card>

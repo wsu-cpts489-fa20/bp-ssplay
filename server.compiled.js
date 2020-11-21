@@ -32,10 +32,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 require('dotenv').config();
 
-var LOCAL_PORT = 8080; // const DEPLOY_URL = "http://localhost:8080";
-// const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
+var LOCAL_PORT = 8080;
+var DEPLOY_URL = "http://localhost:8080"; // const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
+// const DEPLOY_URL = "https://ssplay.bfapp.org";
 
-var DEPLOY_URL = "https://ssplay.bfapp.org";
 var PORT = process.env.HTTP_PORT || LOCAL_PORT;
 var GithubStrategy = _passportGithub["default"].Strategy;
 var GoogleStrategy = _passportGoogleOauth["default"].Strategy;
@@ -1273,5 +1273,56 @@ app.put('/courses/:courseId', /*#__PURE__*/function () {
 
   return function (_x47, _x48, _x49) {
     return _ref16.apply(this, arguments);
+  };
+}()); //DELETE course route: Deletes a specific course 
+//for a given id in the course collection (DELETE)
+
+app["delete"]('/courses/:courseId', /*#__PURE__*/function () {
+  var _ref17 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee17(req, res, next) {
+    var status;
+    return _regeneratorRuntime["default"].wrap(function _callee17$(_context17) {
+      while (1) {
+        switch (_context17.prev = _context17.next) {
+          case 0:
+            console.log("in /courses route (DELETE) with courseId = " + JSON.stringify(req.params.courseId));
+            _context17.prev = 1;
+            _context17.next = 4;
+            return Course.deleteOne({
+              id: req.params.courseId
+            });
+
+          case 4:
+            status = _context17.sent;
+
+            if (!(status.deletedCount != 1)) {
+              _context17.next = 9;
+              break;
+            }
+
+            return _context17.abrupt("return", res.status(404).send("No course " + req.params.courseId + " was found. Course could not be deleted."));
+
+          case 9:
+            return _context17.abrupt("return", res.status(200).send("Course " + req.params.courseId + " was successfully deleted."));
+
+          case 10:
+            _context17.next = 16;
+            break;
+
+          case 12:
+            _context17.prev = 12;
+            _context17.t0 = _context17["catch"](1);
+            console.log();
+            return _context17.abrupt("return", res.status(400).send("Unexpected error occurred when attempting to delete course with id " + req.params.courseId + ": " + _context17.t0));
+
+          case 16:
+          case "end":
+            return _context17.stop();
+        }
+      }
+    }, _callee17, null, [[1, 12]]);
+  }));
+
+  return function (_x50, _x51, _x52) {
+    return _ref17.apply(this, arguments);
   };
 }());
