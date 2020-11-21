@@ -5,8 +5,28 @@ import NearbyCourses from './NearbyCourses.js';
 import SpecificCourses from './SpecificCourses.js';
 import AddCourses from './AddCourses.js';
 import AllAppointments from './AllAppointments.js';
+import MyAppointments from './MyAppointments';
 
 class CoursesPage extends React.Component {
+
+    constructor(){
+        super();
+        this.state={
+            username: '',
+            coursename: '',
+            date: '',
+            time: ''
+        };
+    }
+
+    setInformation = (u,c,d,t) =>{
+        this.setState({
+            username: u,
+            coursename: c,
+            date: d,
+            time: t
+        })
+    }
 
     render() {
         switch(this.props.mode){
@@ -20,6 +40,8 @@ class CoursesPage extends React.Component {
                 return (<AddCourses changeMode={this.props.changeMode}/>);
             case AppMode.COURSES_APPT:
                 return (<AllAppointments changeMode={this.props.changeMode}/>);
+            case AppMode.COURSES_MYAPPT:
+                return (<MyAppointments userObj={this.props.userObj} changeMode={this.props.changeMode} setInformation={this.setInformation}/>);
         }
     }   
 }

@@ -1682,4 +1682,47 @@ app.get('/allappointments_op/', /*#__PURE__*/function () {
   return function (_x67, _x68) {
     return _ref23.apply(this, arguments);
   };
+}()); //DELETE course route: Deletes a specific course 
+//for a given id in the course collection (DELETE)
+
+app["delete"]('/appointments_op/:username/:courseName/:date/:time', /*#__PURE__*/function () {
+  var _ref24 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee24(req, res, next) {
+    var status;
+    return _regeneratorRuntime["default"].wrap(function _callee24$(_context24) {
+      while (1) {
+        switch (_context24.prev = _context24.next) {
+          case 0:
+            console.log("in /appointments_op (DELETE) route with params = " + JSON.stringify(req.params));
+            _context24.prev = 1;
+            _context24.next = 4;
+            return Appointment.deleteOne({
+              username: req.params.username,
+              courseName: req.params.courseName,
+              date: req.params.date,
+              time: req.params.time
+            });
+
+          case 4:
+            status = _context24.sent;
+            res.status(200).send("appointments successfully deleted from database.");
+            _context24.next = 12;
+            break;
+
+          case 8:
+            _context24.prev = 8;
+            _context24.t0 = _context24["catch"](1);
+            console.log(_context24.t0);
+            return _context24.abrupt("return", res.status(400).send("Unexpected error occurred when deleting appointments from database: " + _context24.t0));
+
+          case 12:
+          case "end":
+            return _context24.stop();
+        }
+      }
+    }, _callee24, null, [[1, 8]]);
+  }));
+
+  return function (_x69, _x70, _x71) {
+    return _ref24.apply(this, arguments);
+  };
 }());

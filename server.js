@@ -860,3 +860,17 @@ app.get('/allappointments_op/', async(req, res) => {
     return res.status(400).message("Unexpected error occurred when getting all appointments from database: " + err);
   }
 });
+
+//DELETE course route: Deletes a specific course 
+//for a given id in the course collection (DELETE)
+app.delete('/appointments_op/:username/:courseName/:date/:time', async(req, res, next) => {
+  console.log("in /appointments_op (DELETE) route with params = " + 
+              JSON.stringify(req.params)); 
+  try {
+    let status = await Appointment.deleteOne({username: req.params.username, courseName: req.params.courseName, date: req.params.date, time: req.params.time});
+    res.status(200).send("appointments successfully deleted from database.");
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Unexpected error occurred when deleting appointments from database: " + err);
+  } 
+});
