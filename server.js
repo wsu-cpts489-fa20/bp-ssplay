@@ -62,7 +62,6 @@ roundSchema.virtual('SGS').get(function() {
 });
 
 const appointmentSchema = new Schema({
-  id: String,
   userId: String,
   username: String,
   courseName: String,
@@ -712,7 +711,7 @@ app.post('/appointments/:userId', async (req, res, next) => {
   console.log("in /appointments (POST) route with params = " + 
               JSON.stringify(req.params) + " and body = " + 
               JSON.stringify(req.body));
-  if (!req.body.hasOwnProperty("id") ||
+  if (
       !req.body.hasOwnProperty("userId") || 
       !req.body.hasOwnProperty("username") || 
       !req.body.hasOwnProperty("courseName") || 
@@ -721,7 +720,7 @@ app.post('/appointments/:userId', async (req, res, next) => {
       !req.body.hasOwnProperty("paid")) {
     //Body does not contain correct properties
     return res.status(400).send("POST request on /appointments formulated incorrectly." +
-      "Body must contain all 7 required fields: id, userId, username, courseName, date, time, paid");
+      "Body must contain all 6 required fields: userId, username, courseName, date, time, paid");
   }
   try {
     let status = await User.updateOne(
@@ -764,7 +763,7 @@ app.put('/appointments/:userId/:appointmentId', async (req, res, next) => {
   console.log("in /appointments (PUT) route with params = " + 
               JSON.stringify(req.params) + " and body = " + 
               JSON.stringify(req.body));
-  const validProps = ['id', 'userId', 'username', 'courseName', 'date', 'time', 'paid'];
+  const validProps = ['userId', 'username', 'courseName', 'date', 'time', 'paid'];
   let bodyObj = {...req.body};
   // delete bodyObj._id; //Not needed for update
   // delete bodyObj.SGS; //We'll compute this below in seconds.
@@ -772,7 +771,7 @@ app.put('/appointments/:userId/:appointmentId', async (req, res, next) => {
     if (!validProps.includes(bodyProp)) {
       return res.status(400).send("appointments/ PUT request formulated incorrectly." +
         "It includes " + bodyProp + ". However, only the following props are allowed: " +
-        "'id', 'userId', 'username', 'courseName', 'date', 'time', 'paid'");
+        "'userId', 'username', 'courseName', 'date', 'time', 'paid'");
     } else {
       bodyObj["appointments.$." + bodyProp] = bodyObj[bodyProp];
       delete bodyObj[bodyProp];
@@ -821,11 +820,10 @@ app.delete('/appointments/:userId/:appointmentId', async (req, res, next) => {
 
 //CREATE appointment route: Adds a new appoint as a subdocument to 
 //a document in the apoointments collection (POST)
-app.post('/appointments_op/:appointmentId', async (req, res, next) => {
-  console.log("in /appointment_op (POST) route with params = " + 
-              JSON.stringify(req.params) + " and body = " + 
+app.post('/appointments_op/', async (req, res, next) => {
+  console.log("in /appointment_op (POST) route with body = " + 
               JSON.stringify(req.body));
-  if (!req.body.hasOwnProperty("id") ||
+  if (
       !req.body.hasOwnProperty("userId") ||
       !req.body.hasOwnProperty("username") || 
       !req.body.hasOwnProperty("courseName") || 
@@ -834,26 +832,18 @@ app.post('/appointments_op/:appointmentId', async (req, res, next) => {
       !req.body.hasOwnProperty("paid")) {
     //Body does not contain correct properties
     return res.status(400).send("POST request on /appointment_op formulated incorrectly." +
-      "Body must contain all 7 required fields: id, userId, username, courseName, date, time, paid.");
+      "Body must contain all 6 required fields: userId, username, courseName, date, time, paid.");
   }
   try {
-    let thisAppointment = await Appointment.findOne({id: req.params.appointmentId});
-    if (thisAppointment) { //course already exists
-      res.status(400).send("There is already an course with this name '" + 
-        req.params.courseId + "'.");
-    } else { //account available -- add to database
-      thisAppointment = await new Appointment({
-        id: req.params.appointmentId,
-        userId: req.body.userId,
-        username: req.body.username,
-        courseName: req.body.courseName,
-        date: req.body.date,
-        time: req.body.time,
-        paid: req.body.paid
-      }).save();
-      return res.status(200).send("New appointment for '" + 
-        req.params.appointmentId + "' successfully created.");
-    }
+    let thisAppointment = await new Appointment({
+      userId: req.body.userId,
+      username: req.body.username,
+      courseName: req.body.courseName,
+      date: req.body.date,
+      time: req.body.time,
+      paid: req.body.paid
+    }).save();
+    return res.status(200).send("New appointment for '" + req.body.userId + "' successfully created.");
   } catch (err) {
     return res.status(400).send("Unexpected error occurred when adding or looking up appointment in database. " + err);
   }

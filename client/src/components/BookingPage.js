@@ -35,8 +35,7 @@ class BookingPage extends React.Component {
             courseName: this.props.course,
             bookingTime: '',
             bookingDate: day1,
-            course: '',
-            id: ''
+            course: ''
         }
     }
 
@@ -93,7 +92,6 @@ class BookingPage extends React.Component {
         }
 
         let newappt = {
-            id: this.state.id+this.props.courseName,
             userId: this.props.userObj.id,
             username: this.props.userObj.displayName,
             courseName: this.props.courseName,
@@ -170,7 +168,7 @@ class BookingPage extends React.Component {
     // Sends a PUT request to the backend with the new information
     // new information here is the appointments that were scheduled
     addAppointment_op = async (newData) =>{
-        const url = '/appointments_op/' + this.state.id+this.props.courseName;
+        const url = '/appointments_op/';
         const res = await fetch(url, {
             headers: {
                 'Accept': 'application/json',
@@ -197,8 +195,6 @@ class BookingPage extends React.Component {
     // new information here is the appointments that were scheduled
     addAppointment = async (newData) =>{
         const url = '/appointments/' + this.props.userObj.id;
-        // + '/' + 
-        // this.props.userObj.appointments[this.props.editId]._id;
         const res = await fetch(url, {
             headers: {
                 'Accept': 'application/json',
@@ -442,10 +438,6 @@ class BookingPage extends React.Component {
                             <option id="7" value="7">4:00 PM</option>
                             <option id="8" value="8">5:00 PM</option>    
                         </select>
-                        </label>
-                        <p></p>
-                        <label>ID: <br></br>
-                            <input id="id" name="id" value={this.state.id} onChange={this.handleChange} required></input>
                         </label>
                         <p></p>
                         <button className="btn btn-primary btn-color-theme modal-submit-btn">Request Tee Time</button>

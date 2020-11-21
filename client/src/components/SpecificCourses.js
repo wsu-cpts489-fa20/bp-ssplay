@@ -356,9 +356,9 @@ class SpecificCourses extends React.Component {
                     />
                     : null}
                 {this.state.bookTeeTimeClicked ? 
-                    <BookingPage handleClose={this.toggleBookTeeTimeClicked} 
-                        course={this.state.item} changeMode={this.props.changeMode} 
-                        refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
+                    <BookingPage handleClose={this.toggleBookTeeTimeClicked} userObj={this.props.userObj} courseName={this.state.cname}
+                    course={this.state.item} changeMode={this.props.changeMode} editId={this.state.index}
+                    refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
                     />
                     : null}
             </div>

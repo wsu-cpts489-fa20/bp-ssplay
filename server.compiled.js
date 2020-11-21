@@ -112,7 +112,6 @@ roundSchema.virtual('SGS').get(function () {
   return this.strokes * 60 + this.minutes * 60 + this.seconds;
 });
 var appointmentSchema = new Schema({
-  id: String,
   userId: String,
   username: String,
   courseName: String,
@@ -1363,12 +1362,12 @@ app.post('/appointments/:userId', /*#__PURE__*/function () {
           case 0:
             console.log("in /appointments (POST) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
 
-            if (!(!req.body.hasOwnProperty("id") || !req.body.hasOwnProperty("userId") || !req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("courseName") || !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("time") || !req.body.hasOwnProperty("paid"))) {
+            if (!(!req.body.hasOwnProperty("userId") || !req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("courseName") || !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("time") || !req.body.hasOwnProperty("paid"))) {
               _context18.next = 3;
               break;
             }
 
-            return _context18.abrupt("return", res.status(400).send("POST request on /appointments formulated incorrectly." + "Body must contain all 7 required fields: id, userId, username, courseName, date, time, paid"));
+            return _context18.abrupt("return", res.status(400).send("POST request on /appointments formulated incorrectly." + "Body must contain all 6 required fields: userId, username, courseName, date, time, paid"));
 
           case 3:
             _context18.prev = 3;
@@ -1473,7 +1472,7 @@ app.put('/appointments/:userId/:appointmentId', /*#__PURE__*/function () {
         switch (_context20.prev = _context20.next) {
           case 0:
             console.log("in /appointments (PUT) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
-            validProps = ['id', 'userId', 'username', 'courseName', 'date', 'time', 'paid'];
+            validProps = ['userId', 'username', 'courseName', 'date', 'time', 'paid'];
             bodyObj = _objectSpread({}, req.body); // delete bodyObj._id; //Not needed for update
             // delete bodyObj.SGS; //We'll compute this below in seconds.
 
@@ -1492,7 +1491,7 @@ app.put('/appointments/:userId/:appointmentId', /*#__PURE__*/function () {
               break;
             }
 
-            return _context20.abrupt("return", res.status(400).send("appointments/ PUT request formulated incorrectly." + "It includes " + bodyProp + ". However, only the following props are allowed: " + "'id', 'userId', 'username', 'courseName', 'date', 'time', 'paid'"));
+            return _context20.abrupt("return", res.status(400).send("appointments/ PUT request formulated incorrectly." + "It includes " + bodyProp + ". However, only the following props are allowed: " + "'userId', 'username', 'courseName', 'date', 'time', 'paid'"));
 
           case 10:
             bodyObj["appointments.$." + bodyProp] = bodyObj[bodyProp];
@@ -1600,46 +1599,26 @@ app["delete"]('/appointments/:userId/:appointmentId', /*#__PURE__*/function () {
 //CREATE appointment route: Adds a new appoint as a subdocument to 
 //a document in the apoointments collection (POST)
 
-app.post('/appointments_op/:appointmentId', /*#__PURE__*/function () {
+app.post('/appointments_op/', /*#__PURE__*/function () {
   var _ref22 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee22(req, res, next) {
     var thisAppointment;
     return _regeneratorRuntime["default"].wrap(function _callee22$(_context22) {
       while (1) {
         switch (_context22.prev = _context22.next) {
           case 0:
-            console.log("in /appointment_op (POST) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
+            console.log("in /appointment_op (POST) route with body = " + JSON.stringify(req.body));
 
-            if (!(!req.body.hasOwnProperty("id") || !req.body.hasOwnProperty("userId") || !req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("courseName") || !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("time") || !req.body.hasOwnProperty("paid"))) {
+            if (!(!req.body.hasOwnProperty("userId") || !req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("courseName") || !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("time") || !req.body.hasOwnProperty("paid"))) {
               _context22.next = 3;
               break;
             }
 
-            return _context22.abrupt("return", res.status(400).send("POST request on /appointment_op formulated incorrectly." + "Body must contain all 7 required fields: id, userId, username, courseName, date, time, paid."));
+            return _context22.abrupt("return", res.status(400).send("POST request on /appointment_op formulated incorrectly." + "Body must contain all 6 required fields: userId, username, courseName, date, time, paid."));
 
           case 3:
             _context22.prev = 3;
             _context22.next = 6;
-            return Appointment.findOne({
-              id: req.params.appointmentId
-            });
-
-          case 6:
-            thisAppointment = _context22.sent;
-
-            if (!thisAppointment) {
-              _context22.next = 11;
-              break;
-            }
-
-            //course already exists
-            res.status(400).send("There is already an course with this name '" + req.params.courseId + "'.");
-            _context22.next = 15;
-            break;
-
-          case 11:
-            _context22.next = 13;
             return new Appointment({
-              id: req.params.appointmentId,
               userId: req.body.userId,
               username: req.body.username,
               courseName: req.body.courseName,
@@ -1648,25 +1627,21 @@ app.post('/appointments_op/:appointmentId', /*#__PURE__*/function () {
               paid: req.body.paid
             }).save();
 
-          case 13:
+          case 6:
             thisAppointment = _context22.sent;
-            return _context22.abrupt("return", res.status(200).send("New appointment for '" + req.params.appointmentId + "' successfully created."));
+            return _context22.abrupt("return", res.status(200).send("New appointment for '" + req.body.userId + "' successfully created."));
 
-          case 15:
-            _context22.next = 20;
-            break;
-
-          case 17:
-            _context22.prev = 17;
+          case 10:
+            _context22.prev = 10;
             _context22.t0 = _context22["catch"](3);
             return _context22.abrupt("return", res.status(400).send("Unexpected error occurred when adding or looking up appointment in database. " + _context22.t0));
 
-          case 20:
+          case 13:
           case "end":
             return _context22.stop();
         }
       }
-    }, _callee22, null, [[3, 17]]);
+    }, _callee22, null, [[3, 10]]);
   }));
 
   return function (_x64, _x65, _x66) {
