@@ -29,7 +29,8 @@ class SpecificCourses extends React.Component {
             data: [],
             filteredData: [],
             item: "",
-            
+            cname: '',
+
             id: "",
             rating: "",
             review: "",
@@ -69,8 +70,9 @@ class SpecificCourses extends React.Component {
         this.setState(state => ({getRatesButtonClicked: !state.getRatesButtonClicked}));
     }
 
-    toggleBookTeeTimeClicked = (key) => {
+    toggleBookTeeTimeClicked = (key, cn) => {
         this.setState({item: key});
+        this.setState({cname: cn});
         this.setState(state => ({bookTeeTimeClicked: !state.bookTeeTimeClicked}));
     }
 
@@ -116,7 +118,7 @@ class SpecificCourses extends React.Component {
                         <Card.Text>Record Holder: {c.recordHolder}</Card.Text>
                         <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
                         <Button onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
-                        <Button onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
+                        <Button onClick={() => this.toggleBookTeeTimeClicked(c.id, c.courseName)}>Book Tee Time</Button>&nbsp;
                     </Card.Body>
                     <Card.Footer>Rating: {c.rating}</Card.Footer>
                     </Card>
@@ -245,7 +247,7 @@ class SpecificCourses extends React.Component {
                             <Card.Text>Record Holder: {thisCourse.recordHolder}</Card.Text>
                             <Button type="button" onClick={() => this.toggleMoreClicked(thisCourse.id)}>More</Button>&nbsp;
                             <Button onClick={() => this.toggleGetRatesClicked(thisCourse.id)}>Get Rates</Button>&nbsp;
-                            <Button onClick={() => this.toggleBookTeeTimeClicked(thisCourse.id)}>Book Tee Time</Button>&nbsp;
+                            <Button onClick={() => this.toggleBookTeeTimeClicked(thisCourse.id, thisCourse.courseName)}>Book Tee Time</Button>&nbsp;
                             {this.props.userObj.type === "operator" ? 
                             <Button style={{display: 'flex', float: 'right'}} onClick={() => this.handleDelete(thisCourse.id)}>&times;</Button>
                             : null}
@@ -286,7 +288,7 @@ class SpecificCourses extends React.Component {
                             <Card.Text>Record Holder: {c.recordHolder}</Card.Text>
                             <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
                             <Button onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
-                            <Button onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
+                            <Button onClick={() => this.toggleBookTeeTimeClicked(c.id, c.courseName)}>Book Tee Time</Button>&nbsp;
                             {this.props.userObj.type === "operator" ? 
                             <Button style={{display: 'flex', float: 'right'}} onClick={() => this.handleDelete(c.id)}>&times;</Button>
                             : null}
@@ -357,7 +359,7 @@ class SpecificCourses extends React.Component {
                     : null}
                 {this.state.bookTeeTimeClicked ? 
                     <BookingPage handleClose={this.toggleBookTeeTimeClicked} userObj={this.props.userObj} courseName={this.state.cname}
-                    course={this.state.item} changeMode={this.props.changeMode} editId={this.state.index}
+                    course={this.state.item} changeMode={this.props.changeMode}
                     refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
                     />
                     : null}
