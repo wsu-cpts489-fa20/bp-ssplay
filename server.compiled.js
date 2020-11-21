@@ -111,6 +111,22 @@ var roundSchema = new Schema({
 roundSchema.virtual('SGS').get(function () {
   return this.strokes * 60 + this.minutes * 60 + this.seconds;
 });
+var appointmentSchema = new Schema({
+  id: String,
+  userId: String,
+  username: String,
+  courseName: String,
+  date: String,
+  time: String,
+  paid: Boolean
+}, {
+  toObject: {
+    virtuals: true
+  },
+  toJSON: {
+    virtuals: true
+  }
+});
 var courseSchema = new Schema({
   id: String,
   rating: String,
@@ -167,12 +183,15 @@ var userSchema = new Schema({
       return this.securityQuestion ? true : false;
     }
   },
-  rounds: [roundSchema]
+  rounds: [roundSchema],
+  appointments: [appointmentSchema]
 });
 
 var User = _mongoose["default"].model("User", userSchema);
 
-var Course = _mongoose["default"].model("Course", courseSchema); //////////////////////////////////////////////////////////////////////////
+var Course = _mongoose["default"].model("Course", courseSchema);
+
+var Appointment = _mongoose["default"].model("Appointment", appointmentSchema); //////////////////////////////////////////////////////////////////////////
 //PASSPORT SET-UP
 //The following code sets up the app with OAuth authentication using
 //the 'github' strategy in passport.js.
@@ -611,7 +630,8 @@ app.post('/users/:userId', /*#__PURE__*/function () {
               profilePicURL: req.body.profilePicURL,
               securityQuestion: req.body.securityQuestion,
               securityAnswer: req.body.securityAnswer,
-              rounds: []
+              rounds: [],
+              appointments: []
             }).save();
 
           case 13:
@@ -1015,7 +1035,10 @@ app["delete"]('/rounds/:userId/:roundId', /*#__PURE__*/function () {
   return function (_x35, _x36, _x37) {
     return _ref12.apply(this, arguments);
   };
-}()); // GET ALL COURSES IN THE DATABASE
+}()); /////////////////////////////////
+//COURSES ROUTES
+////////////////////////////////
+// GET ALL COURSES IN THE DATABASE
 
 app.get('/allcourses/', /*#__PURE__*/function () {
   var _ref13 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee13(req, res, next) {
@@ -1324,5 +1347,329 @@ app["delete"]('/courses/:courseId', /*#__PURE__*/function () {
 
   return function (_x50, _x51, _x52) {
     return _ref17.apply(this, arguments);
+  };
+}()); /////////////////////////////////
+//APPOINTMENTS ROUTES
+////////////////////////////////
+//CREATE appointment route: Adds a new appointment as a subdocument to 
+//a document in the users collection (POST)
+
+app.post('/appointments/:userId', /*#__PURE__*/function () {
+  var _ref18 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee18(req, res, next) {
+    var status;
+    return _regeneratorRuntime["default"].wrap(function _callee18$(_context18) {
+      while (1) {
+        switch (_context18.prev = _context18.next) {
+          case 0:
+            console.log("in /appointments (POST) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
+
+            if (!(!req.body.hasOwnProperty("id") || !req.body.hasOwnProperty("userId") || !req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("courseName") || !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("time") || !req.body.hasOwnProperty("paid"))) {
+              _context18.next = 3;
+              break;
+            }
+
+            return _context18.abrupt("return", res.status(400).send("POST request on /appointments formulated incorrectly." + "Body must contain all 7 required fields: id, userId, username, courseName, date, time, paid"));
+
+          case 3:
+            _context18.prev = 3;
+            _context18.next = 6;
+            return User.updateOne({
+              id: req.params.userId
+            }, {
+              $push: {
+                appointments: req.body
+              }
+            });
+
+          case 6:
+            status = _context18.sent;
+
+            if (status.nModified != 1) {
+              //Should never happen!
+              res.status(400).send("Unexpected error occurred when adding appointment to" + " database. Appointment was not added.");
+            } else {
+              res.status(200).send("Appointment successfully added to database.");
+            }
+
+            _context18.next = 14;
+            break;
+
+          case 10:
+            _context18.prev = 10;
+            _context18.t0 = _context18["catch"](3);
+            console.log(_context18.t0);
+            return _context18.abrupt("return", res.status(400).send("Unexpected error occurred when adding appointment" + " to database: " + _context18.t0));
+
+          case 14:
+          case "end":
+            return _context18.stop();
+        }
+      }
+    }, _callee18, null, [[3, 10]]);
+  }));
+
+  return function (_x53, _x54, _x55) {
+    return _ref18.apply(this, arguments);
+  };
+}()); //READ appointment route: Returns all appointments associated 
+//with a given user in the users collection (GET)
+
+app.get('/appointments/:userId', /*#__PURE__*/function () {
+  var _ref19 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee19(req, res) {
+    var thisUser;
+    return _regeneratorRuntime["default"].wrap(function _callee19$(_context19) {
+      while (1) {
+        switch (_context19.prev = _context19.next) {
+          case 0:
+            console.log("in /appointments route (GET) with userId = " + JSON.stringify(req.params.userId));
+            _context19.prev = 1;
+            _context19.next = 4;
+            return User.findOne({
+              id: req.params.userId
+            });
+
+          case 4:
+            thisUser = _context19.sent;
+
+            if (thisUser) {
+              _context19.next = 9;
+              break;
+            }
+
+            return _context19.abrupt("return", res.status(400).message("No user account with specified userId was found in database."));
+
+          case 9:
+            return _context19.abrupt("return", res.status(200).json(JSON.stringify(thisUser.appointments)));
+
+          case 10:
+            _context19.next = 16;
+            break;
+
+          case 12:
+            _context19.prev = 12;
+            _context19.t0 = _context19["catch"](1);
+            console.log();
+            return _context19.abrupt("return", res.status(400).message("Unexpected error occurred when looking up user in database: " + _context19.t0));
+
+          case 16:
+          case "end":
+            return _context19.stop();
+        }
+      }
+    }, _callee19, null, [[1, 12]]);
+  }));
+
+  return function (_x56, _x57) {
+    return _ref19.apply(this, arguments);
+  };
+}()); //UPDATE appointments route: Updates a specific appointment 
+//for a given user in the users collection (PUT)
+
+app.put('/appointments/:userId/:appointmentId', /*#__PURE__*/function () {
+  var _ref20 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee20(req, res, next) {
+    var validProps, bodyObj, bodyProp, status;
+    return _regeneratorRuntime["default"].wrap(function _callee20$(_context20) {
+      while (1) {
+        switch (_context20.prev = _context20.next) {
+          case 0:
+            console.log("in /appointments (PUT) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
+            validProps = ['id', 'userId', 'username', 'courseName', 'date', 'time', 'paid'];
+            bodyObj = _objectSpread({}, req.body); // delete bodyObj._id; //Not needed for update
+            // delete bodyObj.SGS; //We'll compute this below in seconds.
+
+            _context20.t0 = _regeneratorRuntime["default"].keys(bodyObj);
+
+          case 4:
+            if ((_context20.t1 = _context20.t0()).done) {
+              _context20.next = 14;
+              break;
+            }
+
+            bodyProp = _context20.t1.value;
+
+            if (validProps.includes(bodyProp)) {
+              _context20.next = 10;
+              break;
+            }
+
+            return _context20.abrupt("return", res.status(400).send("appointments/ PUT request formulated incorrectly." + "It includes " + bodyProp + ". However, only the following props are allowed: " + "'id', 'userId', 'username', 'courseName', 'date', 'time', 'paid'"));
+
+          case 10:
+            bodyObj["appointments.$." + bodyProp] = bodyObj[bodyProp];
+            delete bodyObj[bodyProp];
+
+          case 12:
+            _context20.next = 4;
+            break;
+
+          case 14:
+            _context20.prev = 14;
+            _context20.next = 17;
+            return User.updateOne({
+              "id": req.params.userId,
+              "appointments._id": _mongoose["default"].Types.ObjectId(req.params.appointmentId)
+            }, {
+              "$set": bodyObj
+            });
+
+          case 17:
+            status = _context20.sent;
+
+            if (status.nModified != 1) {
+              res.status(400).send("Unexpected error occurred when updating appointment in database. Appointment was not updated.");
+            } else {
+              res.status(200).send("Appointment successfully updated in database.");
+            }
+
+            _context20.next = 25;
+            break;
+
+          case 21:
+            _context20.prev = 21;
+            _context20.t2 = _context20["catch"](14);
+            console.log(_context20.t2);
+            return _context20.abrupt("return", res.status(400).send("Unexpected error occurred when updating appointment in database: " + _context20.t2));
+
+          case 25:
+          case "end":
+            return _context20.stop();
+        }
+      }
+    }, _callee20, null, [[14, 21]]);
+  }));
+
+  return function (_x58, _x59, _x60) {
+    return _ref20.apply(this, arguments);
+  };
+}()); //DELETE round route: Deletes a specific round 
+//for a given user in the users collection (DELETE)
+
+app["delete"]('/appointments/:userId/:appointmentId', /*#__PURE__*/function () {
+  var _ref21 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee21(req, res, next) {
+    var status;
+    return _regeneratorRuntime["default"].wrap(function _callee21$(_context21) {
+      while (1) {
+        switch (_context21.prev = _context21.next) {
+          case 0:
+            console.log("in /appointments (DELETE) route with params = " + JSON.stringify(req.params));
+            _context21.prev = 1;
+            _context21.next = 4;
+            return User.updateOne({
+              id: req.params.userId
+            }, {
+              $pull: {
+                appointments: {
+                  _id: _mongoose["default"].Types.ObjectId(req.params.appointmentId)
+                }
+              }
+            });
+
+          case 4:
+            status = _context21.sent;
+
+            if (status.nModified != 1) {
+              //Should never happen!
+              res.status(400).send("Unexpected error occurred when deleting appointment from database. Appointment was not deleted.");
+            } else {
+              res.status(200).send("Appointment successfully deleted from database.");
+            }
+
+            _context21.next = 12;
+            break;
+
+          case 8:
+            _context21.prev = 8;
+            _context21.t0 = _context21["catch"](1);
+            console.log(_context21.t0);
+            return _context21.abrupt("return", res.status(400).send("Unexpected error occurred when deleting appointment from database: " + _context21.t0));
+
+          case 12:
+          case "end":
+            return _context21.stop();
+        }
+      }
+    }, _callee21, null, [[1, 8]]);
+  }));
+
+  return function (_x61, _x62, _x63) {
+    return _ref21.apply(this, arguments);
+  };
+}()); /////////////////////////////////
+//APPOINTMENTS_OP ROUTES
+////////////////////////////////
+//CREATE appointment route: Adds a new appoint as a subdocument to 
+//a document in the apoointments collection (POST)
+
+app.post('/appointments_op/:appointmentId', /*#__PURE__*/function () {
+  var _ref22 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee22(req, res, next) {
+    var thisAppointment;
+    return _regeneratorRuntime["default"].wrap(function _callee22$(_context22) {
+      while (1) {
+        switch (_context22.prev = _context22.next) {
+          case 0:
+            console.log("in /appointment_op (POST) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
+
+            if (!(!req.body.hasOwnProperty("id") || !req.body.hasOwnProperty("userId") || !req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("courseName") || !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("time") || !req.body.hasOwnProperty("paid"))) {
+              _context22.next = 3;
+              break;
+            }
+
+            return _context22.abrupt("return", res.status(400).send("POST request on /appointment_op formulated incorrectly." + "Body must contain all 7 required fields: id, userId, username, courseName, date, time, paid."));
+
+          case 3:
+            _context22.prev = 3;
+            _context22.next = 6;
+            return Appointment.findOne({
+              id: req.params.appointmentId
+            });
+
+          case 6:
+            thisAppointment = _context22.sent;
+
+            if (!thisAppointment) {
+              _context22.next = 11;
+              break;
+            }
+
+            //course already exists
+            res.status(400).send("There is already an course with this name '" + req.params.courseId + "'.");
+            _context22.next = 15;
+            break;
+
+          case 11:
+            _context22.next = 13;
+            return new Appointment({
+              id: req.params.appointmentId,
+              userId: req.body.userId,
+              username: req.body.username,
+              courseName: req.body.courseName,
+              date: req.body.date,
+              time: req.body.time,
+              paid: req.body.paid
+            }).save();
+
+          case 13:
+            thisAppointment = _context22.sent;
+            return _context22.abrupt("return", res.status(200).send("New appointment for '" + req.params.appointmentId + "' successfully created."));
+
+          case 15:
+            _context22.next = 20;
+            break;
+
+          case 17:
+            _context22.prev = 17;
+            _context22.t0 = _context22["catch"](3);
+            return _context22.abrupt("return", res.status(400).send("Unexpected error occurred when adding or looking up appointment in database. " + _context22.t0));
+
+          case 20:
+          case "end":
+            return _context22.stop();
+        }
+      }
+    }, _callee22, null, [[3, 17]]);
+  }));
+
+  return function (_x64, _x65, _x66) {
+    return _ref22.apply(this, arguments);
   };
 }());

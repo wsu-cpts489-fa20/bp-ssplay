@@ -18,6 +18,7 @@ let seventhDay = new Date(sixthDay);
 seventhDay.setDate(seventhDay.getDate() + 1);
 
 let day1 = today.toISOString().substring(0,10);
+console.log(day1);
 let day2 = tomorrow.toISOString().substring(0,10);
 let day3 = thirdDay.toISOString().substring(0,10);
 let day4 = fourthDay.toISOString().substring(0,10);
@@ -34,7 +35,8 @@ class BookingPage extends React.Component {
             courseName: this.props.course,
             bookingTime: '',
             bookingDate: day1,
-            course: ''
+            course: '',
+            id: ''
         }
     }
 
@@ -90,37 +92,133 @@ class BookingPage extends React.Component {
             rateStandard: this.state.course.rateStandard
         }
 
+        let newappt = {
+            id: this.state.id+this.props.courseName,
+            userId: this.props.userObj.id,
+            username: this.props.userObj.displayName,
+            courseName: this.props.courseName,
+            date: '',
+            time: '',
+            paid: false
+        }
+
         switch(this.state.bookingDate){
             case day1:
                 newData.appointments.day1[this.state.bookingTime] = false;
-                this.editCourse(newData);
+                newappt.date = day1;
                 break;
             case day2:
                 newData.appointments.day2[this.state.bookingTime] = false;
-                this.editCourse(newData);
+                newappt.date = day2;
                 break;
             case day3:
                 newData.appointments.day3[this.state.bookingTime] = false;
-                this.editCourse(newData);
+                newappt.date = day3;
                 break;
             case day4:
                 newData.appointments.day4[this.state.bookingTime] = false;
-                this.editCourse(newData);
+                newappt.date = day4;
                 break;
             case day5:
                 newData.appointments.day5[this.state.bookingTime] = false;
-                this.editCourse(newData);
+                newappt.date = day5;
                 break;
             case day6:
                 newData.appointments.day6[this.state.bookingTime] = false;
-                this.editCourse(newData);
+                newappt.date = day6;
                 break;
             case day7:
                 newData.appointments.day7[this.state.bookingTime] = false;
-                this.editCourse(newData);
+                newappt.date = day7;
                 break;
         }
+        switch(this.state.bookingTime){
+            case '0':
+                newappt.time = "9:00 AM";
+                break;
+            case '1':
+                newappt.time = "10:00 AM";
+                break;
+            case '2':
+                newappt.time = "11:00 AM";
+                break;
+            case '3':
+                newappt.time = "12:00 PM";
+                break;
+            case '4':
+                newappt.time = "1:00 PM";
+                break;
+            case '5':
+                newappt.time = "2:00 PM";
+                break;
+            case '6':
+                newappt.time = "3:00 PM";
+                break;
+            case '7':
+                newappt.time = "4:00 PM";
+                break;
+            case '8':
+                newappt.time = "5:00 PM";
+                break;
+        }
+        this.addAppointment(newappt);
+        this.addAppointment_op(newappt);
+        this.editCourse(newData);
         this.props.handleClose();
+    }
+
+    // Sends a PUT request to the backend with the new information
+    // new information here is the appointments that were scheduled
+    addAppointment_op = async (newData) =>{
+        const url = '/appointments_op/' + this.state.id+this.props.courseName;
+        const res = await fetch(url, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+            method: 'POST',
+            body: JSON.stringify(newData)}); 
+        const msg = await res.text();
+        console.log(msg);
+        if (res.status === 200) {
+            // this.toggleReviewClicked();
+            // this.props.handleClose();
+            alert("Appointment_op Added");
+            if (this.props.mode === AppMode.COURSES)
+                this.props.refreshOnUpdate(AppMode.COURSES);
+            else 
+                this.props.refreshOnUpdate(AppMode.COURSES_ALL);
+        } else {
+            this.props.refreshOnUpdate(AppMode.COURSES_ALL);
+        }
+    }
+
+    // Sends a PUT request to the backend with the new information
+    // new information here is the appointments that were scheduled
+    addAppointment = async (newData) =>{
+        const url = '/appointments/' + this.props.userObj.id;
+        // + '/' + 
+        // this.props.userObj.appointments[this.props.editId]._id;
+        const res = await fetch(url, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+            method: 'POST',
+            body: JSON.stringify(newData)}); 
+        const msg = await res.text();
+        console.log(msg);
+        if (res.status === 200) {
+            // this.toggleReviewClicked();
+            // this.props.handleClose();
+            alert("Appointment Added");
+            if (this.props.mode === AppMode.COURSES)
+                this.props.refreshOnUpdate(AppMode.COURSES);
+            else 
+                this.props.refreshOnUpdate(AppMode.COURSES_ALL);
+        } else {
+            this.props.refreshOnUpdate(AppMode.COURSES_ALL);
+        }
     }
 
     // Sends a PUT request to the backend with the new information
@@ -344,6 +442,10 @@ class BookingPage extends React.Component {
                             <option id="7" value="7">4:00 PM</option>
                             <option id="8" value="8">5:00 PM</option>    
                         </select>
+                        </label>
+                        <p></p>
+                        <label>ID: <br></br>
+                            <input id="id" name="id" value={this.state.id} onChange={this.handleChange} required></input>
                         </label>
                         <p></p>
                         <button className="btn btn-primary btn-color-theme modal-submit-btn">Request Tee Time</button>

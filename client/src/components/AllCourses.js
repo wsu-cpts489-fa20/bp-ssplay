@@ -15,7 +15,9 @@ class AllCourses extends React.Component {
             getCourseClicked: false,
             getRatesButtonClicked: false,
             bookTeeTimeClicked: false,
-            more: false
+            more: false,
+            index: 0,
+            cname: ''
         };
     }
 
@@ -38,8 +40,10 @@ class AllCourses extends React.Component {
         this.setState(state => ({getRatesButtonClicked: !state.getRatesButtonClicked}));
     }
 
-    toggleBookTeeTimeClicked = (key) => {
+    toggleBookTeeTimeClicked = (key, i, cn) => {
         this.setState({item: key});
+        this.setState({index: i});
+        this.setState({cname: cn});
         this.setState(state => ({bookTeeTimeClicked: !state.bookTeeTimeClicked}));
     }
 
@@ -84,7 +88,7 @@ class AllCourses extends React.Component {
             let thisCourse = JSON.parse(obj);
             this.setState({
                 filteredData: thisCourse,
-                course: thisCourse.map((c) =>(
+                course: thisCourse.map((c, index) =>(
                     <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
                         <Card key={c.id} style={{ width: "30rem", display: "flex" }}>                      
                         <Card.Img className="course-image" variant="top" src={c.picture}></Card.Img>
@@ -94,7 +98,7 @@ class AllCourses extends React.Component {
                             {this.setState({item: c.id})}
                             <Button id="moreBtn" type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
                             <Button id="ratesBtn" type="button" onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
-                            <Button id="bookingBtn" type="button" onClick={() => this.toggleBookTeeTimeClicked(c.id)}>Book Tee Time</Button>&nbsp;
+                            <Button id="bookingBtn" type="button" onClick={() => this.toggleBookTeeTimeClicked(c.id, index, c.courseName)}>Book Tee Time</Button>&nbsp;
                             {this.props.userObj.type === "operator" ? 
                             <Button style={{display: 'flex', float: 'right'}} onClick={() => this.handleDelete(c.id)}>&times;</Button>
                             : null}
@@ -129,14 +133,14 @@ class AllCourses extends React.Component {
                     />
                     : null}
                 {this.state.more ? 
-                    <MoreModal handleClose={this.toggleMoreClicked} 
+                    <MoreModal handleClose={this.toggleMoreClicked}
                         course={this.state.item} changeMode={this.props.changeMode} 
                         refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
                     />
                     : null}
                 {this.state.bookTeeTimeClicked ? 
-                    <BookingPage handleClose={this.toggleBookTeeTimeClicked} 
-                        course={this.state.item} changeMode={this.props.changeMode} 
+                    <BookingPage handleClose={this.toggleBookTeeTimeClicked} userObj={this.props.userObj} courseName={this.state.cname}
+                        course={this.state.item} changeMode={this.props.changeMode} editId={this.state.index}
                         refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} 
                     />
                     : null}
