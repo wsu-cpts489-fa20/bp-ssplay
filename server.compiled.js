@@ -157,6 +157,27 @@ var courseSchema = new Schema({
   toJSON: {
     virtuals: true
   }
+});
+var cardSchema = new Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  number: {
+    type: Number,
+    required: true
+  },
+  expDate: {
+    type: String,
+    required: true
+  }
+}, {
+  toObject: {
+    virtuals: true
+  },
+  toJSON: {
+    virtuals: true
+  }
 }); //Define schema that maps to a document in the Users collection in the appdb
 //database.
 
@@ -183,7 +204,8 @@ var userSchema = new Schema({
     }
   },
   rounds: [roundSchema],
-  appointments: [appointmentSchema]
+  appointments: [appointmentSchema],
+  card: [cardSchema]
 });
 
 var User = _mongoose["default"].model("User", userSchema);
@@ -235,7 +257,9 @@ function () {
               displayName: profile.displayName,
               authStrategy: profile.provider,
               profilePicURL: profile.photos[0].value,
-              rounds: []
+              rounds: [],
+              appointments: [],
+              card: []
             }).save();
 
           case 8:
@@ -294,7 +318,10 @@ function () {
               id: userId,
               displayName: profile.displayName,
               authStrategy: profile.provider,
-              profilePicURL: profile.photos[0].value
+              profilePicURL: profile.photos[0].value,
+              rounds: [],
+              appointments: [],
+              card: []
             }).save();
 
           case 8:
@@ -630,7 +657,8 @@ app.post('/users/:userId', /*#__PURE__*/function () {
               securityQuestion: req.body.securityQuestion,
               securityAnswer: req.body.securityAnswer,
               rounds: [],
-              appointments: []
+              appointments: [],
+              card: []
             }).save();
 
           case 13:
@@ -1786,5 +1814,119 @@ app.put('/appointments_op/:username/:courseName/:date/:time', /*#__PURE__*/funct
 
   return function (_x72, _x73, _x74) {
     return _ref25.apply(this, arguments);
+  };
+}()); /////////////////////////////////
+//CARD ROUTES
+////////////////////////////////
+//CREATE card route: Adds a new card as a subdocument to 
+//a document in the cards collection (POST)
+
+app.post('/cards/:userId', /*#__PURE__*/function () {
+  var _ref26 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee26(req, res, next) {
+    var status;
+    return _regeneratorRuntime["default"].wrap(function _callee26$(_context26) {
+      while (1) {
+        switch (_context26.prev = _context26.next) {
+          case 0:
+            console.log("in /cards (POST) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
+
+            if (!(!req.body.hasOwnProperty("name") || !req.body.hasOwnProperty("number") || !req.body.hasOwnProperty("expDate"))) {
+              _context26.next = 3;
+              break;
+            }
+
+            return _context26.abrupt("return", res.status(400).send("POST request on /cards formulated incorrectly." + "Body must contain all 3 required fields: name, numner, expDate."));
+
+          case 3:
+            _context26.prev = 3;
+            _context26.next = 6;
+            return User.updateOne({
+              id: req.params.userId
+            }, {
+              $push: {
+                card: req.body
+              }
+            });
+
+          case 6:
+            status = _context26.sent;
+
+            if (status.nModified != 1) {
+              //Should never happen!
+              res.status(400).send("Unexpected error occurred when adding card to database. Card was not added.");
+            } else {
+              res.status(200).send("Card successfully added to database.");
+            }
+
+            _context26.next = 14;
+            break;
+
+          case 10:
+            _context26.prev = 10;
+            _context26.t0 = _context26["catch"](3);
+            console.log(_context26.t0);
+            return _context26.abrupt("return", res.status(400).send("Unexpected error occurred when adding card to database: " + _context26.t0));
+
+          case 14:
+          case "end":
+            return _context26.stop();
+        }
+      }
+    }, _callee26, null, [[3, 10]]);
+  }));
+
+  return function (_x75, _x76, _x77) {
+    return _ref26.apply(this, arguments);
+  };
+}()); //READ card route: Returns cards associated 
+//with a given user in the users collection (GET)
+
+app.get('/cards/:userId', /*#__PURE__*/function () {
+  var _ref27 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee27(req, res) {
+    var thisUser;
+    return _regeneratorRuntime["default"].wrap(function _callee27$(_context27) {
+      while (1) {
+        switch (_context27.prev = _context27.next) {
+          case 0:
+            console.log("in /cards route (GET) with userId = " + JSON.stringify(req.params.userId));
+            _context27.prev = 1;
+            _context27.next = 4;
+            return User.findOne({
+              id: req.params.userId
+            });
+
+          case 4:
+            thisUser = _context27.sent;
+
+            if (thisUser) {
+              _context27.next = 9;
+              break;
+            }
+
+            return _context27.abrupt("return", res.status(400).message("No user account with specified userId was found in database."));
+
+          case 9:
+            return _context27.abrupt("return", res.status(200).json(JSON.stringify(thisUser.card)));
+
+          case 10:
+            _context27.next = 16;
+            break;
+
+          case 12:
+            _context27.prev = 12;
+            _context27.t0 = _context27["catch"](1);
+            console.log();
+            return _context27.abrupt("return", res.status(400).message("Unexpected error occurred when looking up user in database: " + _context27.t0));
+
+          case 16:
+          case "end":
+            return _context27.stop();
+        }
+      }
+    }, _callee27, null, [[1, 12]]);
+  }));
+
+  return function (_x78, _x79) {
+    return _ref27.apply(this, arguments);
   };
 }());

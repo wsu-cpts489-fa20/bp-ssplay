@@ -2,6 +2,7 @@ import React from 'react';
 import AppMode from '../AppMode';
 import { Navbar, Container, Row, Col, Card, Button } from "react-bootstrap";
 import { async } from 'regenerator-runtime';
+import PaymentDialog from './PaymentDialog';
 
 class MyAppointments extends React.Component {
 
@@ -9,7 +10,8 @@ class MyAppointments extends React.Component {
         super();
     
         this.state={
-            deleteClicked: false
+            matched: false,
+            payClicked: false
         };
     }
 
@@ -18,8 +20,12 @@ class MyAppointments extends React.Component {
         this.getMyAppointments();
     }
 
-    toggleDeleteClicked = () => {
-        this.setState(state => ({deleteClicked: !state.deleteClicked}));
+    toggleSetMatched = (s) => {
+        this.setState(state => ({matched: !state.matched}));
+    }
+
+    togglePayClicked = () => {
+        this.setState(state => ({payClicked: !state.payClicked}));
     }
 
     handleDeleteAll = (user, course, d, t, i) =>{
@@ -31,8 +37,18 @@ class MyAppointments extends React.Component {
         if (p === "true")
             alert("You've already paid!");
         else{
-            this.handlePayment(aid, u, c, d, t, p);
-            this.handleUserPayment(mid, aid, u, c, d, t, p);
+            this.setState({info: {
+                mmId: mid,
+                userId: aid,
+                username: u,
+                courseName: c,
+                date: d,
+                time: t,
+                paid: p
+            }});
+            this.togglePayClicked();
+            // this.handlePayment(aid, u, c, d, t, p);
+            // this.handleUserPayment(mid, aid, u, c, d, t, p);
         }
     }   
 
@@ -170,6 +186,9 @@ class MyAppointments extends React.Component {
                     </Container> 
                     </tbody>
                 </table>
+                {this.state.payClicked ? <PaymentDialog userObj={this.props.userObj} info={this.state.info}
+                toggleSetMatched={this.toggleSetMatched} close={this.togglePayClicked}
+                handleUserPayment={this.handleUserPayment} handlePayment={this.handlePayment}></PaymentDialog> :null}
         </div>
         );
     }

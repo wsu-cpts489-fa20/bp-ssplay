@@ -111,6 +111,20 @@ const courseSchema = new Schema({
   }
 });
 
+const cardSchema = new Schema({
+  name: {type: String, required: true},
+  number: {type: Number, required: true},
+  expDate: {type: String, required: true}
+},
+{
+  toObject: {
+  virtuals: true
+  },
+  toJSON: {
+  virtuals: true 
+  }
+});
+
 //Define schema that maps to a document in the Users collection in the appdb
 //database.
 const userSchema = new Schema({
@@ -124,7 +138,8 @@ const userSchema = new Schema({
   securityAnswer: {type: String, required: function() 
     {return this.securityQuestion ? true: false}},
   rounds: [roundSchema],
-  appointments: [appointmentSchema]
+  appointments: [appointmentSchema],
+  card: [cardSchema]
 });
 const User = mongoose.model("User",userSchema); 
 const Course = mongoose.model("Course",courseSchema); 
@@ -154,7 +169,9 @@ passport.use(new GithubStrategy({
         displayName: profile.displayName,
         authStrategy: profile.provider,
         profilePicURL: profile.photos[0].value,
-        rounds: []
+        rounds: [],
+        appointments: [],
+        card: []
       }).save();
   }
   return done(null,currentUser);
@@ -178,7 +195,10 @@ passport.use(new GoogleStrategy({
         id: userId,
         displayName: profile.displayName,
         authStrategy: profile.provider,
-        profilePicURL: profile.photos[0].value
+        profilePicURL: profile.photos[0].value,
+        rounds: [],
+        appointments: [],
+        card: []
       }).save();
   }
   return done(null,currentUser);
@@ -382,7 +402,8 @@ app.post('/users/:userId',  async (req, res, next) => {
         securityQuestion: req.body.securityQuestion,
         securityAnswer: req.body.securityAnswer,
         rounds: [],
-        appointments: []
+        appointments: [],
+        card: []
       }).save();
       return res.status(201).send("New account for '" + 
         req.params.userId + "' successfully created.");
@@ -891,3 +912,54 @@ app.put('/appointments_op/:username/:courseName/:date/:time',  async (req, res, 
         res.status(400).send("Unexpected error occurred when updating appointment data in database: " + err);
       }
 });
+
+/////////////////////////////////
+//CARD ROUTES
+////////////////////////////////
+
+//CREATE card route: Adds a new card as a subdocument to 
+//a document in the cards collection (POST)
+app.post('/cards/:userId', async (req, res, next) => {
+  console.log("in /cards (POST) route with params = " + 
+              JSON.stringify(req.params) + " and body = " + 
+              JSON.stringify(req.body));
+  if (!req.body.hasOwnProperty("name") || 
+      !req.body.hasOwnProperty("number") || 
+      !req.body.hasOwnProperty("expDate")) {
+    //Body does not contain correct properties
+    return res.status(400).send("POST request on /cards formulated incorrectly." +
+      "Body must contain all 3 required fields: name, numner, expDate.");
+  }
+  try {
+    let status = await User.updateOne(
+    {id: req.params.userId},
+    {$push: {card: req.body}});
+    if (status.nModified != 1) { //Should never happen!
+      res.status(400).send("Unexpected error occurred when adding card to database. Card was not added.");
+    } else {
+      res.status(200).send("Card successfully added to database.");
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Unexpected error occurred when adding card to database: " + err);
+  } 
+});
+
+//READ card route: Returns cards associated 
+//with a given user in the users collection (GET)
+app.get('/cards/:userId', async(req, res) => {
+  console.log("in /cards route (GET) with userId = " + 
+    JSON.stringify(req.params.userId));
+  try {
+    let thisUser = await User.findOne({id: req.params.userId});
+    if (!thisUser) {
+      return res.status(400).message("No user account with specified userId was found in database.");
+    } else {
+      return res.status(200).json(JSON.stringify(thisUser.card));
+    }
+  } catch (err) {
+    console.log()
+    return res.status(400).message("Unexpected error occurred when looking up user in database: " + err);
+  }
+});
+
