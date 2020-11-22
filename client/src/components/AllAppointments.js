@@ -13,7 +13,7 @@ class AllAppointments extends React.Component {
 
     // Get information of all courses on render
     componentDidMount(){
-        this.getCourse();
+        this.getAllAppointments();
     }
 
     toggleDeleteClicked = () => {
@@ -43,7 +43,7 @@ class AllAppointments extends React.Component {
     }
 
     // Get information of all courses to show on page
-    getCourse = async () => {
+    getAllAppointments = async () => {
         const url = '/allappointments_op/';
         fetch(url)
         .then((response) => {

@@ -24,7 +24,6 @@ class MyAppointments extends React.Component {
     handleDeleteAll = (k, user, course, d, t) =>{
         this.handleDelete(k);
         this.handleDeleteFromDB(user, course, d, t);
-        this.props.setInformation(user, course, d, t);
     }
 
     // Delete course with this id from database

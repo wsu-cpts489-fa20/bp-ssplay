@@ -3,7 +3,7 @@ import AppMode from '../AppMode';
 
 // For setting min and max value of <input type="date">
 // Also to later usage of actual booking tee time implementation
-let today = new Date();
+let today = new Date(Date.now()-(new Date()).getTimezoneOffset()*60000);
 let tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
 let thirdDay = new Date(tomorrow);
@@ -42,6 +42,38 @@ class BookingPage extends React.Component {
     // Get information on selected course on render
     componentDidMount(){
         this.getSearchedCourse(this.props.course);
+        this.getAllAppointments();
+    }
+
+    // Get information of all courses to show on page
+    getAllAppointments = async () => {
+        const url = '/allappointments_op/';
+        fetch(url)
+        .then((response) => {
+            if (response.status == 200)
+                return response.json();
+            else
+            {
+                throw Error(response.statusText);
+            }
+        })
+        .then((obj) => 
+        {
+            console.log("GET SUCCESS!");
+            let thisCourse = JSON.parse(obj);
+            this.setState({
+                appointments: thisCourse.map((c) =>(
+                    {
+                        username: c.username,
+                        courseName: c.courseName,
+                        date: c.date,
+                        time: c.time
+                    }
+                ))
+            });
+        }).catch((error) =>{
+            console.log("GET ERROR!");
+        });
     }
 
     // Get information on selected course then set it to a state for usage in this component
@@ -261,147 +293,42 @@ class BookingPage extends React.Component {
         document.getElementById("7").removeAttribute("disabled");
         document.getElementById("8").removeAttribute("disabled");
 
-        switch(this.state.bookingDate){
-            case day1:
-                if (!this.state.course.appointments.day1[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
-            case day2:
-                if (!this.state.course.appointments.day2[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
-            case day3:
-                if (!this.state.course.appointments.day3[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
-            case day4:
-                if (!this.state.course.appointments.day4[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
-            case day5:
-                if (!this.state.course.appointments.day5[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
-            case day6:
-                if (!this.state.course.appointments.day6[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
-            case day7:
-                if (!this.state.course.appointments.day7[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
+        console.log(this.state.appointments);
+        for (var i = 0; i < this.state.appointments.length; i++)
+        {
+            console.log(this.state.course.courseName, this.state.appointments[i].courseName);
+            if ((this.state.bookingDate === this.state.appointments[i].date) && (this.state.course.courseName === this.state.appointments[i].courseName))
+            {
+                switch(this.state.appointments[i].time){
+                    case "9:00 AM":
+                        document.getElementById("0").setAttribute("disabled",true);
+                        break;
+                    case "10:00 AM":
+                        document.getElementById("1").setAttribute("disabled",true);
+                        break;
+                    case "11:00 AM":
+                        document.getElementById("2").setAttribute("disabled",true);
+                        break;
+                    case "12:00 PM":
+                        document.getElementById("3").setAttribute("disabled",true);
+                        break;
+                    case "1:00 PM":
+                        document.getElementById("4").setAttribute("disabled",true);
+                        break;
+                    case "2:00 PM":
+                        document.getElementById("5").setAttribute("disabled",true);
+                        break;
+                    case "3:00 PM":
+                        document.getElementById("6").setAttribute("disabled",true);
+                        break;
+                    case "4:00 PM":
+                        document.getElementById("7").setAttribute("disabled",true);
+                        break;
+                    case "5:00 PM":
+                        document.getElementById("8").setAttribute("disabled",true);
+                        break;
+                }
+            }
         }
     }
 

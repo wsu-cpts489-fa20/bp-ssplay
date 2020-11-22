@@ -8,26 +8,6 @@ import AllAppointments from './AllAppointments.js';
 import MyAppointments from './MyAppointments';
 
 class CoursesPage extends React.Component {
-
-    constructor(){
-        super();
-        this.state={
-            username: '',
-            coursename: '',
-            date: '',
-            time: ''
-        };
-    }
-
-    setInformation = (u,c,d,t) =>{
-        this.setState({
-            username: u,
-            coursename: c,
-            date: d,
-            time: t
-        })
-    }
-
     render() {
         switch(this.props.mode){
             case AppMode.COURSES:
@@ -41,7 +21,7 @@ class CoursesPage extends React.Component {
             case AppMode.COURSES_APPT:
                 return (<AllAppointments changeMode={this.props.changeMode}/>);
             case AppMode.COURSES_MYAPPT:
-                return (<MyAppointments userObj={this.props.userObj} changeMode={this.props.changeMode} setInformation={this.setInformation}/>);
+                return (<MyAppointments userObj={this.props.userObj} changeMode={this.props.changeMode}/>);
         }
     }   
 }

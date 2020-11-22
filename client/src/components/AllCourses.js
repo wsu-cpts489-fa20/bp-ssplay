@@ -140,7 +140,7 @@ class AllCourses extends React.Component {
                 {this.state.bookTeeTimeClicked ? 
                     <BookingPage handleClose={this.toggleBookTeeTimeClicked} userObj={this.props.userObj} courseName={this.state.cname}
                         course={this.state.item} changeMode={this.props.changeMode} editId={this.state.index}
-                        refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode}
+                        refreshOnUpdate={this.props.refreshOnUpdate} mode={this.props.mode} info={this.props.info}
                     />
                     : null}
             </div>
