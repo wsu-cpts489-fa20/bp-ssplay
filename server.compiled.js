@@ -1269,14 +1269,7 @@ app.put('/courses/:courseId', /*#__PURE__*/function () {
 
           case 14:
             status = _context16.sent;
-
-            if (status.nModified != 1) {
-              //account could not be found
-              res.status(404).send("No course " + req.params.courseId + " exists. Course could not be updated.");
-            } else {
-              res.status(200).send("Course " + req.params.courseId + " successfully updated.");
-            }
-
+            res.status(200).send("Course " + req.params.courseId + " successfully updated.");
             _context16.next = 21;
             break;
 
@@ -1543,7 +1536,7 @@ app.put('/appointments/:userId/:appointmentId', /*#__PURE__*/function () {
 }()); //DELETE round route: Deletes a specific round 
 //for a given user in the users collection (DELETE)
 
-app["delete"]('/appointments/:userId/:appointmentId', /*#__PURE__*/function () {
+app["delete"]('/appointments/:username/:courseName/:date/:time/:userId', /*#__PURE__*/function () {
   var _ref21 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee21(req, res, next) {
     var status;
     return _regeneratorRuntime["default"].wrap(function _callee21$(_context21) {
@@ -1558,7 +1551,10 @@ app["delete"]('/appointments/:userId/:appointmentId', /*#__PURE__*/function () {
             }, {
               $pull: {
                 appointments: {
-                  _id: _mongoose["default"].Types.ObjectId(req.params.appointmentId)
+                  username: req.params.username,
+                  courseName: req.params.courseName,
+                  date: req.params.date,
+                  time: req.params.time
                 }
               }
             });

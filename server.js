@@ -670,11 +670,7 @@ app.put('/courses/:courseId',  async (req, res, next) => {
   try {
         let status = await Course.updateOne({id: req.params.courseId}, 
           {$set: req.body});
-        if (status.nModified != 1) { //account could not be found
-          res.status(404).send("No course " + req.params.courseId + " exists. Course could not be updated.");
-        } else {
           res.status(200).send("Course " + req.params.courseId + " successfully updated.")
-        }
       } catch (err) {
         res.status(400).send("Unexpected error occurred when updating course data in database: " + err);
       }
@@ -796,13 +792,13 @@ app.put('/appointments/:userId/:appointmentId', async (req, res, next) => {
 
 //DELETE round route: Deletes a specific round 
 //for a given user in the users collection (DELETE)
-app.delete('/appointments/:userId/:appointmentId', async (req, res, next) => {
+app.delete('/appointments/:username/:courseName/:date/:time/:userId', async (req, res, next) => {
   console.log("in /appointments (DELETE) route with params = " + 
               JSON.stringify(req.params)); 
   try {
     let status = await User.updateOne(
       {id: req.params.userId},
-      {$pull: {appointments: {_id: mongoose.Types.ObjectId(req.params.appointmentId)}}});
+      {$pull: {appointments: {username: req.params.username, courseName: req.params.courseName, date: req.params.date, time: req.params.time}}});
     if (status.nModified != 1) { //Should never happen!
       res.status(400).send("Unexpected error occurred when deleting appointment from database. Appointment was not deleted.");
     } else {
