@@ -9,6 +9,7 @@ import FeedPage from './FeedPage.js';
 import Rounds from './Rounds.js';
 import CoursesPage from './CoursesPage.js';
 import AboutBox from './AboutBox.js';
+import AddCardDialog from './AddCardDialog.js';
 
 const modeTitle = {};
 modeTitle[AppMode.LOGIN] = "Welcome to SpeedScore";
@@ -48,7 +49,9 @@ class App extends React.Component {
                   editAccount: false,
                   showEditAccountDialog: false,
                   statusMsg: "",
-                  showAboutDialog: false
+                  showAboutDialog: false,
+                  addCardClicked: false,
+                  cardExist: false
                  };
   }
 
@@ -122,6 +125,10 @@ class App extends React.Component {
     this.setState({userObj: newType});
   }
 
+  toggleAddCardClicked = () => {
+    this.setState(state => ({addCardClicked: !state.addCardClicked}));
+  }
+
   //editAccountDone -- called after successful edit or
   //deletion of user account. msg contains the status
   //message and deleted indicates whether an account was
@@ -157,6 +164,12 @@ class App extends React.Component {
               userId={this.state.userObj.id} 
               done={this.editAccountDone} 
               cancel={this.cancelEditAccount}/> : null}
+        {this.state.addCardClicked ? 
+          <AddCardDialog 
+              cardExist={this.state.cardExist}
+              setCardExist={() => (this.setState({cardExist: true}))}
+              userId={this.state.userObj.id}
+              close={() => (this.setState({addCardClicked: false}))} /> : null}
         <NavBar 
           aboutOpen={this.state.showAboutDialog}
           title={modeTitle[this.state.mode]} 
@@ -165,6 +178,7 @@ class App extends React.Component {
           menuOpen={this.state.menuOpen}
           toggleMenuOpen={this.toggleMenuOpen}/>
           <SideMenu 
+            toggleAddCardClicked={this.toggleAddCardClicked}
             type={this.state.userObj.type}
             changeMode={this.handleChangeMode}
             menuOpen = {this.state.menuOpen}

@@ -140,16 +140,7 @@ var courseSchema = new Schema({
   recordHolder: String,
   rateSenior: String,
   rateStandard: String,
-  courseName: String,
-  appointments: {
-    day1: [],
-    day2: [],
-    day3: [],
-    day4: [],
-    day5: [],
-    day6: [],
-    day7: []
-  }
+  courseName: String
 }, {
   toObject: {
     virtuals: true
@@ -1217,8 +1208,7 @@ app.post('/courses/:courseId', /*#__PURE__*/function () {
               bestScore: req.body.bestScore,
               recordHolder: req.body.recordHolder,
               rateSenior: req.body.rateSenior,
-              rateStandard: req.body.rateStandard,
-              appointments: req.body.appointments
+              rateStandard: req.body.rateStandard
             }).save();
 
           case 13:
@@ -1264,7 +1254,7 @@ app.put('/courses/:courseId', /*#__PURE__*/function () {
             return _context16.abrupt("return", res.status(400).send("courses/ PUT request formulated incorrectly." + "It must contain 'courseId' as parameter."));
 
           case 3:
-            validProps = ['appointments', 'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
+            validProps = ['courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
             _context16.t0 = _regeneratorRuntime["default"].keys(req.body);
 
           case 5:
@@ -1280,7 +1270,7 @@ app.put('/courses/:courseId', /*#__PURE__*/function () {
               break;
             }
 
-            return _context16.abrupt("return", res.status(400).send("courses/ PUT request formulated incorrectly." + "Only the following props are allowed in body: " + "'appointments', 'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'"));
+            return _context16.abrupt("return", res.status(400).send("courses/ PUT request formulated incorrectly." + "Only the following props are allowed in body: " + "'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'"));
 
           case 9:
             _context16.next = 5;
@@ -1928,5 +1918,84 @@ app.get('/cards/:userId', /*#__PURE__*/function () {
 
   return function (_x78, _x79) {
     return _ref27.apply(this, arguments);
+  };
+}()); //UPDATE card route: Updates a specific card 
+//for a given user in the users collection (PUT)
+
+app.put('/cards/:userId/:cardId', /*#__PURE__*/function () {
+  var _ref28 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee28(req, res, next) {
+    var validProps, bodyObj, bodyProp, status;
+    return _regeneratorRuntime["default"].wrap(function _callee28$(_context28) {
+      while (1) {
+        switch (_context28.prev = _context28.next) {
+          case 0:
+            console.log("in /cards (PUT) route with params = " + JSON.stringify(req.params) + " and body = " + JSON.stringify(req.body));
+            validProps = ['name', 'number', 'expDate'];
+            bodyObj = _objectSpread({}, req.body); // delete bodyObj._id; //Not needed for update
+            // delete bodyObj.SGS; //We'll compute this below in seconds.
+
+            _context28.t0 = _regeneratorRuntime["default"].keys(bodyObj);
+
+          case 4:
+            if ((_context28.t1 = _context28.t0()).done) {
+              _context28.next = 14;
+              break;
+            }
+
+            bodyProp = _context28.t1.value;
+
+            if (validProps.includes(bodyProp)) {
+              _context28.next = 10;
+              break;
+            }
+
+            return _context28.abrupt("return", res.status(400).send("cards/ PUT request formulated incorrectly." + "It includes " + bodyProp + ". However, only the following props are allowed: " + "'name', 'number', 'expDate'"));
+
+          case 10:
+            bodyObj["card.$." + bodyProp] = bodyObj[bodyProp];
+            delete bodyObj[bodyProp];
+
+          case 12:
+            _context28.next = 4;
+            break;
+
+          case 14:
+            _context28.prev = 14;
+            _context28.next = 17;
+            return User.updateOne({
+              "id": req.params.userId,
+              "card._id": _mongoose["default"].Types.ObjectId(req.params.cardId)
+            }, {
+              "$set": bodyObj
+            });
+
+          case 17:
+            status = _context28.sent;
+
+            if (status.nModified != 1) {
+              res.status(400).send("Unexpected error occurred when updating card in database. Card was not updated.");
+            } else {
+              res.status(200).send("Card successfully updated in database.");
+            }
+
+            _context28.next = 25;
+            break;
+
+          case 21:
+            _context28.prev = 21;
+            _context28.t2 = _context28["catch"](14);
+            console.log(_context28.t2);
+            return _context28.abrupt("return", res.status(400).send("Unexpected error occurred when updating card in database: " + _context28.t2));
+
+          case 25:
+          case "end":
+            return _context28.stop();
+        }
+      }
+    }, _callee28, null, [[14, 21]]);
+  }));
+
+  return function (_x80, _x81, _x82) {
+    return _ref28.apply(this, arguments);
   };
 }());

@@ -71,6 +71,8 @@ renderModeMenuItems = () => {
           {this.props.localAccount ? 
             <a id="accountBtn" className="sidemenu-item" onClick={this.props.editAccount}>
               <span className="fa fa-user"></span>&nbsp;Account</a> : null}
+          <a id="addCardbtn" className="sidemenu-item" onClick={this.props.toggleAddCardClicked}>
+            <span className="fa fa-plus"></span>&nbsp;Add Card</a>
           <a id="aboutBtn" className="sidemenu-item" onClick={this.props.showAbout}>
             <span className="fa fa-info-circle"></span>&nbsp;About</a>
           <a id="logOutBtn" className="sidemenu-item" onClick={this.props.logOut}>

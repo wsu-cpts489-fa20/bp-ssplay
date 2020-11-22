@@ -1,6 +1,5 @@
 import React from 'react';
 import ConfirmDeleteAccount from './ConfirmDeleteAccount.js';
-import AddCardDialog from './AddCardDialog.js';
 import { async } from 'regenerator-runtime';
 
 class CreateEditAccountDialog extends React.Component {
@@ -22,8 +21,7 @@ class CreateEditAccountDialog extends React.Component {
                     securityQuestion: "",
                     securityAnswer: "",
                     formUpdated: false,
-                    confirmDelete: false,
-                    addCardClicked: false, card: 0};
+                    confirmDelete: false};
     } 
 
     //componentDidMount -- If we are editing an existing user acccount, we need to grab the data from
@@ -46,8 +44,6 @@ class CreateEditAccountDialog extends React.Component {
                         passwordRepeat: userData.password,
                         securityQuestion: userData.securityQuestion,
                         securityAnswer: userData.securityAnswer});
-        this.getCard();
-
         }
     }
 
@@ -211,58 +207,6 @@ class CreateEditAccountDialog extends React.Component {
         this.setState({confirmDelete: true});
     }
 
-    toggleAddCardClicked = () => {
-        this.setState(state => ({addCardClicked: !state.addCardClicked}));
-    }
-
-    addCard = async(data) =>{
-        console.log(data);
-        const url = '/cards/' + this.state.accountName;
-        let res;
-        res = await fetch(url, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-                },
-            method: 'POST',
-            body: JSON.stringify(data)}); 
-        if (res.status == 200) { //successful account creation!
-            this.props.done("Card Added",false);
-        } else { //Unsuccessful account update
-            //Grab textual error message
-            const resText = await res.text();
-            this.props.done(resText,false);
-        }
-        this.toggleAddCardClicked();
-    }
-
-    getCard = async() => {
-        const url = '/cards/'+this.state.accountName;
-        fetch(url)
-        .then((response) => {
-            if (response.status == 200)
-                return response.json();
-            else
-            {
-                throw Error(response.statusText);
-            }
-        })
-        .then((obj) => 
-        {
-            console.log("GET SUCCESS!");
-            let thisCard = JSON.parse(obj);
-            if (thisCard.length != 0)
-            {
-                this.setState({
-                    card: 1
-                });
-            }
-            
-        }).catch((error) =>{
-            console.log("GET ERROR!");
-        });
-    }
-
     render() {
     return (  
     <div className="modal" role="dialog">
@@ -423,11 +367,6 @@ class CreateEditAccountDialog extends React.Component {
           <ConfirmDeleteAccount email={this.state.accountName}
                                 deleteAccount={this.deleteAccount}
                                 close={() => (this.setState({confirmDelete: false}))}
-         /> : null}
-         {this.state.addCardClicked ? 
-          <AddCardDialog email={this.state.accountName}
-                                addCard={this.addCard}
-                                close={() => (this.setState({addCardClicked: false}))}
          /> : null}
     </div>
     );

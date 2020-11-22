@@ -91,16 +91,7 @@ const courseSchema = new Schema({
   recordHolder: String,
   rateSenior: String,
   rateStandard: String,
-  courseName: String,
-  appointments: {
-    day1:[],
-    day2:[],
-    day3:[],
-    day4:[],
-    day5:[],
-    day6:[],
-    day7:[]
-  }
+  courseName: String
 },
 {
   toObject: {
@@ -661,8 +652,7 @@ app.post('/courses/:courseId', async (req, res, next) => {
         bestScore: req.body.bestScore,
         recordHolder: req.body.recordHolder,
         rateSenior: req.body.rateSenior,
-        rateStandard: req.body.rateStandard,
-        appointments: req.body.appointments
+        rateStandard: req.body.rateStandard
       }).save();
       return res.status(200).send("New course for '" + 
         req.params.courseId + "' successfully created.");
@@ -680,12 +670,12 @@ app.put('/courses/:courseId',  async (req, res, next) => {
     return res.status(400).send("courses/ PUT request formulated incorrectly." +
         "It must contain 'courseId' as parameter.");
   }
-  const validProps = ['appointments', 'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
+  const validProps = ['courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
   for (const bodyProp in req.body) {
     if (!validProps.includes(bodyProp)) {
       return res.status(400).send("courses/ PUT request formulated incorrectly." +
         "Only the following props are allowed in body: " +
-        "'appointments', 'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'");
+        "'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'");
     } 
   }
   try {
@@ -963,3 +953,39 @@ app.get('/cards/:userId', async(req, res) => {
   }
 });
 
+//UPDATE card route: Updates a specific card 
+//for a given user in the users collection (PUT)
+app.put('/cards/:userId/:cardId', async (req, res, next) => {
+  console.log("in /cards (PUT) route with params = " + 
+              JSON.stringify(req.params) + " and body = " + 
+              JSON.stringify(req.body));
+  const validProps = ['name', 'number', 'expDate'];
+  let bodyObj = {...req.body};
+  // delete bodyObj._id; //Not needed for update
+  // delete bodyObj.SGS; //We'll compute this below in seconds.
+  for (const bodyProp in bodyObj) {
+    if (!validProps.includes(bodyProp)) {
+      return res.status(400).send("cards/ PUT request formulated incorrectly." +
+        "It includes " + bodyProp + ". However, only the following props are allowed: " +
+        "'name', 'number', 'expDate'");
+    } else {
+      bodyObj["card.$." + bodyProp] = bodyObj[bodyProp];
+      delete bodyObj[bodyProp];
+    }
+  }
+  try {
+    let status = await User.updateOne(
+      {"id": req.params.userId,
+       "card._id": mongoose.Types.ObjectId(req.params.cardId)}
+      ,{"$set" : bodyObj}
+    );
+    if (status.nModified != 1) {
+      res.status(400).send("Unexpected error occurred when updating card in database. Card was not updated.");
+    } else {
+      res.status(200).send("Card successfully updated in database.");
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Unexpected error occurred when updating card in database: " + err);
+  } 
+});
