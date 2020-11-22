@@ -166,7 +166,9 @@ class App extends React.Component {
               cancel={this.cancelEditAccount}/> : null}
         {this.state.addCardClicked ? 
           <AddCardDialog 
+              userObj={this.state.userObj}  
               cardExist={this.state.cardExist}
+              setCardDeleted={() => (this.setState({cardExist: false}))}
               setCardExist={() => (this.setState({cardExist: true}))}
               userId={this.state.userObj.id}
               close={() => (this.setState({addCardClicked: false}))} /> : null}

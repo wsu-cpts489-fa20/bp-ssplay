@@ -7,7 +7,8 @@ class AddCardDialog extends React.Component {
                     name: '',
                     number: 0,
                     expDate: '',
-                    cardId: ''
+                    cardId: '',
+                    deleteClicked: false
                 };
     }
     
@@ -101,6 +102,20 @@ class AddCardDialog extends React.Component {
         this.addCard(data);
     }
 
+    handleDelete = async() => {
+        const url = '/cards/' + this.props.userObj.id + '/' + this.state.cardId;
+        const res = await fetch(url, {method: 'DELETE'}); 
+        const msg = await res.text();
+        if (res.status == 200) {
+            alert("Card Deleted!");
+            this.setState({deleteClicked: false});
+            this.props.close();
+            this.props.setCardDeleted();
+        } else {
+            alert(msg);
+        }  
+    }
+
     render() {
         return (
         <div id="aboutModal" className="modal" role="dialog">
@@ -134,10 +149,31 @@ class AddCardDialog extends React.Component {
               </form>
             </div>
             <div className="modal-footer">
-                  <button className="btn btn-danger" onClick={this.handleSubmit}>
+                  <button className="btn btn-success" onClick={this.handleSubmit}>
                   {this.props.cardExist ? "Edit Card" : "Add Card"}</button>
+                  {this.props.cardExist ? <button className="btn btn-danger" onClick={() => this.setState({deleteClicked: true})}>
+                  Delete Card</button> : null}
             </div>
         </div>
+        {this.state.deleteClicked ? 
+                <div className="modal" role="dialog">
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h3>Are you sure you want to delete the card?</h3>
+                            </div>
+                            <div className="modal-body">
+                                <button className="btn btn-danger" onClick={this.handleDelete}>
+                                    YES
+                                </button>
+                                <button className="btn btn-success" onClick={() => this.setState({deleteClicked: false})}>
+                                    CANCEL
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        : null}
         </div>
         );
     }

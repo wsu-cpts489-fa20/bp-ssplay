@@ -1998,4 +1998,50 @@ app.put('/cards/:userId/:cardId', /*#__PURE__*/function () {
   return function (_x80, _x81, _x82) {
     return _ref28.apply(this, arguments);
   };
+}()); //DELETE card route: Deletes a specific card 
+//for a given user in the users collection (DELETE)
+
+app["delete"]('/cards/:userId/:cardId', /*#__PURE__*/function () {
+  var _ref29 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee29(req, res, next) {
+    var status;
+    return _regeneratorRuntime["default"].wrap(function _callee29$(_context29) {
+      while (1) {
+        switch (_context29.prev = _context29.next) {
+          case 0:
+            console.log("in /cards (DELETE) route with params = " + JSON.stringify(req.params));
+            _context29.prev = 1;
+            _context29.next = 4;
+            return User.updateOne({
+              id: req.params.userId
+            }, {
+              $pull: {
+                card: {
+                  _id: _mongoose["default"].Types.ObjectId(req.params.cardId)
+                }
+              }
+            });
+
+          case 4:
+            status = _context29.sent;
+            res.status(200).send("Card successfully deleted from database.");
+            _context29.next = 12;
+            break;
+
+          case 8:
+            _context29.prev = 8;
+            _context29.t0 = _context29["catch"](1);
+            console.log(_context29.t0);
+            return _context29.abrupt("return", res.status(400).send("Unexpected error occurred when deleting card from database: " + _context29.t0));
+
+          case 12:
+          case "end":
+            return _context29.stop();
+        }
+      }
+    }, _callee29, null, [[1, 8]]);
+  }));
+
+  return function (_x83, _x84, _x85) {
+    return _ref29.apply(this, arguments);
+  };
 }());

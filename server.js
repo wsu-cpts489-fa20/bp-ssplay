@@ -989,3 +989,19 @@ app.put('/cards/:userId/:cardId', async (req, res, next) => {
     return res.status(400).send("Unexpected error occurred when updating card in database: " + err);
   } 
 });
+
+//DELETE card route: Deletes a specific card 
+//for a given user in the users collection (DELETE)
+app.delete('/cards/:userId/:cardId', async (req, res, next) => {
+  console.log("in /cards (DELETE) route with params = " + 
+              JSON.stringify(req.params)); 
+  try {
+    let status = await User.updateOne(
+      {id: req.params.userId},
+      {$pull: {card: {_id: mongoose.Types.ObjectId(req.params.cardId)}}});
+      res.status(200).send("Card successfully deleted from database.");
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Unexpected error occurred when deleting card from database: " + err);
+  } 
+});
