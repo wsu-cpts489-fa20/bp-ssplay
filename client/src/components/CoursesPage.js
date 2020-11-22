@@ -21,7 +21,7 @@ class CoursesPage extends React.Component {
             case AppMode.COURSES_APPT:
                 return (<AllAppointments userObj={this.props.userObj} changeMode={this.props.changeMode}/>);
             case AppMode.COURSES_MYAPPT:
-                return (<MyAppointments userObj={this.props.userObj} changeMode={this.props.changeMode}/>);
+                return (<MyAppointments userObj={this.props.userObj} changeMode={this.props.changeMode} refreshOnUpdate={this.props.refreshOnUpdate}/>);
         }
     }   
 }

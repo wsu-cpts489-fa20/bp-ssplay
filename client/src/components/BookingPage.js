@@ -129,7 +129,7 @@ class BookingPage extends React.Component {
             courseName: this.props.courseName,
             date: '',
             time: '',
-            paid: false
+            paid: "false"
         }
 
         switch(this.state.bookingDate){

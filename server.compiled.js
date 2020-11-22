@@ -117,7 +117,7 @@ var appointmentSchema = new Schema({
   courseName: String,
   date: String,
   time: String,
-  paid: Boolean
+  paid: String
 }, {
   toObject: {
     virtuals: true
@@ -1720,5 +1720,71 @@ app["delete"]('/appointments_op/:username/:courseName/:date/:time', /*#__PURE__*
 
   return function (_x69, _x70, _x71) {
     return _ref24.apply(this, arguments);
+  };
+}()); //UPDATE appointment route: Updates a new appointment information in the appointments collection (POST)
+
+app.put('/appointments_op/:username/:courseName/:date/:time', /*#__PURE__*/function () {
+  var _ref25 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime["default"].mark(function _callee25(req, res, next) {
+    var validProps, bodyProp, status;
+    return _regeneratorRuntime["default"].wrap(function _callee25$(_context25) {
+      while (1) {
+        switch (_context25.prev = _context25.next) {
+          case 0:
+            console.log("in /appointments_op update route (PUT) with body = " + JSON.stringify(req.body));
+            validProps = ['userId', 'username', 'courseName', 'date', 'time', 'paid'];
+            _context25.t0 = _regeneratorRuntime["default"].keys(req.body);
+
+          case 3:
+            if ((_context25.t1 = _context25.t0()).done) {
+              _context25.next = 9;
+              break;
+            }
+
+            bodyProp = _context25.t1.value;
+
+            if (validProps.includes(bodyProp)) {
+              _context25.next = 7;
+              break;
+            }
+
+            return _context25.abrupt("return", res.status(400).send("appointments/ PUT request formulated incorrectly." + "It includes " + bodyProp + ". However, only the following props are allowed: " + "'userId', 'username', 'courseName', 'date', 'time', 'paid'"));
+
+          case 7:
+            _context25.next = 3;
+            break;
+
+          case 9:
+            _context25.prev = 9;
+            _context25.next = 12;
+            return Appointment.updateOne({
+              username: req.params.username,
+              courseName: req.params.courseName,
+              date: req.params.date,
+              time: req.params.time
+            }, {
+              $set: req.body
+            });
+
+          case 12:
+            status = _context25.sent;
+            res.status(200).send("Appointment successfully paid.");
+            _context25.next = 19;
+            break;
+
+          case 16:
+            _context25.prev = 16;
+            _context25.t2 = _context25["catch"](9);
+            res.status(400).send("Unexpected error occurred when updating appointment data in database: " + _context25.t2);
+
+          case 19:
+          case "end":
+            return _context25.stop();
+        }
+      }
+    }, _callee25, null, [[9, 16]]);
+  }));
+
+  return function (_x72, _x73, _x74) {
+    return _ref25.apply(this, arguments);
   };
 }());

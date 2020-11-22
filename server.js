@@ -67,7 +67,7 @@ const appointmentSchema = new Schema({
   courseName: String,
   date: String,
   time: String,
-  paid: Boolean
+  paid: String
 },
 {
   toObject: {
@@ -869,4 +869,25 @@ app.delete('/appointments_op/:username/:courseName/:date/:time', async(req, res,
     console.log(err);
     return res.status(400).send("Unexpected error occurred when deleting appointments from database: " + err);
   } 
+});
+
+//UPDATE appointment route: Updates a new appointment information in the appointments collection (POST)
+app.put('/appointments_op/:username/:courseName/:date/:time',  async (req, res, next) => {
+  console.log("in /appointments_op update route (PUT) with body = " + JSON.stringify(req.body));
+
+  const validProps = ['userId', 'username', 'courseName', 'date', 'time', 'paid'];
+  for (const bodyProp in req.body) {
+    if (!validProps.includes(bodyProp)) {
+      return res.status(400).send("appointments/ PUT request formulated incorrectly." +
+        "It includes " + bodyProp + ". However, only the following props are allowed: " +
+        "'userId', 'username', 'courseName', 'date', 'time', 'paid'");
+    } 
+  }
+  try {
+        let status = await Appointment.updateOne({username: req.params.username, courseName: req.params.courseName, date: req.params.date, time: req.params.time}, 
+        {$set: req.body});
+        res.status(200).send("Appointment successfully paid.")
+      } catch (err) {
+        res.status(400).send("Unexpected error occurred when updating appointment data in database: " + err);
+      }
 });

@@ -1,4 +1,5 @@
 import React from 'react';
+import AppMode from '../AppMode';
 import { Navbar, Container, Row, Col, Card, Button } from "react-bootstrap";
 import { async } from 'regenerator-runtime';
 
@@ -24,6 +25,72 @@ class MyAppointments extends React.Component {
     handleDeleteAll = (user, course, d, t, i) =>{
         this.handleDelete(user, course, d, t, i);
         this.handleDeleteFromDB(user, course, d, t);
+    }
+
+    handleAllPayment = (mid, aid, u, c, d, t, p) => {
+        if (p === "true")
+            alert("You've already paid!");
+        else{
+            this.handlePayment(aid, u, c, d, t, p);
+            this.handleUserPayment(mid, aid, u, c, d, t, p);
+        }
+    }   
+
+    handleUserPayment = async (mid, aid, u, c, d, t, p) => {
+        let newData = {
+            userId: aid,
+            username: u,
+            courseName: c,
+            date: d,
+            time: t,
+            paid: "true"
+        }
+        const url = '/appointments/'+this.props.userObj.id+'/'+mid;
+        const res = await fetch(url, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+            method: 'PUT',
+            body: JSON.stringify(newData)}); 
+        const msg = await res.text();
+        console.log(msg);
+        if (res.status === 200) {
+            alert("Paid");
+            this.getMyAppointments();
+        } else {
+            this.props.refreshOnUpdate(AppMode.COURSES_MYAPPT);
+        }
+    }
+
+    handlePayment = async(aid, u, c, d, t, p) => {
+        let newData = {
+            userId: aid,
+            username: u,
+            courseName: c,
+            date: d,
+            time: t,
+            paid: "true"
+        }
+        const url = '/appointments_op/'+u+'/'
+                                        +c+'/'
+                                        +d+'/'
+                                        +t;
+        const res = await fetch(url, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+            method: 'PUT',
+            body: JSON.stringify(newData)}); 
+        const msg = await res.text();
+        console.log(msg);
+        if (res.status === 200) {
+            alert("Paid");
+            this.getMyAppointments();
+        } else {
+            this.props.refreshOnUpdate(AppMode.COURSES_MYAPPT);
+        }
     }
 
     // Delete course with this id from database
@@ -79,6 +146,7 @@ class MyAppointments extends React.Component {
                             <Card.Text>Location: {c.courseName}</Card.Text>
                             <Card.Text>On: {c.date}</Card.Text>
                             <Card.Text>At: {c.time}</Card.Text>
+                            <Button style={{float: 'right'}} onClick={() => this.handleAllPayment(c._id, c.userId, c.username, c.courseName, c.date, c.time, c.paid)}>{c.paid === "true" ? "Paid": "Pay"}</Button>
                         </Card.Body>
                         </Card>
                     </Col>
