@@ -14,9 +14,9 @@ import express from 'express';
 require('dotenv').config();
 
 const LOCAL_PORT = 8080;
-const DEPLOY_URL = "http://localhost:8080";
+// const DEPLOY_URL = "http://localhost:8080";
 // const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
-// const DEPLOY_URL = "https://ssplay.bfapp.org";
+const DEPLOY_URL = "https://ssplay.bfapp.org";
 const PORT = process.env.HTTP_PORT || LOCAL_PORT;
 const GithubStrategy = passportGithub.Strategy;
 const GoogleStrategy = passportGoogle.Strategy;
