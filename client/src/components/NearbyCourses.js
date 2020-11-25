@@ -1,20 +1,52 @@
 import React from 'react';
+import { GoogleApiWrapper, InfoWindow, Marker } from 'google-maps-react';
+import CurrentLocation from './Map';
 
 class NearbyCourses extends React.Component {
+    
+    state = {
+        showingInfoWindow: false,  // Hides or shows the InfoWindow
+        activeMarker: {},          // Shows the active marker upon click
+        selectedPlace: {}          // Shows the InfoWindow to the selected place upon a marker
+      };
 
-    render() {
+    onMarkerClick = (props, marker, e) =>
+    this.setState({
+        selectedPlace: props,
+        activeMarker: marker,
+        showingInfoWindow: true
+    });
+
+    onClose = (props) => {
+    if (this.state.showingInfoWindow) {
+        this.setState({
+        showingInfoWindow: false,
+        activeMarker: null
+        });
+    }
+    };
+
+    render () {
         return (
-            <div className="padded-page">
-                <center>
-                <h1 >Nearby Courses</h1>
-                <h2>This page is under construction.</h2>
-                <img src="https://dl.dropboxusercontent.com/s/qpjhy9x9gwdxpob/SpeedScoreLogo64Trans.png" 
-                 height="200" width="200"/>
-                <p style={{fontStyle: "italic"}}>Version CptS 489 React Demo</p>
-                </center>
-            </div>
-        );
-    }   
+            <CurrentLocation
+              centerAroundCurrentLocation
+              google={this.props.google}
+            >
+              <Marker onClick={this.onMarkerClick} name={'Current Location'} />
+              <InfoWindow
+                marker={this.state.activeMarker}
+                visible={this.state.showingInfoWindow}
+                onClose={this.onClose}
+              >
+                <div>
+                  <h4>{this.state.selectedPlace.name}</h4>
+                </div>
+              </InfoWindow>
+            </CurrentLocation>
+          );
+    }
 }
 
-export default NearbyCourses;
+export default GoogleApiWrapper({
+    apiKey: '{API_KEY}'
+  })(NearbyCourses);
