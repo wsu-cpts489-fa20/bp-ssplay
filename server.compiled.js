@@ -32,10 +32,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 require('dotenv').config();
 
-var LOCAL_PORT = 8080;
-var DEPLOY_URL = "http://localhost:8080"; // const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
-// const DEPLOY_URL = "https://ssplay.bfapp.org";
+var LOCAL_PORT = 8080; // const DEPLOY_URL = "http://localhost:8080";
+// const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
 
+var DEPLOY_URL = "https://ssplay.bfapp.org";
 var PORT = process.env.HTTP_PORT || LOCAL_PORT;
 var GithubStrategy = _passportGithub["default"].Strategy;
 var GoogleStrategy = _passportGoogleOauth["default"].Strategy;
@@ -211,7 +211,7 @@ var Appointment = _mongoose["default"].model("Appointment", appointmentSchema); 
 
 
 _passport["default"].use(new GithubStrategy({
-  clientID: process.env.GH_CLIENT_ID,
+  clientID: 'b52c7ff0ca7afdb783d1',
   clientSecret: process.env.GH_CLIENT_SECRET,
   callbackURL: DEPLOY_URL + "/auth/github/callback"
 },
@@ -273,7 +273,7 @@ function () {
 }()));
 
 _passport["default"].use(new GoogleStrategy({
-  clientID: process.env.GO_CLIENT_ID,
+  clientID: '909887696769-o31hn2i23rmajsov9oal8vftfu1e4n1r.apps.googleusercontent.com',
   clientSecret: process.env.GO_CLIENT_SECRET,
   callbackURL: DEPLOY_URL + "/auth/google/callback"
 },
