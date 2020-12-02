@@ -48,5 +48,5 @@ class NearbyCourses extends React.Component {
 }
 
 export default GoogleApiWrapper({
-    apiKey: '{API_KEY}'
+    apiKey: 'AIzaSyAb8KZudhikDhC08rfJ_BgBvM0Fxfpvog8'
   })(NearbyCourses);
