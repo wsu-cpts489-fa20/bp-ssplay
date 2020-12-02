@@ -142,7 +142,7 @@ const Appointment = mongoose.model("Appointment",appointmentSchema);
 //the 'github' strategy in passport.js.
 //////////////////////////////////////////////////////////////////////////
 passport.use(new GithubStrategy({
-    clientID: process.env.GH_CLIENT_ID,
+    clientID: 'b52c7ff0ca7afdb783d1',
     clientSecret: process.env.GH_CLIENT_SECRET,
     callbackURL: DEPLOY_URL + "/auth/github/callback"
   },
@@ -169,7 +169,7 @@ passport.use(new GithubStrategy({
 }));
 
 passport.use(new GoogleStrategy({
-  clientID: process.env.GO_CLIENT_ID,
+  clientID: '909887696769-o31hn2i23rmajsov9oal8vftfu1e4n1r.apps.googleusercontent.com',
   clientSecret: process.env.GO_CLIENT_SECRET,
   callbackURL: DEPLOY_URL + "/auth/google/callback",
 },
