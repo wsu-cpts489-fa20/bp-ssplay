@@ -212,7 +212,7 @@ var Appointment = _mongoose["default"].model("Appointment", appointmentSchema); 
 
 _passport["default"].use(new GithubStrategy({
   clientID: 'b52c7ff0ca7afdb783d1',
-  clientSecret: process.env.GH_CLIENT_SECRET,
+  clientSecret: 'de044810b3d6e85aa53cbcf84ae50070199a09fd',
   callbackURL: DEPLOY_URL + "/auth/github/callback"
 },
 /*#__PURE__*/
@@ -274,7 +274,7 @@ function () {
 
 _passport["default"].use(new GoogleStrategy({
   clientID: '909887696769-o31hn2i23rmajsov9oal8vftfu1e4n1r.apps.googleusercontent.com',
-  clientSecret: process.env.GO_CLIENT_SECRET,
+  clientSecret: 'JmKC0RIuBWh3Cr9n_lddKF93',
   callbackURL: DEPLOY_URL + "/auth/google/callback"
 },
 /*#__PURE__*/
