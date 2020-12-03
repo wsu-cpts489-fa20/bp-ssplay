@@ -256,7 +256,7 @@ export class CurrentLocation extends React.Component {
         const style = Object.assign({}, mapStyles.map);
     
         return (
-          <div>
+          <div id="Map">
             <div style={style} ref="map">
               Loading map...
             </div>

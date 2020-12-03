@@ -67,7 +67,7 @@ class PaymentDialog extends React.Component {
 
     render() {
         return (
-        <div id="aboutModal" className="modal" role="dialog">
+        <div id="aboutModal" className="modal payment-dialogue" role="dialog">
         <div className="modal-content">
             <div className="modal-header">
               <center>

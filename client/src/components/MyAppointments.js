@@ -175,7 +175,7 @@ class MyAppointments extends React.Component {
 
     render() {
         return(
-            <div id="allAppointmentsPage">
+            <div id="myAppointmentsPage">
                 <h1></h1>
                 <table >
                     <tbody>
