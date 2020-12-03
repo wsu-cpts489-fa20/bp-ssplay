@@ -107,6 +107,11 @@ class SpecificCourses extends React.Component {
     }
 
     // Show courses that were selected when user searches
+    // This functions is to be used by AdvancedSearch
+    // Advanced Search will do the query of the courses database 
+    // with the Advanced information provided
+    // then return the courses that matches the information provided
+    // this page will then render the return courses
     setFilteredData = (newData) => {
         this.setState({
             course: newData.map((c) =>(
@@ -217,6 +222,8 @@ class SpecificCourses extends React.Component {
     }
 
     // Retrieve information of 1 course provided an id
+    // This function focuses on when user clicks 1 course from the search dropdown
+    // It takes in an 'id' of the clicked course and display its information
     getSearchedCourse = async (id) => {
         this.setSearchCourseClickedTrue();
         this.setSearchFalse();
@@ -263,6 +270,8 @@ class SpecificCourses extends React.Component {
     }
 
     // Handle event when user clicks into 1 of the choices provided when searching for a course
+    // This function shows courses when the Search Button is clicked
+    // The courses showed are the courses that has been filtered with the search input change
     handleClick = (event) =>{
         event.preventDefault();
         if (this.state.selectButtonValue == "Select Course")

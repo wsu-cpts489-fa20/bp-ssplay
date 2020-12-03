@@ -35,4 +35,19 @@ SpecificCourses.js, AddCourses.js, AllCourses.js
 		* Figuring out how to set up the appointments schema for a course was quite a challenge, but once that was figured out, implementing the actual booking system posed lesser hardships.
 		* Another small struggle was disabling the time slots, and getting a range of available dates for the Booking system.
 		* Started deployment process but wasn't able to succesfully deploy.
+* Week3: 
+	* Completed:
+		* Operator can now delete course
+		* Operator can view all appointments, and delete any appointments
+		* All users can pay for tee-time
+		* All users can add a payment info (Card)
+		* All users can view Nearby Courses (Google Maps API & Places API)
+		* Reworked the logic of the Booking Tee Time
+		* Deployed the website, fully functional
+	* Struggles:
+		* Figuring out how to do the booking tee time properly was a pain
+		* Deployment was also a struggling as the environment won't recognize the variables
+		* Doing the API for Nearby Courses was also hard, most examples are in HTML/CSS so I had to rework it into React
+	* Needs Improvement:
+		* Team work, currently 1 man team.
 
