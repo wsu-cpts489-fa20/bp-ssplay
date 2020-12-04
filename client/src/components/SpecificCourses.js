@@ -24,12 +24,12 @@ class SpecificCourses extends React.Component {
             more: false,
             selectButtonValue: "Select Course",
             courseAmount: 1,
-            oneDelete: false,
             query: "",
             data: [],
             filteredData: [],
             item: "",
             cname: '',
+            adData: false,
 
             id: "",
             rating: "",
@@ -102,10 +102,6 @@ class SpecificCourses extends React.Component {
         this.setSelectButtonValue("Select Course");
     }
 
-    toggleOneDelete = () => {
-        this.setState(state => ({oneDelete: !state.oneDelete}));
-    }
-
     // Show courses that were selected when user searches
     // This functions is to be used by AdvancedSearch
     // Advanced Search will do the query of the courses database 
@@ -114,6 +110,8 @@ class SpecificCourses extends React.Component {
     // this page will then render the return courses
     setFilteredData = (newData) => {
         this.setState({
+            fData: newData,
+            adData: true,
             course: newData.map((c) =>(
                 <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
                     <Card key={c.id} style={{ width: "30rem", display: "flex" }}>
@@ -124,6 +122,9 @@ class SpecificCourses extends React.Component {
                         <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
                         <Button onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
                         <Button onClick={() => this.toggleBookTeeTimeClicked(c.id, c.courseName)}>Book Tee Time</Button>&nbsp;
+                        {this.props.userObj.type === "operator" ? 
+                            <Button style={{display: 'flex', float: 'right'}} onClick={() => this.handleDelete(c.id)}>&times;</Button>
+                            : null}
                     </Card.Body>
                     <Card.Footer>Rating: {c.rating}</Card.Footer>
                     </Card>
@@ -167,7 +168,7 @@ class SpecificCourses extends React.Component {
         const msg = await res.text();
         console.log(msg);
         if (res.status == 200) {
-            if (this.state.oneDelete)
+            if (this.state.courseAmount === 1)
             {
                 this.setState({
                     course: '',
@@ -175,14 +176,50 @@ class SpecificCourses extends React.Component {
                 });
             }
             else{
-                for (var i = 0; i < this.state.filteredData.length; i++)
+                if (this.state.adData)
                 {
-                    if (this.state.filteredData[i].id === key)
+                    console.log(this.state.fData);
+                    for (var i = 0; i < this.state.fData.length; i++)
                     {
-                        this.state.course.splice(i, 1);
-                        this.setState({
-                            course: this.state.course
-                        });
+                        if (this.state.fData[i].id === key)
+                        {
+                            this.state.fData.splice(i, 1);
+                            this.setState({
+                                course: this.state.fData.map((c) =>(
+                                    <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
+                                        <Card key={c.id} style={{ width: "30rem", display: "flex" }}>
+                                        <Card.Img className="course-image" variant="top" src={c.picture}></Card.Img>
+                                        <Card.Body>
+                                            <Card.Title>{c.courseName}</Card.Title>
+                                            <Card.Text>Record Holder: {c.recordHolder}</Card.Text>
+                                            <Button type="button" onClick={() => this.toggleMoreClicked(c.id)}>More</Button>&nbsp;
+                                            <Button onClick={() => this.toggleGetRatesClicked(c.id)}>Get Rates</Button>&nbsp;
+                                            <Button onClick={() => this.toggleBookTeeTimeClicked(c.id, c.courseName)}>Book Tee Time</Button>&nbsp;
+                                            {this.props.userObj.type === "operator" ? 
+                                                <Button style={{display: 'flex', float: 'right'}} onClick={() => this.handleDelete(c.id)}>&times;</Button>
+                                                : null}
+                                        </Card.Body>
+                                        <Card.Footer>Rating: {c.rating}</Card.Footer>
+                                        </Card>
+                                    </Col>
+                                )),
+                                courseAmount: this.state.fData.length
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    for (var i = 0; i < this.state.filteredData.length; i++)
+                    {
+                        if (this.state.filteredData[i].id === key)
+                        {
+                            this.state.course.splice(i, 1);
+                            this.setState({
+                                course: this.state.course,
+                                courseAmount: this.state.filteredData.length-1
+                            });
+                        }
                     }
                 }
             }
@@ -228,7 +265,6 @@ class SpecificCourses extends React.Component {
         this.setSearchCourseClickedTrue();
         this.setSearchFalse();
         this.setCourseAmount(1);
-        this.toggleOneDelete();
         const url = '/courses/'+id;
         fetch(url)
         .then((response) => {
