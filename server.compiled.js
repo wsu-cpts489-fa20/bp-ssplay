@@ -32,10 +32,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 require('dotenv').config();
 
-var LOCAL_PORT = 8080; // const DEPLOY_URL = "http://localhost:8080";
-// const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
+var LOCAL_PORT = 8080;
+var DEPLOY_URL = "http://localhost:8080"; // const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
+//const DEPLOY_URL = "https://ssplay.bfapp.org";
 
-var DEPLOY_URL = "https://ssplay.bfapp.org";
 var PORT = process.env.HTTP_PORT || LOCAL_PORT;
 var GithubStrategy = _passportGithub["default"].Strategy;
 var GoogleStrategy = _passportGoogleOauth["default"].Strategy;
@@ -46,7 +46,7 @@ var app = (0, _express["default"])(); //////////////////////////////////////////
 //using the mongoose library.
 //////////////////////////////////////////////////////////////////////////
 
-var connectStr = process.env.MONGO_STR;
+var connectStr = 'mongodb+srv://por:cs489bpssplay@cluster0.xcdi4.mongodb.net/appdb?retryWrites=true&w=majority';
 
 _mongoose["default"].connect(connectStr, {
   useNewUrlParser: true,

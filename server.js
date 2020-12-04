@@ -14,9 +14,9 @@ import express from 'express';
 require('dotenv').config();
 
 const LOCAL_PORT = 8080;
-// const DEPLOY_URL = "http://localhost:8080";
+const DEPLOY_URL = "http://localhost:8080";
 // const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
-const DEPLOY_URL = "https://ssplay.bfapp.org";
+//const DEPLOY_URL = "https://ssplay.bfapp.org";
 const PORT = process.env.HTTP_PORT || LOCAL_PORT;
 const GithubStrategy = passportGithub.Strategy;
 const GoogleStrategy = passportGoogle.Strategy;
@@ -30,7 +30,7 @@ const app = express();
 //////////////////////////////////////////////////////////////////////////
 import mongoose from 'mongoose';
 
-const connectStr = process.env.MONGO_STR;
+const connectStr = 'mongodb+srv://por:cs489bpssplay@cluster0.xcdi4.mongodb.net/appdb?retryWrites=true&w=majority';
 mongoose.connect(connectStr, {useNewUrlParser: true, useUnifiedTopology: true})
   .then(
     () =>  {console.log(`Connected to ${connectStr}.`)},
