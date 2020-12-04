@@ -9,6 +9,7 @@ import FeedPage from './FeedPage.js';
 import Rounds from './Rounds.js';
 import CoursesPage from './CoursesPage.js';
 import AboutBox from './AboutBox.js';
+import AddCardDialog from './AddCardDialog.js';
 
 const modeTitle = {};
 modeTitle[AppMode.LOGIN] = "Welcome to SpeedScore";
@@ -20,6 +21,8 @@ modeTitle[AppMode.COURSES] = "Search Courses";
 modeTitle[AppMode.COURSES_NEARBY] = "Nearby Courses";
 modeTitle[AppMode.COURSES_ALL] = "All Speedgolf-Friendly Courses";
 modeTitle[AppMode.COURSES_ADD] = "Add a Course";
+modeTitle[AppMode.COURSES_APPT] = "All Appointments";
+modeTitle[AppMode.COURSES_MYAPPT] = "My Appointments";
 
 const modeToPage = {};
 modeToPage[AppMode.LOGIN] = LoginPage;
@@ -31,6 +34,8 @@ modeToPage[AppMode.COURSES] = CoursesPage;
 modeToPage[AppMode.COURSES_NEARBY] = CoursesPage;
 modeToPage[AppMode.COURSES_ALL] = CoursesPage;
 modeToPage[AppMode.COURSES_ADD] = CoursesPage;
+modeToPage[AppMode.COURSES_APPT] = CoursesPage;
+modeToPage[AppMode.COURSES_MYAPPT] = CoursesPage;
 
 
 class App extends React.Component {
@@ -44,7 +49,9 @@ class App extends React.Component {
                   editAccount: false,
                   showEditAccountDialog: false,
                   statusMsg: "",
-                  showAboutDialog: false
+                  showAboutDialog: false,
+                  addCardClicked: false,
+                  cardExist: false
                  };
   }
 
@@ -118,6 +125,10 @@ class App extends React.Component {
     this.setState({userObj: newType});
   }
 
+  toggleAddCardClicked = () => {
+    this.setState(state => ({addCardClicked: !state.addCardClicked}));
+  }
+
   //editAccountDone -- called after successful edit or
   //deletion of user account. msg contains the status
   //message and deleted indicates whether an account was
@@ -153,6 +164,14 @@ class App extends React.Component {
               userId={this.state.userObj.id} 
               done={this.editAccountDone} 
               cancel={this.cancelEditAccount}/> : null}
+        {this.state.addCardClicked ? 
+          <AddCardDialog 
+              userObj={this.state.userObj}  
+              cardExist={this.state.cardExist}
+              setCardDeleted={() => (this.setState({cardExist: false}))}
+              setCardExist={() => (this.setState({cardExist: true}))}
+              userId={this.state.userObj.id}
+              close={() => (this.setState({addCardClicked: false}))} /> : null}
         <NavBar 
           aboutOpen={this.state.showAboutDialog}
           title={modeTitle[this.state.mode]} 
@@ -161,6 +180,7 @@ class App extends React.Component {
           menuOpen={this.state.menuOpen}
           toggleMenuOpen={this.toggleMenuOpen}/>
           <SideMenu 
+            toggleAddCardClicked={this.toggleAddCardClicked}
             type={this.state.userObj.type}
             changeMode={this.handleChangeMode}
             menuOpen = {this.state.menuOpen}

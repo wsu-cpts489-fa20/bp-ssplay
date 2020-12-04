@@ -94,12 +94,9 @@ editCourse = async (newData) =>{
     if (res.status === 200) {
         this.toggleReviewClicked();
         this.props.handleClose();
-        if (this.props.mode === AppMode.COURSES)
-            this.props.refreshOnUpdate(AppMode.COURSES);
-        else 
-            this.props.refreshOnUpdate(AppMode.COURSES_ALL);
+        window.location.reload(false);
     } else {
-        this.props.refreshOnUpdate(AppMode.COURSES_ALL);
+        alert(msg);
     }
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import ConfirmDeleteAccount from './ConfirmDeleteAccount.js';
-import confirmDeleteAccount from './ConfirmDeleteAccount.js';
+import { async } from 'regenerator-runtime';
 
 class CreateEditAccountDialog extends React.Component {
 
@@ -347,6 +347,11 @@ class CreateEditAccountDialog extends React.Component {
             {!this.props.create ?  
             <button className="btn btn-small btn-danger" onClick={this.confirmDeleteAccount}>
                 Delete Account...
+            </button> : null}
+            <br/><br/>
+            {!this.props.create ?  
+            <button type="button" className="btn btn-small btn-primary" onClick={this.toggleAddCardClicked} disabled={this.state.card === 1 ? true:false}>
+                Add Card
             </button> : null}
             <br/><br/>
             <button role="submit" 

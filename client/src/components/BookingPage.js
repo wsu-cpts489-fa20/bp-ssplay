@@ -2,27 +2,11 @@ import React from 'react';
 import AppMode from '../AppMode';
 
 // For setting min and max value of <input type="date">
-// Also to later usage of actual booking tee time implementation
-let today = new Date();
-let tomorrow = new Date(today);
-tomorrow.setDate(tomorrow.getDate() + 1);
-let thirdDay = new Date(tomorrow);
-thirdDay.setDate(thirdDay.getDate() + 1);
-let fourthDay = new Date(thirdDay);
-fourthDay.setDate(fourthDay.getDate() + 1);
-let fifthDay = new Date(fourthDay);
-fifthDay.setDate(fifthDay.getDate() + 1);
-let sixthDay = new Date(fifthDay);
-sixthDay.setDate(sixthDay.getDate() + 1);
-let seventhDay = new Date(sixthDay);
-seventhDay.setDate(seventhDay.getDate() + 1);
+let today = new Date(Date.now()-(new Date()).getTimezoneOffset()*60000);
+let seventhDay = new Date(today);
+seventhDay.setDate(seventhDay.getDate() + 6);
 
 let day1 = today.toISOString().substring(0,10);
-let day2 = tomorrow.toISOString().substring(0,10);
-let day3 = thirdDay.toISOString().substring(0,10);
-let day4 = fourthDay.toISOString().substring(0,10);
-let day5 = fifthDay.toISOString().substring(0,10);
-let day6 = sixthDay.toISOString().substring(0,10);
 let day7 = seventhDay.toISOString().substring(0,10);
 
 
@@ -41,6 +25,38 @@ class BookingPage extends React.Component {
     // Get information on selected course on render
     componentDidMount(){
         this.getSearchedCourse(this.props.course);
+        this.getAllAppointments();
+    }
+
+    // Get information of all courses to show on page
+    getAllAppointments = async () => {
+        const url = '/allappointments_op/';
+        fetch(url)
+        .then((response) => {
+            if (response.status == 200)
+                return response.json();
+            else
+            {
+                throw Error(response.statusText);
+            }
+        })
+        .then((obj) => 
+        {
+            console.log("GET SUCCESS!");
+            let thisCourse = JSON.parse(obj);
+            this.setState({
+                appointments: thisCourse.map((c) =>(
+                    {
+                        username: c.username,
+                        courseName: c.courseName,
+                        date: c.date,
+                        time: c.time
+                    }
+                ))
+            });
+        }).catch((error) =>{
+            console.log("GET ERROR!");
+        });
     }
 
     // Get information on selected course then set it to a state for usage in this component
@@ -73,54 +89,66 @@ class BookingPage extends React.Component {
     handleBookTeeTime = (event) => {
         event.preventDefault();
         console.log("Booking tee time");
-        let newData = {
-            appointments: this.state.course.appointments,
-            courseName: this.state.course.courseName,
-            id: this.state.course.id,
-            rating: this.state.course.rating,
-            review: this.state.course.review,
-            picture: this.state.course.picture,
-            location: this.state.course.location,
-            yardage: this.state.course.yardage,
-            runningDistance: this.state.course.runningDistance,
-            timePar: this.state.course.timePar,
-            bestScore: this.state.course.bestScore,
-            recordHolder: this.state.course.recordHolder,
-            rateSenior: this.state.course.rateSenior,
-            rateStandard: this.state.course.rateStandard
+
+        let newappt = {
+            userId: this.props.userObj.id,
+            username: this.props.userObj.displayName,
+            courseName: this.props.courseName,
+            date: this.state.bookingDate,
+            time: this.state.bookingTime,
+            paid: "false"
         }
 
-        switch(this.state.bookingDate){
-            case day1:
-                newData.appointments.day1[this.state.bookingTime] = false;
-                this.editCourse(newData);
-                break;
-            case day2:
-                newData.appointments.day2[this.state.bookingTime] = false;
-                this.editCourse(newData);
-                break;
-            case day3:
-                newData.appointments.day3[this.state.bookingTime] = false;
-                this.editCourse(newData);
-                break;
-            case day4:
-                newData.appointments.day4[this.state.bookingTime] = false;
-                this.editCourse(newData);
-                break;
-            case day5:
-                newData.appointments.day5[this.state.bookingTime] = false;
-                this.editCourse(newData);
-                break;
-            case day6:
-                newData.appointments.day6[this.state.bookingTime] = false;
-                this.editCourse(newData);
-                break;
-            case day7:
-                newData.appointments.day7[this.state.bookingTime] = false;
-                this.editCourse(newData);
-                break;
-        }
+        this.addAppointment(newappt);
+        this.addAppointment_op(newappt);
+        alert("Tee Time Booked!");
         this.props.handleClose();
+    }
+
+    // Sends a PUT request to the backend with the new information
+    // new information here is the appointments that were scheduled
+    addAppointment_op = async (newData) =>{
+        const url = '/appointments_op/';
+        const res = await fetch(url, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+            method: 'POST',
+            body: JSON.stringify(newData)}); 
+        const msg = await res.text();
+        console.log(msg);
+        if (res.status === 200) {
+            if (this.props.mode === AppMode.COURSES)
+                this.props.refreshOnUpdate(AppMode.COURSES);
+            else 
+                this.props.refreshOnUpdate(AppMode.COURSES_ALL);
+        } else {
+            this.props.refreshOnUpdate(AppMode.COURSES_ALL);
+        }
+    }
+
+    // Sends a PUT request to the backend with the new information
+    // new information here is the appointments that were scheduled
+    addAppointment = async (newData) =>{
+        const url = '/appointments/' + this.props.userObj.id;
+        const res = await fetch(url, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+            method: 'POST',
+            body: JSON.stringify(newData)}); 
+        const msg = await res.text();
+        console.log(msg);
+        if (res.status === 200) {
+            if (this.props.mode === AppMode.COURSES)
+                this.props.refreshOnUpdate(AppMode.COURSES);
+            else 
+                this.props.refreshOnUpdate(AppMode.COURSES_ALL);
+        } else {
+            this.props.refreshOnUpdate(AppMode.COURSES_ALL);
+        }
     }
 
     // Sends a PUT request to the backend with the new information
@@ -137,8 +165,6 @@ class BookingPage extends React.Component {
         const msg = await res.text();
         console.log(msg);
         if (res.status === 200) {
-            // this.toggleReviewClicked();
-            // this.props.handleClose();
             alert("Tee Time Booked!");
             if (this.props.mode === AppMode.COURSES)
                 this.props.refreshOnUpdate(AppMode.COURSES);
@@ -157,157 +183,51 @@ class BookingPage extends React.Component {
     // Handles enabling/disabling the time slots option on each date
     // depending on the state of the appointments.day.time
     handleClick = () =>{
-        document.getElementById("0").removeAttribute("disabled");
-        document.getElementById("1").removeAttribute("disabled");
-        document.getElementById("2").removeAttribute("disabled");
-        document.getElementById("3").removeAttribute("disabled");
-        document.getElementById("4").removeAttribute("disabled");
-        document.getElementById("5").removeAttribute("disabled");
-        document.getElementById("6").removeAttribute("disabled");
-        document.getElementById("7").removeAttribute("disabled");
-        document.getElementById("8").removeAttribute("disabled");
+        document.getElementById("9:00 AM").removeAttribute("disabled");
+        document.getElementById("10:00 AM").removeAttribute("disabled");
+        document.getElementById("11:00 AM").removeAttribute("disabled");
+        document.getElementById("12:00 PM").removeAttribute("disabled");
+        document.getElementById("1:00 PM").removeAttribute("disabled");
+        document.getElementById("2:00 PM").removeAttribute("disabled");
+        document.getElementById("3:00 PM").removeAttribute("disabled");
+        document.getElementById("4:00 PM").removeAttribute("disabled");
+        document.getElementById("5:00 PM").removeAttribute("disabled");
 
-        switch(this.state.bookingDate){
-            case day1:
-                if (!this.state.course.appointments.day1[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day1[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
-            case day2:
-                if (!this.state.course.appointments.day2[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day2[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
-            case day3:
-                if (!this.state.course.appointments.day3[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day3[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
-            case day4:
-                if (!this.state.course.appointments.day4[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day4[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
-            case day5:
-                if (!this.state.course.appointments.day5[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day5[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
-            case day6:
-                if (!this.state.course.appointments.day6[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day6[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
-            case day7:
-                if (!this.state.course.appointments.day7[0])
-                    document.getElementById("0").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[1])
-                    document.getElementById("1").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[2])
-                    document.getElementById("2").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[3])
-                    document.getElementById("3").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[4])
-                    document.getElementById("4").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[5])
-                    document.getElementById("5").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[6])
-                    document.getElementById("6").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[7])
-                    document.getElementById("7").setAttribute("disabled",true);
-                if (!this.state.course.appointments.day7[8])
-                    document.getElementById("8").setAttribute("disabled",true);
-                break;
+        console.log(this.state.appointments);
+        for (var i = 0; i < this.state.appointments.length; i++)
+        {
+            if ((this.state.bookingDate === this.state.appointments[i].date) && (this.state.course.courseName === this.state.appointments[i].courseName))
+            {
+                switch(this.state.appointments[i].time){
+                    case "9:00 AM":
+                        document.getElementById("9:00 AM").setAttribute("disabled",true);
+                        break;
+                    case "10:00 AM":
+                        document.getElementById("10:00 AM").setAttribute("disabled",true);
+                        break;
+                    case "11:00 AM":
+                        document.getElementById("11:00 AM").setAttribute("disabled",true);
+                        break;
+                    case "12:00 PM":
+                        document.getElementById("12:00 PM").setAttribute("disabled",true);
+                        break;
+                    case "1:00 PM":
+                        document.getElementById("1:00 PM").setAttribute("disabled",true);
+                        break;
+                    case "2:00 PM":
+                        document.getElementById("2:00 PM").setAttribute("disabled",true);
+                        break;
+                    case "3:00 PM":
+                        document.getElementById("3:00 PM").setAttribute("disabled",true);
+                        break;
+                    case "4:00 PM":
+                        document.getElementById("4:00 PM").setAttribute("disabled",true);
+                        break;
+                    case "5:00 PM":
+                        document.getElementById("5:00 PM").setAttribute("disabled",true);
+                        break;
+                }
+            }
         }
     }
 
@@ -318,9 +238,6 @@ class BookingPage extends React.Component {
                 <div className="modal-content">
                 <div className="modal-header">
                     <h3>Booking Tee Time</h3>
-                    {/* <button className="modal-close" onClick={this.props.handleClose}>
-                        &times;
-                    </button> */}
                 </div>
                 <div className="modal-body">
                 <div className="padded-page">
@@ -334,15 +251,15 @@ class BookingPage extends React.Component {
                         <label for="bookingTime">Time: <br></br>
                         <select type="date" id="bookingTime" name="bookingTime" value={this.state.bookingTime} onChange={this.handleChange} onClick={this.handleClick} required>
                             <option></option>
-                            <option id="0" value="0">9:00 AM</option>
-                            <option id="1" value="1">10:00 AM</option>
-                            <option id="2" value="2">11:00 AM</option>
-                            <option id="3" value="3">12:00 PM</option> 
-                            <option id="4" value="4">1:00 PM</option>
-                            <option id="5" value="5">2:00 PM</option> 
-                            <option id="6" value="6">3:00 PM</option>
-                            <option id="7" value="7">4:00 PM</option>
-                            <option id="8" value="8">5:00 PM</option>    
+                            <option id="9:00 AM" value="9:00 AM">9:00 AM</option>
+                            <option id="10:00 AM" value="10:00 AM">10:00 AM</option>
+                            <option id="11:00 AM" value="11:00 AM">11:00 AM</option>
+                            <option id="12:00 PM" value="12:00 PM">12:00 PM</option> 
+                            <option id="1:00 PM" value="1:00 PM">1:00 PM</option>
+                            <option id="2:00 PM" value="2:00 PM">2:00 PM</option> 
+                            <option id="3:00 PM" value="3:00 PM">3:00 PM</option>
+                            <option id="4:00 PM" value="4:00 PM">4:00 PM</option>
+                            <option id="5:00 PM" value="5:00 PM">5:00 PM</option>    
                         </select>
                         </label>
                         <p></p>
@@ -351,10 +268,6 @@ class BookingPage extends React.Component {
                     </center>
                     </form>
                 </div>
-                </div>
-                <div className="modal-footer">
-                    {/* <button className="btn btn-primary btn-color-theme"
-                    onClick={this.props.close}>OK</button> */}
                 </div>
                 </div>
             </div>

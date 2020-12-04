@@ -19,16 +19,7 @@ class AddCourses extends React.Component {
             bestScore: "",
             recordHolder: "",
             rateStandard: "",
-            rateSenior: "",
-            appointments: {
-                day1:[true, true, true, true, true, true, true, true, true],
-                day2:[true, true, true, true, true, true, true, true, true],
-                day3:[true, true, true, true, true, true, true, true, true],
-                day4:[true, true, true, true, true, true, true, true, true],
-                day5:[true, true, true, true, true, true, true, true, true],
-                day6:[true, true, true, true, true, true, true, true, true],
-                day7:[true, true, true, true, true, true, true, true, true]
-              }
+            rateSenior: ""
         };
     }
 
@@ -59,6 +50,7 @@ class AddCourses extends React.Component {
     }
 
     // Handles form submit
+    // Save the state's information for submission
     handleSubmit = (event) => {
         event.preventDefault();
         let courseData = this.state;

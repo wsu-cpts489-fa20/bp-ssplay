@@ -14,8 +14,9 @@ import express from 'express';
 require('dotenv').config();
 
 const LOCAL_PORT = 8080;
-// const DEPLOY_URL = "http://localhost:8080";
-const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
+const DEPLOY_URL = "http://localhost:8080";
+// const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
+//const DEPLOY_URL = "https://ssplay.bfapp.org";
 const PORT = process.env.HTTP_PORT || LOCAL_PORT;
 const GithubStrategy = passportGithub.Strategy;
 const GoogleStrategy = passportGoogle.Strategy;
@@ -29,7 +30,7 @@ const app = express();
 //////////////////////////////////////////////////////////////////////////
 import mongoose from 'mongoose';
 
-const connectStr = process.env.MONGO_STR;
+const connectStr = 'mongodb+srv://por:cs489bpssplay@cluster0.xcdi4.mongodb.net/appdb?retryWrites=true&w=majority';
 mongoose.connect(connectStr, {useNewUrlParser: true, useUnifiedTopology: true})
   .then(
     () =>  {console.log(`Connected to ${connectStr}.`)},
@@ -60,6 +61,23 @@ roundSchema.virtual('SGS').get(function() {
   return (this.strokes * 60) + (this.minutes * 60) + this.seconds;
 });
 
+const appointmentSchema = new Schema({
+  userId: String,
+  username: String,
+  courseName: String,
+  date: String,
+  time: String,
+  paid: String
+},
+{
+  toObject: {
+  virtuals: true
+  },
+  toJSON: {
+  virtuals: true 
+  }
+});
+
 const courseSchema = new Schema({
   id: String,
   rating: String,
@@ -73,16 +91,21 @@ const courseSchema = new Schema({
   recordHolder: String,
   rateSenior: String,
   rateStandard: String,
-  courseName: String,
-  appointments: {
-    day1:[],
-    day2:[],
-    day3:[],
-    day4:[],
-    day5:[],
-    day6:[],
-    day7:[]
+  courseName: String
+},
+{
+  toObject: {
+  virtuals: true
+  },
+  toJSON: {
+  virtuals: true 
   }
+});
+
+const cardSchema = new Schema({
+  name: {type: String, required: true},
+  number: {type: Number, required: true},
+  expDate: {type: String, required: true}
 },
 {
   toObject: {
@@ -105,10 +128,13 @@ const userSchema = new Schema({
   securityQuestion: String,
   securityAnswer: {type: String, required: function() 
     {return this.securityQuestion ? true: false}},
-  rounds: [roundSchema]
+  rounds: [roundSchema],
+  appointments: [appointmentSchema],
+  card: [cardSchema]
 });
 const User = mongoose.model("User",userSchema); 
 const Course = mongoose.model("Course",courseSchema); 
+const Appointment = mongoose.model("Appointment",appointmentSchema); 
 
 //////////////////////////////////////////////////////////////////////////
 //PASSPORT SET-UP
@@ -116,8 +142,8 @@ const Course = mongoose.model("Course",courseSchema);
 //the 'github' strategy in passport.js.
 //////////////////////////////////////////////////////////////////////////
 passport.use(new GithubStrategy({
-    clientID: process.env.GH_CLIENT_ID,
-    clientSecret: process.env.GH_CLIENT_SECRET,
+    clientID: 'b52c7ff0ca7afdb783d1',
+    clientSecret: 'de044810b3d6e85aa53cbcf84ae50070199a09fd',
     callbackURL: DEPLOY_URL + "/auth/github/callback"
   },
   //The following function is called after user authenticates with github
@@ -134,15 +160,17 @@ passport.use(new GithubStrategy({
         displayName: profile.displayName,
         authStrategy: profile.provider,
         profilePicURL: profile.photos[0].value,
-        rounds: []
+        rounds: [],
+        appointments: [],
+        card: []
       }).save();
   }
   return done(null,currentUser);
 }));
 
 passport.use(new GoogleStrategy({
-  clientID: process.env.GO_CLIENT_ID,
-  clientSecret: process.env.GO_CLIENT_SECRET,
+  clientID: '909887696769-o31hn2i23rmajsov9oal8vftfu1e4n1r.apps.googleusercontent.com',
+  clientSecret: 'JmKC0RIuBWh3Cr9n_lddKF93',
   callbackURL: DEPLOY_URL + "/auth/google/callback",
 },
   //The following function is called after user authenticates with github
@@ -158,7 +186,10 @@ passport.use(new GoogleStrategy({
         id: userId,
         displayName: profile.displayName,
         authStrategy: profile.provider,
-        profilePicURL: profile.photos[0].value
+        profilePicURL: profile.photos[0].value,
+        rounds: [],
+        appointments: [],
+        card: []
       }).save();
   }
   return done(null,currentUser);
@@ -361,7 +392,9 @@ app.post('/users/:userId',  async (req, res, next) => {
         profilePicURL: req.body.profilePicURL,
         securityQuestion: req.body.securityQuestion,
         securityAnswer: req.body.securityAnswer,
-        rounds: []
+        rounds: [],
+        appointments: [],
+        card: []
       }).save();
       return res.status(201).send("New account for '" + 
         req.params.userId + "' successfully created.");
@@ -537,6 +570,10 @@ app.delete('/rounds/:userId/:roundId', async (req, res, next) => {
   } 
 });
 
+/////////////////////////////////
+//COURSES ROUTES
+////////////////////////////////
+
 // GET ALL COURSES IN THE DATABASE
 app.get('/allcourses/', async(req, res, next) => {
   console.log("in /allcourses route (GET)");
@@ -615,8 +652,7 @@ app.post('/courses/:courseId', async (req, res, next) => {
         bestScore: req.body.bestScore,
         recordHolder: req.body.recordHolder,
         rateSenior: req.body.rateSenior,
-        rateStandard: req.body.rateStandard,
-        appointments: req.body.appointments
+        rateStandard: req.body.rateStandard
       }).save();
       return res.status(200).send("New course for '" + 
         req.params.courseId + "' successfully created.");
@@ -634,23 +670,338 @@ app.put('/courses/:courseId',  async (req, res, next) => {
     return res.status(400).send("courses/ PUT request formulated incorrectly." +
         "It must contain 'courseId' as parameter.");
   }
-  const validProps = ['appointments', 'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
+  const validProps = ['courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
   for (const bodyProp in req.body) {
     if (!validProps.includes(bodyProp)) {
       return res.status(400).send("courses/ PUT request formulated incorrectly." +
         "Only the following props are allowed in body: " +
-        "'appointments', 'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'");
+        "'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'");
     } 
   }
   try {
         let status = await Course.updateOne({id: req.params.courseId}, 
           {$set: req.body});
-        if (status.nModified != 1) { //account could not be found
-          res.status(404).send("No course " + req.params.courseId + " exists. Course could not be updated.");
-        } else {
           res.status(200).send("Course " + req.params.courseId + " successfully updated.")
-        }
       } catch (err) {
         res.status(400).send("Unexpected error occurred when updating course data in database: " + err);
       }
+});
+
+//DELETE course route: Deletes a specific course 
+//for a given id in the course collection (DELETE)
+app.delete('/courses/:courseId', async(req, res, next) => {
+  console.log("in /courses route (DELETE) with courseId = " + 
+    JSON.stringify(req.params.courseId));
+  try {
+    let status = await Course.deleteOne({id: req.params.courseId});
+    if (status.deletedCount != 1) {
+      return res.status(404).send("No course " +
+        req.params.courseId + " was found. Course could not be deleted.");
+    } else {
+      return res.status(200).send("Course " +
+      req.params.courseId + " was successfully deleted.");
+    }
+  } catch (err) {
+    console.log()
+    return res.status(400).send("Unexpected error occurred when attempting to delete course with id " +
+      req.params.courseId + ": " + err);
+  }
+});
+
+/////////////////////////////////
+//APPOINTMENTS ROUTES
+////////////////////////////////
+
+//CREATE appointment route: Adds a new appointment as a subdocument to 
+//a document in the users collection (POST)
+app.post('/appointments/:userId', async (req, res, next) => {
+  console.log("in /appointments (POST) route with params = " + 
+              JSON.stringify(req.params) + " and body = " + 
+              JSON.stringify(req.body));
+  if (
+      !req.body.hasOwnProperty("userId") || 
+      !req.body.hasOwnProperty("username") || 
+      !req.body.hasOwnProperty("courseName") || 
+      !req.body.hasOwnProperty("date") || 
+      !req.body.hasOwnProperty("time") || 
+      !req.body.hasOwnProperty("paid")) {
+    //Body does not contain correct properties
+    return res.status(400).send("POST request on /appointments formulated incorrectly." +
+      "Body must contain all 6 required fields: userId, username, courseName, date, time, paid");
+  }
+  try {
+    let status = await User.updateOne(
+    {id: req.params.userId},
+    {$push: {appointments: req.body}});
+    if (status.nModified != 1) { //Should never happen!
+      res.status(400).send("Unexpected error occurred when adding appointment to"+
+        " database. Appointment was not added.");
+    } else {
+      res.status(200).send("Appointment successfully added to database.");
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Unexpected error occurred when adding appointment" +
+     " to database: " + err);
+  } 
+});
+
+//READ appointment route: Returns all appointments associated 
+//with a given user in the users collection (GET)
+app.get('/appointments/:userId', async(req, res) => {
+  console.log("in /appointments route (GET) with userId = " + 
+    JSON.stringify(req.params.userId));
+  try {
+    let thisUser = await User.findOne({id: req.params.userId});
+    if (!thisUser) {
+      return res.status(400).message("No user account with specified userId was found in database.");
+    } else {
+      return res.status(200).json(JSON.stringify(thisUser.appointments));
+    }
+  } catch (err) {
+    console.log()
+    return res.status(400).message("Unexpected error occurred when looking up user in database: " + err);
+  }
+});
+
+//UPDATE appointments route: Updates a specific appointment 
+//for a given user in the users collection (PUT)
+app.put('/appointments/:userId/:appointmentId', async (req, res, next) => {
+  console.log("in /appointments (PUT) route with params = " + 
+              JSON.stringify(req.params) + " and body = " + 
+              JSON.stringify(req.body));
+  const validProps = ['userId', 'username', 'courseName', 'date', 'time', 'paid'];
+  let bodyObj = {...req.body};
+  // delete bodyObj._id; //Not needed for update
+  // delete bodyObj.SGS; //We'll compute this below in seconds.
+  for (const bodyProp in bodyObj) {
+    if (!validProps.includes(bodyProp)) {
+      return res.status(400).send("appointments/ PUT request formulated incorrectly." +
+        "It includes " + bodyProp + ". However, only the following props are allowed: " +
+        "'userId', 'username', 'courseName', 'date', 'time', 'paid'");
+    } else {
+      bodyObj["appointments.$." + bodyProp] = bodyObj[bodyProp];
+      delete bodyObj[bodyProp];
+    }
+  }
+  try {
+    let status = await User.updateOne(
+      {"id": req.params.userId,
+       "appointments._id": mongoose.Types.ObjectId(req.params.appointmentId)}
+      ,{"$set" : bodyObj}
+    );
+    if (status.nModified != 1) {
+      res.status(400).send("Unexpected error occurred when updating appointment in database. Appointment was not updated.");
+    } else {
+      res.status(200).send("Appointment successfully updated in database.");
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Unexpected error occurred when updating appointment in database: " + err);
+  } 
+});
+
+//DELETE round route: Deletes a specific round 
+//for a given user in the users collection (DELETE)
+app.delete('/appointments/:username/:courseName/:date/:time/:userId', async (req, res, next) => {
+  console.log("in /appointments (DELETE) route with params = " + 
+              JSON.stringify(req.params)); 
+  try {
+    let status = await User.updateOne(
+      {id: req.params.userId},
+      {$pull: {appointments: {username: req.params.username, courseName: req.params.courseName, date: req.params.date, time: req.params.time}}});
+    if (status.nModified != 1) { //Should never happen!
+      res.status(400).send("Unexpected error occurred when deleting appointment from database. Appointment was not deleted.");
+    } else {
+      res.status(200).send("Appointment successfully deleted from database.");
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Unexpected error occurred when deleting appointment from database: " + err);
+  } 
+});
+
+/////////////////////////////////
+//APPOINTMENTS_OP ROUTES
+////////////////////////////////
+
+//CREATE appointment route: Adds a new appoint as a subdocument to 
+//a document in the apoointments collection (POST)
+app.post('/appointments_op/', async (req, res, next) => {
+  console.log("in /appointment_op (POST) route with body = " + 
+              JSON.stringify(req.body));
+  if (
+      !req.body.hasOwnProperty("userId") ||
+      !req.body.hasOwnProperty("username") || 
+      !req.body.hasOwnProperty("courseName") || 
+      !req.body.hasOwnProperty("date") ||
+      !req.body.hasOwnProperty("time") || 
+      !req.body.hasOwnProperty("paid")) {
+    //Body does not contain correct properties
+    return res.status(400).send("POST request on /appointment_op formulated incorrectly." +
+      "Body must contain all 6 required fields: userId, username, courseName, date, time, paid.");
+  }
+  try {
+    let thisAppointment = await new Appointment({
+      userId: req.body.userId,
+      username: req.body.username,
+      courseName: req.body.courseName,
+      date: req.body.date,
+      time: req.body.time,
+      paid: req.body.paid
+    }).save();
+    return res.status(200).send("New appointment for '" + req.body.userId + "' successfully created.");
+  } catch (err) {
+    return res.status(400).send("Unexpected error occurred when adding or looking up appointment in database. " + err);
+  }
+});
+
+//READ appointment route: Returns all appointments
+app.get('/allappointments_op/', async(req, res) => {
+  console.log("in /allappointments_op route (GET)");
+  try {
+    let allAppointment = await Appointment.find({});
+    return res.status(200).json(JSON.stringify(allAppointment));
+  } catch (err) {
+    console.log()
+    return res.status(400).message("Unexpected error occurred when getting all appointments from database: " + err);
+  }
+});
+
+//DELETE course route: Deletes a specific course 
+//for a given id in the course collection (DELETE)
+app.delete('/appointments_op/:username/:courseName/:date/:time', async(req, res, next) => {
+  console.log("in /appointments_op (DELETE) route with params = " + 
+              JSON.stringify(req.params)); 
+  try {
+    let status = await Appointment.deleteOne({username: req.params.username, courseName: req.params.courseName, date: req.params.date, time: req.params.time});
+    res.status(200).send("appointments successfully deleted from database.");
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Unexpected error occurred when deleting appointments from database: " + err);
+  } 
+});
+
+//UPDATE appointment route: Updates a new appointment information in the appointments collection (POST)
+app.put('/appointments_op/:username/:courseName/:date/:time',  async (req, res, next) => {
+  console.log("in /appointments_op update route (PUT) with body = " + JSON.stringify(req.body));
+
+  const validProps = ['userId', 'username', 'courseName', 'date', 'time', 'paid'];
+  for (const bodyProp in req.body) {
+    if (!validProps.includes(bodyProp)) {
+      return res.status(400).send("appointments/ PUT request formulated incorrectly." +
+        "It includes " + bodyProp + ". However, only the following props are allowed: " +
+        "'userId', 'username', 'courseName', 'date', 'time', 'paid'");
+    } 
+  }
+  try {
+        let status = await Appointment.updateOne({username: req.params.username, courseName: req.params.courseName, date: req.params.date, time: req.params.time}, 
+        {$set: req.body});
+        res.status(200).send("Appointment successfully paid.")
+      } catch (err) {
+        res.status(400).send("Unexpected error occurred when updating appointment data in database: " + err);
+      }
+});
+
+/////////////////////////////////
+//CARD ROUTES
+////////////////////////////////
+
+//CREATE card route: Adds a new card as a subdocument to 
+//a document in the cards collection (POST)
+app.post('/cards/:userId', async (req, res, next) => {
+  console.log("in /cards (POST) route with params = " + 
+              JSON.stringify(req.params) + " and body = " + 
+              JSON.stringify(req.body));
+  if (!req.body.hasOwnProperty("name") || 
+      !req.body.hasOwnProperty("number") || 
+      !req.body.hasOwnProperty("expDate")) {
+    //Body does not contain correct properties
+    return res.status(400).send("POST request on /cards formulated incorrectly." +
+      "Body must contain all 3 required fields: name, numner, expDate.");
+  }
+  try {
+    let status = await User.updateOne(
+    {id: req.params.userId},
+    {$push: {card: req.body}});
+    if (status.nModified != 1) { //Should never happen!
+      res.status(400).send("Unexpected error occurred when adding card to database. Card was not added.");
+    } else {
+      res.status(200).send("Card successfully added to database.");
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Unexpected error occurred when adding card to database: " + err);
+  } 
+});
+
+//READ card route: Returns cards associated 
+//with a given user in the users collection (GET)
+app.get('/cards/:userId', async(req, res) => {
+  console.log("in /cards route (GET) with userId = " + 
+    JSON.stringify(req.params.userId));
+  try {
+    let thisUser = await User.findOne({id: req.params.userId});
+    if (!thisUser) {
+      return res.status(400).message("No user account with specified userId was found in database.");
+    } else {
+      return res.status(200).json(JSON.stringify(thisUser.card));
+    }
+  } catch (err) {
+    console.log()
+    return res.status(400).message("Unexpected error occurred when looking up user in database: " + err);
+  }
+});
+
+//UPDATE card route: Updates a specific card 
+//for a given user in the users collection (PUT)
+app.put('/cards/:userId/:cardId', async (req, res, next) => {
+  console.log("in /cards (PUT) route with params = " + 
+              JSON.stringify(req.params) + " and body = " + 
+              JSON.stringify(req.body));
+  const validProps = ['name', 'number', 'expDate'];
+  let bodyObj = {...req.body};
+  // delete bodyObj._id; //Not needed for update
+  // delete bodyObj.SGS; //We'll compute this below in seconds.
+  for (const bodyProp in bodyObj) {
+    if (!validProps.includes(bodyProp)) {
+      return res.status(400).send("cards/ PUT request formulated incorrectly." +
+        "It includes " + bodyProp + ". However, only the following props are allowed: " +
+        "'name', 'number', 'expDate'");
+    } else {
+      bodyObj["card.$." + bodyProp] = bodyObj[bodyProp];
+      delete bodyObj[bodyProp];
+    }
+  }
+  try {
+    let status = await User.updateOne(
+      {"id": req.params.userId,
+       "card._id": mongoose.Types.ObjectId(req.params.cardId)}
+      ,{"$set" : bodyObj}
+    );
+    if (status.nModified != 1) {
+      res.status(400).send("Unexpected error occurred when updating card in database. Card was not updated.");
+    } else {
+      res.status(200).send("Card successfully updated in database.");
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Unexpected error occurred when updating card in database: " + err);
+  } 
+});
+
+//DELETE card route: Deletes a specific card 
+//for a given user in the users collection (DELETE)
+app.delete('/cards/:userId/:cardId', async (req, res, next) => {
+  console.log("in /cards (DELETE) route with params = " + 
+              JSON.stringify(req.params)); 
+  try {
+    let status = await User.updateOne(
+      {id: req.params.userId},
+      {$pull: {card: {_id: mongoose.Types.ObjectId(req.params.cardId)}}});
+      res.status(200).send("Card successfully deleted from database.");
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Unexpected error occurred when deleting card from database: " + err);
+  } 
 });

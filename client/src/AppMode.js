@@ -9,7 +9,10 @@ const AppMode = {
     COURSES: "CoursesMode",
     COURSES_NEARBY: "CoursesMode-Nearby",
     COURSES_ALL: "CoursesMode-All",
-    COURSES_ADD: "CoursesMode-ADD"
+    COURSES_ADD: "CoursesMode-ADD",
+    COURSES_APPT: "CourseMode-APPT",
+    COURSES_MYAPPT: "CourseMode-MYAPPT"
+
 };
 
 Object.freeze(AppMode); //This ensures that the object is immutable.
