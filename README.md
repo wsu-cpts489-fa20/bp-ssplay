@@ -18,5 +18,3 @@ https://ssplay.bfapp.org/
 
 # Code Quality
 SpecificCourses.js, AddCourses.js
-
-
