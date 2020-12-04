@@ -14,7 +14,7 @@ https://ssplay.bfapp.org/
 	https://drive.google.com/file/d/12Ps2GfDvjzKIolzZiCActPQIomGOWO_h/view?usp=sharing
 
 # Code Quality
-SpecificCourses.js, AddCourses.js, AllCourses.js
+SpecificCourses.js, AddCourses.js 
 
 # Retrospective
 * Week1: 
@@ -49,5 +49,6 @@ SpecificCourses.js, AddCourses.js, AllCourses.js
 		* Deployment was also a struggling as the environment won't recognize the variables
 		* Doing the API for Nearby Courses was also hard, most examples are in HTML/CSS so I had to rework it into React
 	* Needs Improvement:
-		* Team work, currently 1 man team.
+		* Team communication and participation.
+		* Distribute work properly.
 
