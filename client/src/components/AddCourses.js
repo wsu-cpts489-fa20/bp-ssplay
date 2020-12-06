@@ -19,7 +19,16 @@ class AddCourses extends React.Component {
             bestScore: "",
             recordHolder: "",
             rateStandard: "",
-            rateSenior: ""
+            rateSenior: "",
+            availability: {
+                day1:[false, false, false, false, false, false, false, false, false],
+                day2:[false, false, false, false, false, false, false, false, false],
+                day3:[false, false, false, false, false, false, false, false, false],
+                day4:[false, false, false, false, false, false, false, false, false],
+                day5:[false, false, false, false, false, false, false, false, false],
+                day6:[false, false, false, false, false, false, false, false, false],
+                day7:[false, false, false, false, false, false, false, false, false]
+            }
         };
     }
 

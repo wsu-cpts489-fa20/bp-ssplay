@@ -56,6 +56,7 @@ getSearchedCourse = async (id) => {
             recordHolder: thisCourse.recordHolder,
             rateSenior: thisCourse.rateSenior,
             rateStandard: thisCourse.rateStandard,
+            availability: thisCourse.availability,
             course: (
                 <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
                     <Card key={thisCourse.id} style={{ width: "30rem", display: "flex" }}>
@@ -116,7 +117,8 @@ handleSubmit = (event) =>{
         bestScore: this.state.bestScore,
         recordHolder: this.state.recordHolder,
         rateSenior: this.state.rateSenior,
-        rateStandard: this.state.rateStandard
+        rateStandard: this.state.rateStandard,
+        availability: this.state.availability
     }
     this.editCourse(newData);
 
