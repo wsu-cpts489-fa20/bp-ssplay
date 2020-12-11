@@ -56,6 +56,7 @@ getSearchedCourse = async (id) => {
             recordHolder: thisCourse.recordHolder,
             rateSenior: thisCourse.rateSenior,
             rateStandard: thisCourse.rateStandard,
+            availability: thisCourse.availability,
             course: (
                 <Col  style={{marginTop: "20px", marginBottom: "50px"}}>
                     <Card key={thisCourse.id} style={{ width: "30rem", display: "flex" }}>
@@ -69,7 +70,7 @@ getSearchedCourse = async (id) => {
                         <Card.Text>Record Holder: {thisCourse.recordHolder}</Card.Text>
                     </Card.Body>
                     <Card.Footer>Rating: {thisCourse.rating}<br></br>Review: {thisCourse.review}</Card.Footer>
-                    <Button onClick={this.toggleReviewClicked}>Leave A Review:</Button>
+                    <Button id="LeaveBtn"onClick={this.toggleReviewClicked}>Leave A Review:</Button>
                     </Card>
                 </Col>
             )
@@ -116,7 +117,8 @@ handleSubmit = (event) =>{
         bestScore: this.state.bestScore,
         recordHolder: this.state.recordHolder,
         rateSenior: this.state.rateSenior,
-        rateStandard: this.state.rateStandard
+        rateStandard: this.state.rateStandard,
+        availability: this.state.availability
     }
     this.editCourse(newData);
 
@@ -152,9 +154,9 @@ render() {
                     <Container fluid={true}>
                         <Row noGutters>
                         <label>Rating:
-                        <select name="rating" value={this.state.rating} 
+                        <select id="selectBtn" name="rating" value={this.state.rating} 
                         className="form-control form-center" onChange={this.handleChange}>
-                        <option value="1">1</option>
+                        <option id="one" value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
                         <option value="4">4</option>
@@ -163,12 +165,12 @@ render() {
                         </label>
                         <p></p>
                         <label>Review:
-                        <textarea name="review" className="form-control" rows="6" cols="75" 
+                        <textarea id="feedback"name="review" className="form-control" rows="6" cols="75" 
                             placeholder="Enter round notes" value={this.state.review} 
                             onChange={this.handleChange} />
                         </label>
                         <p></p>
-                        <Button type="submit">Submit Review</Button>
+                        <Button id="submitReview" type="submit">Submit Review</Button>
                         </Row>
                     </Container>
                     </form>

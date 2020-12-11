@@ -14,9 +14,9 @@ import express from 'express';
 require('dotenv').config();
 
 const LOCAL_PORT = 8080;
-const DEPLOY_URL = "http://localhost:8080";
+// const DEPLOY_URL = "http://localhost:8080";
 // const DEPLOY_URL = "http://ssplay.us-west-2.elasticbeanstalk.com";
-//const DEPLOY_URL = "https://ssplay.bfapp.org";
+const DEPLOY_URL = "https://ssplay.bfapp.org";
 const PORT = process.env.HTTP_PORT || LOCAL_PORT;
 const GithubStrategy = passportGithub.Strategy;
 const GoogleStrategy = passportGoogle.Strategy;
@@ -91,7 +91,16 @@ const courseSchema = new Schema({
   recordHolder: String,
   rateSenior: String,
   rateStandard: String,
-  courseName: String
+  courseName: String,
+  availability: {
+    day1:[],
+    day2:[],
+    day3:[],
+    day4:[],
+    day5:[],
+    day6:[],
+    day7:[]
+  }
 },
 {
   toObject: {
@@ -652,7 +661,8 @@ app.post('/courses/:courseId', async (req, res, next) => {
         bestScore: req.body.bestScore,
         recordHolder: req.body.recordHolder,
         rateSenior: req.body.rateSenior,
-        rateStandard: req.body.rateStandard
+        rateStandard: req.body.rateStandard,
+        availability: req.body.availability
       }).save();
       return res.status(200).send("New course for '" + 
         req.params.courseId + "' successfully created.");
@@ -670,12 +680,12 @@ app.put('/courses/:courseId',  async (req, res, next) => {
     return res.status(400).send("courses/ PUT request formulated incorrectly." +
         "It must contain 'courseId' as parameter.");
   }
-  const validProps = ['courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
+  const validProps = ['availability', 'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'];
   for (const bodyProp in req.body) {
     if (!validProps.includes(bodyProp)) {
       return res.status(400).send("courses/ PUT request formulated incorrectly." +
         "Only the following props are allowed in body: " +
-        "'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'");
+        "'availability', 'courseName', 'id', 'rating', 'review', 'picture', 'location', 'yardage', 'runningDistance', 'timePar', 'bestScore', 'recordHolder', 'rateSenior', 'rateStandard'");
     } 
   }
   try {
