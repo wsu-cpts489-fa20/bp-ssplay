@@ -80,7 +80,7 @@ class AddCardDialog extends React.Component {
                 body: JSON.stringify(data)}); 
             if (res.status == 200) { //successful account creation!
             {
-                alert("Card Added");
+                 alert("Card Added");
                 this.props.setCardExist();
             }
             } else { //Unsuccessful account update
@@ -149,9 +149,9 @@ class AddCardDialog extends React.Component {
               </form>
             </div>
             <div className="modal-footer">
-                  <button className="btn btn-success" onClick={this.handleSubmit}>
+                  <button id="EditBtn"className="btn btn-success" onClick={this.handleSubmit}>
                   {this.props.cardExist ? "Edit Card" : "Add Card"}</button>
-                  {this.props.cardExist ? <button className="btn btn-danger" onClick={() => this.setState({deleteClicked: true})}>
+                  {this.props.cardExist ? <button id="remove"className="btn btn-danger" onClick={() => this.setState({deleteClicked: true})}>
                   Delete Card</button> : null}
             </div>
         </div>
@@ -163,7 +163,7 @@ class AddCardDialog extends React.Component {
                                 <h3>Are you sure you want to delete the card?</h3>
                             </div>
                             <div className="modal-body">
-                                <button className="btn btn-danger" onClick={this.handleDelete}>
+                                <button id="Agree" className="btn btn-danger" onClick={this.handleDelete}>
                                     YES
                                 </button>
                                 <button className="btn btn-success" onClick={() => this.setState({deleteClicked: false})}>

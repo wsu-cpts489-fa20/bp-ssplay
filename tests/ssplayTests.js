@@ -159,3 +159,61 @@ test('test show my appointments', async t => {
     .expect(Selector('#myAppointmentsPage').visible).eql(true)
     .wait(100)
 })
+
+
+
+test('Add card', async t => {
+    await t
+    .typeText("#emailInput", "a@a.com")
+    .typeText("#passwordInput", "aaAA11!!")
+    .click('#login-btn-icon')
+    .expect(Selector('#allCoursesPage').visible).eql(true)
+
+
+    .click('#menuBtnIcon')
+
+    .click('#addCardbtn')
+    .wait(100)
+
+    .typeText("#name", "Puthypor Sengkeo")
+    .typeText("#number", "123456789")
+    .typeText("#expDate", "10/20")
+    .click('#EditBtn')
+    .wait(100)
+})
+
+test('Delete card', async t => {
+    await t
+    .typeText("#emailInput", "a@a.com")
+    .typeText("#passwordInput", "aaAA11!!")
+    .click('#login-btn-icon')
+    .expect(Selector('#allCoursesPage').visible).eql(true)
+
+
+    .click('#menuBtnIcon')
+
+    .click('#addCardbtn')
+    .wait(100)
+    .click('#remove')
+    .click('#Agree')
+    .wait(100)
+})
+
+test('Leave Review', async t => {
+    await t
+    .typeText("#emailInput", "a@a.com")
+    .typeText("#passwordInput", "aaAA11!!")
+    .click('#login-btn-icon')
+    .expect(Selector('#allCoursesPage').visible).eql(true)
+
+
+    .click('#moreBtn')
+
+    .click('#LeaveBtn')
+    .click('#selectBtn')
+    .click('#one')
+    .typeText("#feedback", "Picturesque course. A real speedgolf challenge.")
+    .click('#submitReview')
+
+    .wait(100)
+})

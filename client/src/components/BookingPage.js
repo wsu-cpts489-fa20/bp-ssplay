@@ -1142,7 +1142,7 @@ class BookingPage extends React.Component {
                         </select>
                         </label>
                         <p></p>
-                        <button className="btn btn-primary btn-color-theme modal-submit-btn">Request Tee Time</button>
+                        <button id="TeeTR" className="btn btn-primary btn-color-theme modal-submit-btn">Request Tee Time</button>
                         <button onClick={this.props.handleClose} className="btn btn-primary btn-color-theme modal-submit-btn">Cancel</button>
                     </center>
                     </form>
