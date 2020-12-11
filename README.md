@@ -21,4 +21,5 @@ https://ssplay.bfapp.org/
 
 # Code Quality
 SpecificCourses.js: https://github.com/wsu-cpts489-fa20/bp-ssplay/blob/master/client/src/components/SpecificCourses.js
+
 AddCourses.js: https://github.com/wsu-cpts489-fa20/bp-ssplay/blob/master/client/src/components/AddCourses.js
