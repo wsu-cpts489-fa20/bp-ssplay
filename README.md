@@ -23,3 +23,9 @@ https://ssplay.bfapp.org/
 SpecificCourses.js: https://github.com/wsu-cpts489-fa20/bp-ssplay/blob/master/client/src/components/SpecificCourses.js
 
 AddCourses.js: https://github.com/wsu-cpts489-fa20/bp-ssplay/blob/master/client/src/components/AddCourses.js
+
+# Completed:
+* Operator can now set tee time availability
+* Deployed the website, fully functional
+* Week 4 testing
+
